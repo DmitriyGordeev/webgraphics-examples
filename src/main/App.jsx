@@ -3,22 +3,19 @@ import {connect} from "react-redux";
 import './App.css';
 
 
-// import {trailsLoop} from "./trailsAnimation";
-
 import {TrailsAnim} from "./anim";
+import {CustomAnim} from "./customAnim";
+
 
 class App extends React.Component {
     constructor(props) {
         super(props);
-
-        this.trailsAnim = null;
+        this.CustomAnim = null;
     }
 
     componentDidMount() {
-        // trailsLoop();
-
-        this.trailsAnim = new TrailsAnim();
-        this.trailsAnim.start();
+        this.CustomAnim = new CustomAnim();
+        this.CustomAnim.loop();
     }
 
 
