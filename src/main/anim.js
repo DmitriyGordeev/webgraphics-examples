@@ -1,32 +1,9 @@
+import {BaseAnim} from "./baseAnim";
 
 
-export class TrailsAnim {
+export class TrailsAnim extends BaseAnim {
     constructor() {
-        this.setupFrameCallback();
-        this.c = document.getElementById('c');
-        this.ctx = this.c.getContext('2d');
-        this.scale();
-    }
-
-    setupFrameCallback() {
-        window.myRequestAnimFrameCall = function () {
-            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (a) {
-                window.setTimeout(a, 1E3 / 60)
-            }
-        }();
-
-        document.onselectstart = function () {
-            return false;
-        };
-    }
-
-    scale() {
-        this.dpr = window.devicePixelRatio;
-        this.cw = window.innerWidth;
-        this.ch = window.innerHeight;
-        this.c.width = this.cw * this.dpr;
-        this.c.height = this.ch * this.dpr;
-        this.ctx.scale(this.dpr, this.dpr);
+        super();
     }
 
     start() {
@@ -115,22 +92,22 @@ export class TrailsAnim {
         }
 
         function orbGo(e) {
-            let mx = e.pageX - this.c.offsetLeft;
-            let my = e.pageY - this.c.offsetTop;
+            let mx = e.pageX - thisRef.c.offsetLeft;
+            let my = e.pageY - thisRef.c.offsetTop;
             createOrb(mx, my);
         }
 
         function turnOnMove() {
-            this.c.addEventListener('mousemove', orbGo, false);
+            thisRef.c.addEventListener('mousemove', orbGo, false);
         }
 
         function turnOffMove() {
-            this.c.removeEventListener('mousemove', orbGo, false);
+            thisRef.c.removeEventListener('mousemove', orbGo, false);
         }
 
-        this.c.addEventListener('mousedown', orbGo, false);
-        this.c.addEventListener('mousedown', turnOnMove, false);
-        this.c.addEventListener('mouseup', turnOffMove, false);
+        thisRef.c.addEventListener('mousedown', orbGo, false);
+        thisRef.c.addEventListener('mousedown', turnOnMove, false);
+        thisRef.c.addEventListener('mouseup', turnOffMove, false);
 
         let count = 100;
         while (count--) {
