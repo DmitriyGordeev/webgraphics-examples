@@ -13,6 +13,23 @@ class App extends React.Component {
 
     componentDidMount() {
         trailsLoop();
+
+        // const c = document.getElementById('c');
+        // const ctx = c.getContext('2d');
+        //
+        // let dpr = window.devicePixelRatio;
+        // let cw = window.innerWidth;
+        // let ch = window.innerHeight;
+        // c.width = cw * dpr;
+        // c.height = ch * dpr;
+        // ctx.scale(dpr, dpr);
+        //
+        // ctx.beginPath();
+        // ctx.moveTo(20, 20);
+        // ctx.lineWidth = 1;
+        // ctx.lineCap = 'round';
+        // ctx.lineTo(100, 100);
+        // ctx.stroke();
     }
 
 

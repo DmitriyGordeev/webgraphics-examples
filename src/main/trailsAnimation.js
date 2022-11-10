@@ -134,13 +134,6 @@ export function trailsLoop() {
 
     let loop = function () {
         window.myRequestAnimFrameCall(loop);
-        // if (trail) {
-        //     ctx.fillStyle = 'rgba(0,0,0,.1)';
-        //     ctx.fillRect(0, 0, cw, ch);
-        // } else {
-        //     ctx.clearRect(0, 0, cw, ch);
-        // }
-
 
         ctx.fillStyle = 'rgba(0,0,0,.1)';
         ctx.fillRect(0, 0, cw, ch);
@@ -151,9 +144,8 @@ export function trailsLoop() {
             let updateCount = 3;
             while (updateCount--) {
                 orb.update();
-                orb.draw(ctx);
+                orb.draw();
             }
-
         }
     }
 
