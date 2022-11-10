@@ -3,33 +3,22 @@ import {connect} from "react-redux";
 import './App.css';
 
 
-import {trailsLoop} from "./trailsAnimation";
+// import {trailsLoop} from "./trailsAnimation";
 
+import {TrailsAnim} from "./anim";
 
 class App extends React.Component {
     constructor(props) {
         super(props);
+
+        this.trailsAnim = null;
     }
 
     componentDidMount() {
-        trailsLoop();
+        // trailsLoop();
 
-        // const c = document.getElementById('c');
-        // const ctx = c.getContext('2d');
-        //
-        // let dpr = window.devicePixelRatio;
-        // let cw = window.innerWidth;
-        // let ch = window.innerHeight;
-        // c.width = cw * dpr;
-        // c.height = ch * dpr;
-        // ctx.scale(dpr, dpr);
-        //
-        // ctx.beginPath();
-        // ctx.moveTo(20, 20);
-        // ctx.lineWidth = 1;
-        // ctx.lineCap = 'round';
-        // ctx.lineTo(100, 100);
-        // ctx.stroke();
+        this.trailsAnim = new TrailsAnim();
+        this.trailsAnim.start();
     }
 
 

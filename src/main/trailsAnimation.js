@@ -1,6 +1,6 @@
 
 export function trailsLoop() {
-    
+
     // 1. Create helper callback 'myRequestAnimFrameCall'
     // for cross-browser animation
     window.myRequestAnimFrameCall = function () {
