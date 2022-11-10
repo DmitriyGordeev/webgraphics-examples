@@ -123,7 +123,7 @@ export class TrailsAnim extends BaseAnim {
             let i = orbs.length;
             while (i--) {
                 let orb = orbs[i];
-                let updateCount = 3;
+                let updateCount = 1;
                 while (updateCount--) {
                     orb.update();
                     orb.draw();

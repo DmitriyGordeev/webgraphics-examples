@@ -10,12 +10,12 @@ import {CustomAnim} from "./customAnim";
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.CustomAnim = null;
+        this.anim = null;
     }
 
     componentDidMount() {
-        this.CustomAnim = new CustomAnim();
-        this.CustomAnim.loop();
+        this.anim = new CustomAnim();
+        this.anim.loop();
     }
 
 
