@@ -1,3 +1,4 @@
+
 window.requestAnimFrame = function () {
     return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (a) {
         window.setTimeout(a, 1E3 / 60)
@@ -9,36 +10,36 @@ document.onselectstart = function () {
 };
 
 
-var c = document.getElementById('c');
-var ctx = c.getContext('2d');
+let c = document.getElementById('c');
+let ctx = c.getContext('2d');
 
 // brings to display-size scale
-var dpr = window.devicePixelRatio;
-var cw = window.innerWidth;
-var ch = window.innerHeight;
+let dpr = window.devicePixelRatio;
+let cw = window.innerWidth;
+let ch = window.innerHeight;
 c.width = cw * dpr;
 c.height = ch * dpr;
 ctx.scale(dpr, dpr);
 
 
-var rand = function (rMi, rMa) {
+let rand = function (rMi, rMa) {
     return ~~((Math.random() * (rMa - rMi + 1)) + rMi);
 }
 
 ctx.lineCap = 'round';
-var orbs = [];
-var orbCount = 30;
-var radius;
+let orbs = [];
+let orbCount = 30;
+let radius;
 
-var trailCB = document.getElementById('trail');
-var trail = trailCB.checked;
-var clearer = document.getElementById('clear');
+// let trailCB = document.getElementById('trail');
+// let trail = trailCB.checked;
+// let clearer = document.getElementById('clear');
 
 function createOrb(mx, my) {
-    var dx = (cw / 2) - mx;
-    var dy = (ch / 2) - my;
-    var dist = Math.sqrt(dx * dx + dy * dy);
-    var angle = Math.atan2(dy, dx);
+    let dx = (cw / 2) - mx;
+    let dy = (ch / 2) - my;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+    let angle = Math.atan2(dy, dx);
     orbs.push({
         x: mx,
         y: my,
@@ -63,19 +64,19 @@ function createOrb(mx, my) {
             ctx.stroke();
         },
         update: function () {
-            var mx = this.x;
-            var my = this.y;
+            let mx = this.x;
+            let my = this.y;
             this.lastX = this.x;
             this.lastY = this.y;
-            var x1 = cw / 2;
-            var y1 = ch / 2;
-            var x2 = mx;
-            var y2 = my;
-            var rise = y1 - y2;
-            var run = x1 - x2;
-            var slope = -(rise / run);
-            var radian = Math.atan(slope);
-            var angleH = Math.floor(radian * (180 / Math.PI));
+            let x1 = cw / 2;
+            let y1 = ch / 2;
+            let x2 = mx;
+            let y2 = my;
+            let rise = y1 - y2;
+            let run = x1 - x2;
+            let slope = -(rise / run);
+            let radian = Math.atan(slope);
+            let angleH = Math.floor(radian * (180 / Math.PI));
             if (x2 < x1 && y2 < y1) {
                 angleH += 180;
             }
@@ -108,8 +109,8 @@ function createOrb(mx, my) {
 }
 
 function orbGo(e) {
-    var mx = e.pageX - c.offsetLeft;
-    var my = e.pageY - c.offsetTop;
+    let mx = e.pageX - c.offsetLeft;
+    let my = e.pageY - c.offsetTop;
     createOrb(mx, my);
 }
 
@@ -121,37 +122,43 @@ function turnOffMove() {
     c.removeEventListener('mousemove', orbGo, false);
 }
 
-function toggleTrails() {
-    trail = trailCB.checked;
-}
+// function toggleTrails() {
+//     trail = trailCB.checked;
+// }
 
-function clear() {
-    orbs = [];
-}
+// function clear() {
+//     orbs = [];
+// }
 
 c.addEventListener('mousedown', orbGo, false);
 c.addEventListener('mousedown', turnOnMove, false);
 c.addEventListener('mouseup', turnOffMove, false);
-trailCB.addEventListener('change', toggleTrails, false);
-clearer.addEventListener('click', clear, false);
 
-var count = 100;
+// trailCB.addEventListener('change', toggleTrails, false);
+// clearer.addEventListener('click', clear, false);
+
+let count = 100;
 while (count--) {
     createOrb(cw / 2, ch / 2 + (count * 2));
 }
 
-var loop = function () {
+let loop = function () {
     window.requestAnimFrame(loop);
-    if (trail) {
-        ctx.fillStyle = 'rgba(0,0,0,.1)';
-        ctx.fillRect(0, 0, cw, ch);
-    } else {
-        ctx.clearRect(0, 0, cw, ch);
-    }
-    var i = orbs.length;
+    // if (trail) {
+    //     ctx.fillStyle = 'rgba(0,0,0,.1)';
+    //     ctx.fillRect(0, 0, cw, ch);
+    // } else {
+    //     ctx.clearRect(0, 0, cw, ch);
+    // }
+
+
+    ctx.fillStyle = 'rgba(0,0,0,.1)';
+    ctx.fillRect(0, 0, cw, ch);
+    
+    let i = orbs.length;
     while (i--) {
-        var orb = orbs[i];
-        var updateCount = 3;
+        let orb = orbs[i];
+        let updateCount = 3;
         while (updateCount--) {
             orb.update();
             orb.draw(ctx);
