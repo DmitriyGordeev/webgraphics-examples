@@ -4,7 +4,6 @@ import * as THREE from 'three';
 export class ThreeExample {
     constructor() {
         this.setupFrameCallback();
-        this.ctx = null;
         this.canvas = document.getElementById('c');
         this.scale();
     }
@@ -21,15 +20,13 @@ export class ThreeExample {
         this.dpr = window.devicePixelRatio;
         this.cw = window.innerWidth;
         this.ch = window.innerHeight;
-        this.canvas.width = this.cw * this.dpr;
-        this.canvas.height = this.ch * this.dpr;
+        // this.canvas.width = this.cw * this.dpr;
+        // this.canvas.height = this.ch * this.dpr;
     }
 
 
 
     animateScene(cube) {
-        // requestAnimationFrame(this.animateScene);
-
         window.myRequestAnimFrameCall(() => {this.animateScene(cube)});
 
         cube.rotation.y += 0.02;
@@ -44,14 +41,12 @@ export class ThreeExample {
         this.render.setClearColor("#3a3535");
         this.render.setSize(this.cw, this.ch);
 
-        // this.canvas.appendChild(this.render.domElement);
         this.scene = new THREE.Scene();
         let aspect = this.canvas.width / this.canvas.height;
 
         this.camera = new THREE.PerspectiveCamera(45, aspect);
         this.camera.position.set(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
-
         this.scene.add(this.camera);
 
         cube.position.set(0, 0, -7.0);
@@ -69,9 +64,7 @@ export class ThreeExample {
             new THREE.MeshBasicMaterial({color:0x856af9})
         ];
 
-        // let cubeMaterial = new THREE.MeshFaceMaterial(cubeMaterials);
         let cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
-
         let cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
         return cube;
     }
