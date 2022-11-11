@@ -1,6 +1,10 @@
 
-
-export class BaseAnim {
+/* This is basic 2D animation class which we can extend to our own class with own logics
+    Implements:
+    1. window.requestAnimationFrame for multiple browsers
+    2. scales resolution of viewport with scale()
+* */
+export class BaseAnim2D {
     constructor() {
         this.setupFrameCallback();
         this.c = document.getElementById('c');
