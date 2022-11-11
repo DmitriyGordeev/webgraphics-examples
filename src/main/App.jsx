@@ -3,8 +3,8 @@ import {connect} from "react-redux";
 import './App.css';
 
 
-import {TrailsAnim} from "./anim";
 import {CustomAnim2D} from "./CustomAnim2D";
+import {BaseAnim3D} from "./BaseAnim3D";
 
 
 class App extends React.Component {
@@ -14,8 +14,8 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.anim = new CustomAnim2D();
-        this.anim.loop();
+        this.anim = new BaseAnim3D();
+        // this.anim.loop();
     }
 
 
