@@ -5,7 +5,7 @@ import fragmentShaderCode from "./fragment_shader";
 /* This is basic 3D animation class which we can extend to our own class with own logics
     Implements:
 * */
-export class BaseAnim3D {
+export class PureWebGl {
     constructor() {
         this.ctx = null;
         this.canvas = document.getElementById('c');
