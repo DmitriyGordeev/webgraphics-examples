@@ -1,16 +1,17 @@
+import vertexShaderCode from "./vertex_shader";
+import fragmentShaderCode from "./fragment_shader";
+
 
 /* This is basic 3D animation class which we can extend to our own class with own logics
     Implements:
-    1. window.requestAnimationFrame for multiple browsers
-    2. scales resolution of viewport with scale()
 * */
 export class BaseAnim3D {
     constructor() {
-        this.setupFrameCallback();
+        // this.setupFrameCallback();
         this.ctx = null;
         this.canvas = document.getElementById('c');
+        this.scale();
         this.webGlSupport();
-        // this.scale();
 
         // TODO: что если взять одновременно 2d и 3d контексты?
         // this.ctx = this.canvas.getContext('3d');
@@ -49,7 +50,7 @@ export class BaseAnim3D {
         this.ch = window.innerHeight;
         this.canvas.width = this.cw * this.dpr;
         this.canvas.height = this.ch * this.dpr;
-        this.ctx.scale(this.dpr, this.dpr);
+        // this.ctx.scale(this.dpr, this.dpr);
     }
 
 
@@ -57,13 +58,13 @@ export class BaseAnim3D {
      * Creates the vertex buffer, binds it, passes the vortex data to it,
      * and sets the color.
      */
-    initWebGL(vortexes) {
+    initWebGL(verticies) {
         let vertexBuffer = this.ctx.createBuffer();
-        this.ctx.bindBuffer(webgl.ARRAY_BUFFER, vertexBuffer);
+        this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, vertexBuffer);
 
         this.ctx.bufferData(
             this.ctx.ARRAY_BUFFER,
-            new Float32Array(vortexes),
+            new Float32Array(verticies),
             this.ctx.STATIC_DRAW
         );
 
@@ -78,7 +79,7 @@ export class BaseAnim3D {
      */
     createVertexShader() {
         let vertexShader = this.ctx.createShader(this.ctx.VERTEX_SHADER);
-        this.ctx.shaderSource(vertexShader, vertexCode);
+        this.ctx.shaderSource(vertexShader, vertexShaderCode);
         this.ctx.compileShader(vertexShader);
         return vertexShader;
     }
@@ -90,7 +91,7 @@ export class BaseAnim3D {
      */
     createFragmentShader() {
         let fragmentShader = this.ctx.createShader(this.ctx.FRAGMENT_SHADER);
-        this.ctx.shaderSource(fragmentShader, fragmentCode);
+        this.ctx.shaderSource(fragmentShader, fragmentShaderCode);
         this.ctx.compileShader(fragmentShader);
         return fragmentShader;
     }
@@ -138,14 +139,14 @@ export class BaseAnim3D {
 
 
     draw() {
-        let vortexes = [
-            0.8, 0.0,
-            0.0, 1,
-            1, 0.8
+        let verticies = [
+            0, 0,
+            1, 1,
+            1, -1
         ];
 
         if (this.ctx) {
-            this.initWebGL(vortexes);
+            this.initWebGL(verticies);
             let vertexShader = this.createVertexShader();
             let fragmentShader = this.createFragmentShader();
 

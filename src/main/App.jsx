@@ -15,6 +15,8 @@ class App extends React.Component {
 
     componentDidMount() {
         this.anim = new BaseAnim3D();
+        this.anim.draw();
+
         // this.anim.loop();
     }
 
