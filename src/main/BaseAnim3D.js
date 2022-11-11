@@ -50,7 +50,6 @@ export class BaseAnim3D {
         this.ch = window.innerHeight;
         this.canvas.width = this.cw * this.dpr;
         this.canvas.height = this.ch * this.dpr;
-        // this.ctx.scale(this.dpr, this.dpr);
     }
 
 
@@ -74,8 +73,7 @@ export class BaseAnim3D {
 
 
     /**
-     * Creates the vertex shader object from the source code defined in
-     * 2_vertex_shader.js.
+     * Creates the vertex shader object from the source code
      */
     createVertexShader() {
         let vertexShader = this.ctx.createShader(this.ctx.VERTEX_SHADER);
@@ -86,8 +84,7 @@ export class BaseAnim3D {
 
 
     /**
-     * Creates the fragment shader object from the source code defined in
-     * 2_vertex_shader.js.
+     * Creates the fragment shader object from the source code
      */
     createFragmentShader() {
         let fragmentShader = this.ctx.createShader(this.ctx.FRAGMENT_SHADER);
