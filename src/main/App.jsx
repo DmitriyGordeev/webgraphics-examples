@@ -4,7 +4,7 @@ import './App.css';
 
 
 import {TrailsAnim} from "./anim";
-import {CustomAnim} from "./customAnim";
+import {CustomAnim2D} from "./CustomAnim2D";
 
 
 class App extends React.Component {
@@ -14,7 +14,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.anim = new CustomAnim();
+        this.anim = new CustomAnim2D();
         this.anim.loop();
     }
 

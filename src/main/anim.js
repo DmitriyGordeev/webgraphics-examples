@@ -1,4 +1,4 @@
-import {BaseAnim2D} from "./baseAnim";
+import {BaseAnim2D} from "./BaseAnim2D";
 
 
 export class TrailsAnim extends BaseAnim2D {

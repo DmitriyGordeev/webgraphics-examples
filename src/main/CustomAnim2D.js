@@ -1,7 +1,7 @@
-import {BaseAnim2D} from "./baseAnim";
+import {BaseAnim2D} from "./BaseAnim2D";
 
 
-export class CustomAnim extends BaseAnim2D {
+export class CustomAnim2D extends BaseAnim2D {
     constructor() {
         super();
 
