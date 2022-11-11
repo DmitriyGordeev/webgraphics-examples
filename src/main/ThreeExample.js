@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {DragControls} from 'three/addons/controls/DragControls.js';
-
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
 export class ThreeExample {
@@ -11,12 +11,6 @@ export class ThreeExample {
 
         this.mouse = new THREE.Vector2();
         this.raycaster = new THREE.Raycaster();
-
-        this.enableSelection = false;
-
-        // document.addEventListener('click', onClick);
-        // window.addEventListener('keydown', onKeyDown, true);
-        // window.addEventListener('keyup', onKeyUp, true);
     }
 
     setupFrameCallback() {
@@ -28,19 +22,24 @@ export class ThreeExample {
     }
 
     scale() {
-        this.dpr = window.devicePixelRatio;
         this.cw = window.innerWidth;
         this.ch = window.innerHeight;
     }
 
 
-    animateScene(cube) {
+    animateScene(objects) {
         window.customRequestAnimationFrame(() => {
-            this.animateScene(cube)
+            this.animateScene(objects)
         });
 
-        cube.rotation.y += 0.02;
-        cube.rotation.x += 0.01;
+        console.log(objects);
+
+        objects[0].rotation.y += 0.02;
+        objects[0].rotation.x += 0.01;
+
+        objects[1].rotation.y -= 0.02;
+        objects[1].rotation.x -= 0.01;
+
         this.renderScene();
     }
 
@@ -87,6 +86,8 @@ export class ThreeExample {
         this.createCube();
         this.startScene(this.cube);
 
+        this.loadCustomModel();
+
         this.controls = new DragControls([this.cube], this.camera, this.renderer.domElement);
         this.controls.addEventListener('drag', () => {this.renderScene()});
 
@@ -108,10 +109,25 @@ export class ThreeExample {
             console.log("keyUp");
         }, true);
 
-        this.animateScene(this.cube);
-        this.renderScene();
+
+        // this.animateScene([this.cube]);
+        // this.renderScene();
     }
 
+
+    loadCustomModel() {
+        let thisref = this;
+        const loader = new GLTFLoader().setPath( 'models/' );
+
+        loader.load( 'cube_bevel.gltf', function ( gltf ) {
+            console.log("gltf" + gltf);
+            let bevelCube = gltf.scene;
+            thisref.scene.add(bevelCube);
+
+            thisref.renderScene();
+            thisref.animateScene([thisref.cube, bevelCube]);
+        } );
+    }
 
 
 
