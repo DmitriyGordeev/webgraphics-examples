@@ -8,8 +8,6 @@ export class BaseAnim2D {
     constructor() {
         this.setupFrameCallback();
         this.c = document.getElementById('c');
-
-        // TODO: что если взять одновременно 2d и 3d контексты?
         this.ctx = this.c.getContext('2d');
         this.scale();
     }

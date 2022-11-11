@@ -11,12 +11,14 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.anim = null;
+        // this.anim2 = null;
     }
 
     componentDidMount() {
         this.anim = new BaseAnim3D();
         this.anim.draw();
-
+        //
+        // this.anim2 = new CustomAnim2D();
         // this.anim.loop();
     }
 

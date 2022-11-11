@@ -7,26 +7,10 @@ import fragmentShaderCode from "./fragment_shader";
 * */
 export class BaseAnim3D {
     constructor() {
-        // this.setupFrameCallback();
         this.ctx = null;
         this.canvas = document.getElementById('c');
         this.scale();
         this.webGlSupport();
-
-        // TODO: что если взять одновременно 2d и 3d контексты?
-        // this.ctx = this.canvas.getContext('3d');
-    }
-
-    setupFrameCallback() {
-        window.myRequestAnimFrameCall = function () {
-            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (a) {
-                window.setTimeout(a, 1E3 / 60)
-            }
-        }();
-
-        document.onselectstart = function () {
-            return false;
-        };
     }
 
     webGlSupport() {
