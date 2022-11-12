@@ -3,6 +3,17 @@ import {DragControls} from 'three/addons/controls/DragControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
+// 1. слушаем mouse drag event
+// 2. если происходит, рассчитываем drag distance (на экране в px)
+// 3. меням this.angle
+
+
+let mouseDown = false;
+let mouseX = 0;
+let mouseY = 0;
+let mouseXDistance = 0;
+
+
 export class ThreeExample {
     constructor() {
         this.setupFrameCallback();
@@ -11,6 +22,28 @@ export class ThreeExample {
 
         this.mouse = new THREE.Vector2();
         this.raycaster = new THREE.Raycaster();
+
+
+        /* mouse events  */
+        window.addEventListener('mousedown', (e) => {
+            mouseDown = true;
+            console.log(e);
+            mouseX = e.screenX;
+            mouseY = e.screenY;
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            mouseDown = false;
+            mouseXDistance = 0;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (mouseDown) {
+                mouseXDistance = e.screenX - mouseX;
+                console.log('mouseXDistance = ' + mouseXDistance);
+            }
+        });
+
     }
 
     setupFrameCallback() {
@@ -20,6 +53,7 @@ export class ThreeExample {
             }
         }();
     }
+
 
     scale() {
         this.cw = window.innerWidth;
@@ -32,10 +66,11 @@ export class ThreeExample {
             this.animateScene(objects)
         });
 
-        for (let i = 0; i < objects.length; i++) {
-            objects[i].rotation.y += 0.02;
-            objects[i].rotation.x += 0.01;
-        }
+        // // simple animation:
+        // for (let i = 0; i < objects.length; i++) {
+        //     objects[i].rotation.y += 0.02;
+        //     objects[i].rotation.x += 0.01;
+        // }
 
         this.renderScene();
     }
@@ -135,10 +170,10 @@ export class ThreeExample {
                 color: 0x0000ff,
             }),
             new THREE.MeshBasicMaterial({
-                color: 0xffff00
+                color: 0xff0000
             }),
             new THREE.MeshBasicMaterial({
-                color: 0x00ffff
+                color: 0x0000ff
             })
         ];
 
@@ -163,7 +198,9 @@ export class ThreeExample {
         this.loadCustomModel();
 
         this.controls = new DragControls([this.customMesh], this.camera, this.renderer.domElement);
-        this.controls.addEventListener('drag', () => {this.renderScene()});
+        this.controls.addEventListener('drag', () => {
+            this.renderScene();
+        });
 
         let thisref = this;
         document.addEventListener('click', () => {
@@ -171,8 +208,12 @@ export class ThreeExample {
             console.log("draggableObjects = " + draggableObjects);
 
             thisref.raycaster.setFromCamera( thisref.mouse, thisref.camera );
-            const intersections = thisref.raycaster.intersectObjects([thisref.cube], true);
-            console.log("intersections = " + intersections);
+            const intersections = thisref.raycaster.intersectObjects([thisref.customMesh], true);
+            console.dir("intersections = " + intersections);
+            if (intersections.length > 0) {
+                console.dir(intersections[0]);
+            }
+
         });
 
         window.addEventListener('keydown', () => {
@@ -203,6 +244,8 @@ export class ThreeExample {
             thisref.animateScene([thisref.customMesh]);
         } );
     }
+
+
 
 
 
