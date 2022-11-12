@@ -32,13 +32,10 @@ export class ThreeExample {
             this.animateScene(objects)
         });
 
-        console.log(objects);
-
-        objects[0].rotation.y += 0.02;
-        objects[0].rotation.x += 0.01;
-
-        objects[1].rotation.y -= 0.02;
-        objects[1].rotation.x -= 0.01;
+        for (let i = 0; i < objects.length; i++) {
+            objects[i].rotation.y += 0.02;
+            objects[i].rotation.x += 0.01;
+        }
 
         this.renderScene();
     }
@@ -57,6 +54,13 @@ export class ThreeExample {
         this.camera.position.set(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
         this.scene.add(this.camera);
+
+        // const light = new THREE.AmbientLight(new THREE.Color(1.0, 1.0, 1.0), 0.5); // soft white light
+        // this.scene.add( light );
+
+        const light = new THREE.PointLight( 0xffffff, 2, 20 );
+        light.position.set( 0, 10, 0 );
+        this.scene.add( light );
 
         cube.position.set(0, 0, -7.0);
         this.scene.add(cube);
@@ -78,14 +82,37 @@ export class ThreeExample {
     }
 
 
+    createCustomGeometry() {
+        const geometry = new THREE.BufferGeometry();
+        // create a simple square shape. We duplicate the top left and bottom right
+        // vertices because each vertex needs to appear once per triangle.
+        const vertices = new Float32Array( [
+            -1.0, -1.0,  1.0,
+            1.0, -1.0,  1.0,
+            1.0,  1.0,  1.0,
+
+            1.0,  1.0,  1.0,
+            -1.0,  1.0,  1.0,
+            -1.0, -1.0,  1.0
+        ] );
+
+        // itemSize = 3 because there are 3 values (components) per vertex
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+        this.customMesh = new THREE.Mesh( geometry, material );
+    }
+
+
     renderScene() {
         this.renderer.render(this.scene, this.camera);
     }
 
+
     draw() {
         this.createCube();
+        this.createCustomGeometry();
         this.startScene(this.cube);
-
+        // this.scene.add(this.customMesh);
         this.loadCustomModel();
 
         this.controls = new DragControls([this.cube], this.camera, this.renderer.domElement);
@@ -115,17 +142,17 @@ export class ThreeExample {
     }
 
 
+    /* This function loads custom model from .gltf file */
     loadCustomModel() {
         let thisref = this;
+
         const loader = new GLTFLoader().setPath( 'models/' );
 
-        loader.load( 'cube_bevel.gltf', function ( gltf ) {
-            console.log("gltf" + gltf);
-            let bevelCube = gltf.scene;
-            thisref.scene.add(bevelCube);
-
+        loader.load( 'cylinder.gltf', function ( gltf ) {
+            let customModel = gltf.scene;
+            thisref.scene.add(customModel);
             thisref.renderScene();
-            thisref.animateScene([thisref.cube, bevelCube]);
+            thisref.animateScene([thisref.cube, customModel]);
         } );
     }
 
