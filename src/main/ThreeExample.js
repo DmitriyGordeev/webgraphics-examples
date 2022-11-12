@@ -63,7 +63,7 @@ export class ThreeExample {
         this.scene.add( light );
 
         cube.position.set(0, 0, -7.0);
-        this.scene.add(cube);
+        // this.scene.add(cube);
     }
 
 
@@ -86,19 +86,66 @@ export class ThreeExample {
         const geometry = new THREE.BufferGeometry();
         // create a simple square shape. We duplicate the top left and bottom right
         // vertices because each vertex needs to appear once per triangle.
-        const vertices = new Float32Array( [
-            -1.0, -1.0,  1.0,
-            1.0, -1.0,  1.0,
-            1.0,  1.0,  1.0,
 
-            1.0,  1.0,  1.0,
-            -1.0,  1.0,  1.0,
-            -1.0, -1.0,  1.0
-        ] );
+        const y = 0.866025404;
+        const y2 = 0.5;
+        const h = 1;
+
+        const vertices = new Float32Array([
+            -y2, 0, 0,
+            y2, 0, 0,
+            0, 0, y,
+
+            -y2, h, 0,
+            y2, h, 0,
+            0, h, y,
+        ]);
+
+        const indices = [
+            0, 1, 2, // Top
+            5, 4, 3, // Bottom
+            3, 1, 0, // Back
+            1, 3, 4, // Back
+            0, 2, 3, // Left
+            5, 3, 2, // Left
+            4, 2, 1, // Right
+            2, 4, 5, // Right
+        ];
+
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geometry.setIndex(indices);
+        geometry.computeVertexNormals();
+
+        geometry.clearGroups();
+        geometry.addGroup(0, 3, 0);
+        geometry.addGroup(3, 6, 1);
+        geometry.addGroup(6, 12, 2);
+        geometry.addGroup(12, 18, 3);
+        geometry.addGroup(18, 24, 4);
+
+        let material = [
+            new THREE.MeshBasicMaterial({
+                color: 0x00ff00
+            }),
+            new THREE.MeshBasicMaterial({
+                color: 0xff0000
+            }),
+            new THREE.MeshBasicMaterial({
+                color: 0x0000ff,
+            }),
+            new THREE.MeshBasicMaterial({
+                color: 0xffff00
+            }),
+            new THREE.MeshBasicMaterial({
+                color: 0x00ffff
+            })
+        ];
+
 
         // itemSize = 3 because there are 3 values (components) per vertex
         geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-        const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+        // const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
         this.customMesh = new THREE.Mesh( geometry, material );
     }
 
@@ -112,10 +159,10 @@ export class ThreeExample {
         this.createCube();
         this.createCustomGeometry();
         this.startScene(this.cube);
-        // this.scene.add(this.customMesh);
+        this.scene.add(this.customMesh);
         this.loadCustomModel();
 
-        this.controls = new DragControls([this.cube], this.camera, this.renderer.domElement);
+        this.controls = new DragControls([this.customMesh], this.camera, this.renderer.domElement);
         this.controls.addEventListener('drag', () => {this.renderScene()});
 
         let thisref = this;
@@ -150,9 +197,10 @@ export class ThreeExample {
 
         loader.load( 'cylinder.gltf', function ( gltf ) {
             let customModel = gltf.scene;
-            thisref.scene.add(customModel);
+            // thisref.scene.add(customModel);
             thisref.renderScene();
-            thisref.animateScene([thisref.cube, customModel]);
+            // thisref.animateScene([thisref.cube, customModel]);
+            thisref.animateScene([thisref.customMesh]);
         } );
     }
 
