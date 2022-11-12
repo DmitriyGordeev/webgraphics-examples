@@ -8,10 +8,15 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // 3. меням this.angle
 
 
+const px2angleCoeff = 2 * Math.PI / 10000;   // 10000px -> 2PI
+
+
 let mouseDown = false;
 let mouseX = 0;
 let mouseY = 0;
 let mouseXDistance = 0;
+let mouseLastDistance = 0;
+let mouseXSpeed = 0;
 
 
 export class ThreeExample {
@@ -35,12 +40,17 @@ export class ThreeExample {
         window.addEventListener('mouseup', (e) => {
             mouseDown = false;
             mouseXDistance = 0;
+            mouseXSpeed = 0;
         });
 
         window.addEventListener('mousemove', (e) => {
             if (mouseDown) {
                 mouseXDistance = e.screenX - mouseX;
-                console.log('mouseXDistance = ' + mouseXDistance);
+                mouseXSpeed = mouseXDistance - mouseLastDistance;
+                mouseLastDistance = mouseXDistance;
+
+                // console.log('mouseXDistance = ' + mouseXDistance);
+                console.log('mouseXSpeed = ' + mouseXSpeed);
             }
         });
 
@@ -71,6 +81,11 @@ export class ThreeExample {
         //     objects[i].rotation.y += 0.02;
         //     objects[i].rotation.x += 0.01;
         // }
+
+        // если мы сделали drag на 100px, и потом остановились, вращение больше не происходит
+
+        objects[0].rotation.y += mouseXSpeed / 100;
+        objects[0].position.y += mouseXSpeed / 100;
 
         this.renderScene();
     }
