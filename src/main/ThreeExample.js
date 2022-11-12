@@ -10,7 +10,6 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const px2angleCoeff = 2 * Math.PI / 10000;   // 10000px -> 2PI
 
-
 let mouseDown = false;
 let mouseX = 0;
 let mouseY = 0;
@@ -28,8 +27,8 @@ export class ThreeExample {
         this.mouse = new THREE.Vector2();
         this.raycaster = new THREE.Raycaster();
 
-
         /* mouse events  */
+        // TODO: mouse events for mobile will be touch events
         window.addEventListener('mousedown', (e) => {
             mouseDown = true;
             console.log(e);
@@ -41,6 +40,7 @@ export class ThreeExample {
             mouseDown = false;
             mouseXDistance = 0;
             mouseXSpeed = 0;
+            mouseLastDistance = 0;
         });
 
         window.addEventListener('mousemove', (e) => {
@@ -48,9 +48,7 @@ export class ThreeExample {
                 mouseXDistance = e.screenX - mouseX;
                 mouseXSpeed = mouseXDistance - mouseLastDistance;
                 mouseLastDistance = mouseXDistance;
-
-                // console.log('mouseXDistance = ' + mouseXDistance);
-                console.log('mouseXSpeed = ' + mouseXSpeed);
+                console.log("mouseXSpeed = " + mouseXSpeed);
             }
         });
 
@@ -82,10 +80,8 @@ export class ThreeExample {
         //     objects[i].rotation.x += 0.01;
         // }
 
-        // если мы сделали drag на 100px, и потом остановились, вращение больше не происходит
-
         objects[0].rotation.y += mouseXSpeed / 100;
-        objects[0].position.y += mouseXSpeed / 100;
+        objects[0].position.y += mouseXSpeed / 1000;
 
         this.renderScene();
     }
@@ -108,12 +104,12 @@ export class ThreeExample {
         // const light = new THREE.AmbientLight(new THREE.Color(1.0, 1.0, 1.0), 0.5); // soft white light
         // this.scene.add( light );
 
-        const light = new THREE.PointLight( 0xffffff, 2, 20 );
-        light.position.set( 0, 10, 0 );
-        this.scene.add( light );
+        // const light = new THREE.PointLight( 0xffffff, 2, 20 );
+        // light.position.set( 0, 10, 0 );
+        // this.scene.add( light );
 
         cube.position.set(0, 0, -7.0);
-        // this.scene.add(cube);
+        this.scene.add(cube);
     }
 
 
@@ -209,7 +205,7 @@ export class ThreeExample {
         this.createCube();
         this.createCustomGeometry();
         this.startScene(this.cube);
-        this.scene.add(this.customMesh);
+        // this.scene.add(this.customMesh);
         this.loadCustomModel();
 
         this.controls = new DragControls([this.customMesh], this.camera, this.renderer.domElement);
@@ -256,7 +252,7 @@ export class ThreeExample {
             // thisref.scene.add(customModel);
             thisref.renderScene();
             // thisref.animateScene([thisref.cube, customModel]);
-            thisref.animateScene([thisref.customMesh]);
+            thisref.animateScene([thisref.cube]);
         } );
     }
 
