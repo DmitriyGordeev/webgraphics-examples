@@ -17,7 +17,7 @@ class App extends React.Component {
 
     componentDidMount() {
         this.anim = new ThreeShadersExample();
-        this.anim.draw();
+        this.anim.entry();
 
         // this.anim = new ThreeExample();
         // this.anim.draw();
