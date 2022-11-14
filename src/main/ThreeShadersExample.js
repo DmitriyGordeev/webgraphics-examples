@@ -43,7 +43,7 @@ export class ThreeShadersExample {
     startScene() {
         let canvas = this.canvas;
         this.renderer = new THREE.WebGLRenderer({canvas});
-        this.renderer.setClearColor("#064050");
+        this.renderer.setClearColor("#361b1b");
         this.renderer.setSize(this.cw, this.ch);
 
         this.scene = new THREE.Scene();
@@ -73,9 +73,9 @@ export class ThreeShadersExample {
                 vColor = vec3(position.x + sin(u_time), position.y - cos(u_time), position.z);
                 
                 vec3 newPos = position;
-                newPos.x = newPos.x + 0.1 * sin(u_time);
-                newPos.y = newPos.y + 3.0 * cos(0.5 * u_time);
-                newPos.z = newPos.z + 2.0 * sin(3.0 * u_time);
+                newPos.x = newPos.x * (1.0 + 0.2 * sin(4.0 * u_time));
+                newPos.y = newPos.y * (1.0 + 0.2 * cos(3.0 * u_time));
+                newPos.z = newPos.z * (1.0 + 0.2 * sin(4.0 * u_time));
                 
                 gl_Position = projectionMatrix * modelViewMatrix * vec4( newPos, 1.0 );
             }
@@ -114,10 +114,64 @@ export class ThreeShadersExample {
         this.cube = new THREE.Mesh(cubeGeometry, shaderMaterial);
         this.cube.rotation.y = 0.2;
         this.cube.rotation.x = 0.3;
-
         this.scene.add(this.cube);
     }
 
+
+    createPlane() {
+        this.uniforms = {
+            u_time: { type: 'f', value: 0.0 },
+            u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
+        };
+
+        console.log(window.innerWidth + "," + window.innerHeight);
+
+        // TODO: как рисовать жидкость прямо на plane ?
+
+        let vertexShader = `
+            uniform float u_time;
+            uniform vec2 u_screenSize;
+            varying vec3 vColor;
+            attribute float size;
+            
+            void main() {
+                vColor = vec3(position.x, position.y, position.z);             
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            }
+            `;
+
+        let fragmentShader = `
+            uniform vec2 u_screenSize;
+            varying vec3 vColor;
+            void main() {
+                // gl_FragColor = vec4( vColor, 1.0 );
+                gl_FragColor = vec4(gl_FragCoord.x / u_screenSize.x, gl_FragCoord.y / u_screenSize.y, 1.0, 1.0);
+            }
+            `;
+
+
+        const shaderMaterial = new THREE.ShaderMaterial( {
+            uniforms: this.uniforms,
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+
+            blending: THREE.AdditiveBlending,
+            depthTest: false,
+            transparent: true,
+            vertexColors: true
+        } );
+
+        const geometry = new THREE.PlaneGeometry( 4, 4 );
+
+        // cubeGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+        // cubeGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+        // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
+
+        this.plane = new THREE.Mesh(geometry, shaderMaterial);
+        this.plane.rotation.y = 0.2;
+        this.plane.rotation.x = 0.3;
+        this.scene.add(this.plane);
+    }
 
 
     // createPoints() {
@@ -189,6 +243,7 @@ export class ThreeShadersExample {
     // }
 
 
+
     renderScene() {
 
         // const time = Date.now() * 0.005;
@@ -206,9 +261,9 @@ export class ThreeShadersExample {
     entry() {
         this.startScene();
 
-
         // this.createPoints();
-        this.createCube();
+        // this.createCube();
+        this.createPlane();
 
 
         window.addEventListener('keydown', () => {
