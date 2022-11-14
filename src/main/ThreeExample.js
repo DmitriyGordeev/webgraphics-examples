@@ -8,8 +8,6 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // 3. меням this.angle
 
 
-const px2angleCoeff = 2 * Math.PI / 10000;   // 10000px -> 2PI
-
 let mouseDown = false;
 let mouseX = 0;
 let mouseY = 0;
@@ -26,6 +24,7 @@ export class ThreeExample {
 
         this.mouse = new THREE.Vector2();
         this.raycaster = new THREE.Raycaster();
+        this.clock = new THREE.Clock();
 
         /* mouse events  */
         // TODO: mouse events for mobile will be touch events
@@ -80,6 +79,8 @@ export class ThreeExample {
         //     objects[i].rotation.x += 0.01;
         // }
 
+        // this.uniforms.u_time.value = this.clock.getElapsedTime();
+
         objects[0].rotation.y += mouseXSpeed / 100;
         objects[0].position.y += mouseXSpeed / 1000;
 
@@ -108,10 +109,8 @@ export class ThreeExample {
         // light.position.set( 0, 10, 0 );
         // this.scene.add( light );
 
-        // cube.position.set(0, 0, -7.0);
-        // this.scene.add(cube);
-
-
+        cube.position.set(0, 0, -7.0);
+        this.scene.add(cube);
     }
 
 
@@ -198,82 +197,7 @@ export class ThreeExample {
     }
 
 
-    createPoints() {
-        let uniforms = {
-            pointTexture: { value: new THREE.TextureLoader().load( 'textures/spark1.png' ) }
-        };
-
-        let vertexShader = `
-            attribute float size;
-            varying vec3 vColor;
-            void main() {
-                vColor = color;
-                vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-                gl_PointSize = size * ( 300.0 / -mvPosition.z );
-                gl_Position = projectionMatrix * mvPosition;
-            }`;
-
-        let fragmentShader = `
-            uniform sampler2D pointTexture;
-            varying vec3 vColor;
-            void main() {
-                gl_FragColor = vec4( vColor, 1.0 );
-                gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
-            }`;
-
-        const shaderMaterial = new THREE.ShaderMaterial( {
-            uniforms: uniforms,
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-
-            blending: THREE.AdditiveBlending,
-            depthTest: false,
-            transparent: true,
-            vertexColors: true
-        } );
-
-        const radius = 200;
-        let geometry = new THREE.BufferGeometry();
-
-        const positions = [];
-        const colors = [];
-        const sizes = [];
-
-        const color = new THREE.Color();
-
-        let particles = 10000;
-        for ( let i = 0; i < particles; i ++ ) {
-            positions.push( ( Math.random() * 2 - 1 ) * radius );
-            positions.push( ( Math.random() * 2 - 1 ) * radius );
-            positions.push( ( Math.random() * 2 - 1 ) * radius );
-
-            color.setHSL( i / particles, 1.0, 0.5 );
-            colors.push( color.r, color.g, color.b );
-            sizes.push( 20 );
-        }
-
-        geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-        geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        geometry.setAttribute( 'size', new THREE.Float32BufferAttribute( sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
-
-        this.particleSystem = new THREE.Points( geometry, shaderMaterial );
-        console.log(this.scene);
-        this.geometry = geometry;
-        this.scene.add( this.particleSystem );
-    }
-
-
     renderScene() {
-
-        const time = Date.now() * 0.005;
-        this.particleSystem.rotation.z = 0.01 * time;
-        const sizes = this.geometry.attributes.size.array;
-        for ( let i = 0; i < 10000; i ++ ) {
-            sizes[ i ] = 3 * ( 1 + Math.sin( 0.1 * i + time ) );
-        }
-        this.geometry.attributes.size.needsUpdate = true;
-
-
         this.renderer.render(this.scene, this.camera);
     }
 
@@ -283,12 +207,10 @@ export class ThreeExample {
         // this.createCustomGeometry();
         this.startScene(this.cube);
 
-        this.createPoints();
-
         // this.scene.add(this.customMesh);
         this.loadCustomModel();
 
-        this.controls = new DragControls([this.customMesh], this.camera, this.renderer.domElement);
+        this.controls = new DragControls([this.cube], this.camera, this.renderer.domElement);
         this.controls.addEventListener('drag', () => {
             this.renderScene();
         });
@@ -299,7 +221,7 @@ export class ThreeExample {
             console.log("draggableObjects = " + draggableObjects);
 
             thisref.raycaster.setFromCamera( thisref.mouse, thisref.camera );
-            const intersections = thisref.raycaster.intersectObjects([thisref.customMesh], true);
+            const intersections = thisref.raycaster.intersectObjects([thisref.cube], true);
             console.dir("intersections = " + intersections);
             if (intersections.length > 0) {
                 console.dir(intersections[0]);

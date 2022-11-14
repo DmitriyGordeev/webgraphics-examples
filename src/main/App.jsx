@@ -6,6 +6,7 @@ import './App.css';
 import {CustomAnim2D} from "./CustomAnim2D";
 import {PureWebGl} from "./PureWebGl";
 import {ThreeExample} from './ThreeExample';
+import {ThreeShadersExample} from './ThreeShadersExample';
 
 
 class App extends React.Component {
@@ -15,12 +16,14 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.anim = new ThreeExample();
+        this.anim = new ThreeShadersExample();
         this.anim.draw();
+
+        // this.anim = new ThreeExample();
+        // this.anim.draw();
 
         // this.anim = new PureWebGl();
         // this.anim.draw();
-
     }
 
 
