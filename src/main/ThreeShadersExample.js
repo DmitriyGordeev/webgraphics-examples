@@ -35,8 +35,7 @@ export class ThreeShadersExample {
             this.animateScene(objects)
         });
 
-        // this.uniforms.u_time.value = this.clock.getElapsedTime();
-
+        this.uniforms.u_time.value = this.clock.getElapsedTime();
         this.renderScene();
     }
 
@@ -59,26 +58,26 @@ export class ThreeShadersExample {
 
 
     createCube() {
-        // let cubeMaterials = [
-        //     new THREE.MeshBasicMaterial({color: 0x2173fd}),
-        //     new THREE.MeshBasicMaterial({color: 0xd5d918}),
-        //     new THREE.MeshBasicMaterial({color: 0xd2dbeb}),
-        //     new THREE.MeshBasicMaterial({color: 0xa3a3c6}),
-        //     new THREE.MeshBasicMaterial({color: 0xfe6b9f}),
-        //     new THREE.MeshBasicMaterial({color: 0x856af9})
-        // ];
-
 
         this.uniforms = {
             u_time: { type: 'f', value: 0.0 }
         };
 
         let vertexShader = `
+            uniform float u_time;
+        
             varying vec3 vColor;
             attribute float size;
+            
             void main() {
-                vColor = vec3(position.x + size, position.y - size, position.z);
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                vColor = vec3(position.x + sin(u_time), position.y - cos(u_time), position.z);
+                
+                vec3 newPos = position;
+                newPos.x = newPos.x + 0.1 * sin(u_time);
+                newPos.y = newPos.y + 3.0 * cos(0.5 * u_time);
+                newPos.z = newPos.z + 2.0 * sin(3.0 * u_time);
+                
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( newPos, 1.0 );
             }
             `;
 
