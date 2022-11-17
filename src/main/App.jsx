@@ -7,6 +7,7 @@ import {CustomAnim2D} from "./CustomAnim2D";
 import {PureWebGl} from "./PureWebGl";
 import {ThreeExample} from './ThreeExample';
 import {ThreeShadersExample} from './ThreeShadersExample';
+import {ThreeShader2Channels} from './ThreeShader2Channels';
 
 
 class App extends React.Component {
@@ -16,8 +17,11 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.anim = new ThreeShadersExample();
+        this.anim = new ThreeShader2Channels();
         this.anim.entry();
+
+        // this.anim = new ThreeShadersExample();
+        // this.anim.entry();
 
         // this.anim = new ThreeExample();
         // this.anim.draw();
