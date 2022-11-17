@@ -3,6 +3,14 @@ import {DragControls} from 'three/addons/controls/DragControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 
+/**
+ * This is example of how to take previous frame as a texture and use it again:
+ * first fragment shader will render to texture
+ * second fragment shader will use 'uniform sampler2D u_texture' to use previous state
+ * and finally will draw to the viewport
+ */
+
+
 export class ThreeShader2Channels {
     constructor() {
         this.setupFrameCallback();

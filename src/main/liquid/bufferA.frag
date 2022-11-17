@@ -38,10 +38,12 @@ float getRot(vec2 pos, vec2 b)
     {
         // rot+=dot(texture(iChannel0,fract((pos+p)/Res.xy)).xy-vec2(0.5),p.yx*vec2(1,-1));
 
-        vec4 lastTexel = texture(iChannel0,fract((pos + p)/Res.xy));
-        vec2 rotor = p.yx * vec2(0,1);
+        vec2 texelCoord = fract((pos+p)/Res.xy);
 
-        rot += dot(lastTexel.xy, rotor);
+        vec4 lastTexel = texture(iChannel0, texelCoord);
+        vec2 rotor = p.yx * vec2(0, 1);
+
+        rot += 3.0 * dot(lastTexel.xy, rotor);
 
         p = m*p;
     }
@@ -53,17 +55,15 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 pos = fragCoord.xy;
     vec2 uv = fragCoord.xy / iResolution.xy;
 
-    if (uv.y >= 1.0) {
-        fragColor = vec4(0.0, 0.0, 0.0, 1.0);
-        return;
-    }
-
     float rnd = randS(vec2(float(iFrame)/Res.x,0.5/Res1.y)).x;
 
     vec2 b = vec2(cos(ang*rnd),sin(ang*rnd));
     vec2 v=vec2(0);
-    float bbMax=0.7*Res.y; bbMax*=bbMax;
-    for(int l=0;l<20;l++)
+
+    float bbMax= 1.0 * Res.y;
+    bbMax*=bbMax;
+
+    for(int l=0;l < 10;l++)
     {
         if ( dot(b,b) > bbMax ) break;
         vec2 p = b;
@@ -83,7 +83,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     // fragColor=texture(iChannel0,fract((pos+v*vec2(-1,1)*2.0)/Res.xy));
 
 
-    vec2 f = fract((pos + v * vec2(-1,1) )/Res.xy);
+    vec2 f = fract((pos + v * vec2(1, -1) )/Res.xy);
 
 
     fragColor=texture(iChannel0, f);
@@ -97,7 +97,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     if (iFrame <= 4 || KEY_I > 0.5) {
 
-        if ((uv.x >= 0.4 && uv.x <= 0.6) && (uv.y >= 0.4 && uv.y <= 0.6)) {
+        if ((uv.x >= 0.45 && uv.x <= 0.55) && (uv.y >= 0.45 && uv.y <= 0.55)) {
             fragColor = vec4(0.0, 0.0, 0.2, 1.0);
         }
         else {
