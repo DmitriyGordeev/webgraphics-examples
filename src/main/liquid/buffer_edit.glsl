@@ -3,8 +3,8 @@
 
 uniform vec2 u_screenSize;
 uniform float u_time;
-uniform sampler2D u_texture;        // this texture holds rendering from the previous frame
-uniform sampler2D u_noise;          // this is noise texture reference
+uniform sampler2D u_texture;// this texture holds rendering from the previous frame
+uniform sampler2D u_noise;// this is noise texture reference
 varying vec3 vPos;
 
 
@@ -26,11 +26,11 @@ float getRot(vec2 pos, vec2 b)
 {
     vec2 p = b;
     float rot=0.0;
-    for (int i=0;i<RotNum;i++)
+    for (int i = 0; i < RotNum; i++)
     {
         // rot+=dot(texture(u_texture,fract((pos+p)/u_screenSize.xy)).xy-vec2(0.5),p.yx*vec2(1,-1));
 
-        vec2 texelCoord = fract((pos+p)/u_screenSize.xy);
+        vec2 texelCoord = fract((pos + p) / u_screenSize.xy);
 
         vec4 prevTexel = texture(u_texture, texelCoord);
 
@@ -46,7 +46,7 @@ float getRot(vec2 pos, vec2 b)
 void main()
 {
     vec2 pos = gl_FragCoord.xy;
-    vec2 uv = gl_FragCoord.xy / iResolution.xy;
+    vec2 uv = gl_FragCoord.xy / u_screenSize.xy;
 
     // TODO: iFrame -> u_time (Correct ?)
     float rnd = randS(vec2(float(u_time) / u_screenSize.x, 0.5 / u_screenSize.y)).x;
@@ -75,15 +75,13 @@ void main()
 
     gl_FragColor = texture(u_texture, f);
 
-
     // add a little "motor" in the center
     // vec2 scr=(gl_FragCoord.xy/u_screenSize.xy)*2.0-vec2(1.0);
     // gl_FragColor.xy += (0.01*scr.xy / (dot(scr,scr)/0.1+0.3));
 
     // if(iFrame<=4 || KEY_I>0.5) gl_FragColor=texture(iChannel2,gl_FragCoord.xy/u_screenSize.xy);
 
-    if (iFrame <= 4 || KEY_I > 0.5) {
-
+    if (u_time <= 0.01) {
         if ((uv.x >= 0.45 && uv.x <= 0.55) && (uv.y >= 0.45 && uv.y <= 0.55)) {
             gl_FragColor = vec4(0.0, 0.0, 0.2, 1.0);
         }

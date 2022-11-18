@@ -17,11 +17,11 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        // this.anim = new ThreeShader2Channels();
-        // this.anim.entry();
-
-        this.anim = new ThreeShadersExample();
+        this.anim = new ThreeShader2Channels();
         this.anim.entry();
+
+        // this.anim = new ThreeShadersExample();
+        // this.anim.entry();
 
         // this.anim = new ThreeExample();
         // this.anim.draw();
