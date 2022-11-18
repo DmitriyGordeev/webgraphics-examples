@@ -57,6 +57,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     float rnd = randS(vec2(float(iFrame)/Res.x,0.5/Res1.y)).x;
 
+    rnd = 0.0;
+
     vec2 b = vec2(cos(ang*rnd),sin(ang*rnd));
     vec2 v=vec2(0);
 
@@ -77,7 +79,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             #endif
             p = m*p;
         }
-        b*=2.0;
+        b*=3.0;
     }
 
     // fragColor=texture(iChannel0,fract((pos+v*vec2(-1,1)*2.0)/Res.xy));

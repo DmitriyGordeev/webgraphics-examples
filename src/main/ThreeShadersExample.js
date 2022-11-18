@@ -37,7 +37,7 @@ export class ThreeShadersExample {
             this.animateScene(objects)
         });
 
-        this.uniforms1.u_time.value = this.clock.getElapsedTime();
+        this.uniforms.u_time.value = this.clock.getElapsedTime();
         this.renderScene();
     }
 
@@ -91,7 +91,7 @@ export class ThreeShadersExample {
 
 
         const shaderMaterial = new THREE.ShaderMaterial( {
-            uniforms: this.uniforms1,
+            uniforms: this.uniforms,
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
 
@@ -146,13 +146,13 @@ export class ThreeShadersExample {
             
             const float r = 0.1;
             const float rBall = 0.1;
-            const vec2 centerBall = vec2(0.5);
+            vec2 centerBall = vec2(0.5);
             
             void main() {
                 vec2 uv = gl_FragCoord.xy / u_screenSize;
                 
                 vec2 ballPos = centerBall + vec2(r * cos(u_time), r * sin(u_time));
-                
+                                               
                 // ellipse
                 float xpart = (uv.x - ballPos.x) * (uv.x - ballPos.x);
                 float ypart = (uv.y - ballPos.y) * (uv.y - ballPos.y);
@@ -165,7 +165,7 @@ export class ThreeShadersExample {
 
 
         const shaderMaterial = new THREE.ShaderMaterial( {
-            uniforms: this.uniforms1,
+            uniforms: this.uniforms,
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
 
