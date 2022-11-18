@@ -104,7 +104,7 @@ export class ThreeShader2Channels {
             
             void main()
             {
-                gl_FragColor = vec4(1.0);
+                gl_FragColor = vec4(0.8);
             }
             `;
 
@@ -159,11 +159,14 @@ export class ThreeShader2Channels {
         let fragmentShader = `            
             uniform vec2 u_screenSize;
             uniform float u_time;
-            varying vec3 vPos;
+            uniform sampler2D u_texture;            
             
             void main()
             {
-                gl_FragColor = vec4(1.0);
+                vec2 uv = gl_FragCoord.xy / u_screenSize.xy;  
+                vec4 color = texture(u_texture, uv);
+                
+                gl_FragColor = color;
             }
             `;
 
