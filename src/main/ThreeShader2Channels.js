@@ -47,6 +47,7 @@ export class ThreeShader2Channels {
 
         this.uniforms1.u_time.value = this.clock.getElapsedTime();
         this.uniforms2.u_time.value = this.clock.getElapsedTime();
+        this.uniforms3.u_time.value = this.clock.getElapsedTime();
         this.renderScene();
     }
 
@@ -55,7 +56,7 @@ export class ThreeShader2Channels {
 
         let canvas = this.canvas;
         this.renderer = new THREE.WebGLRenderer({canvas});
-        this.renderer.setClearColor("#361b1b");
+        this.renderer.setClearColor("#000000");
         this.renderer.setSize(this.cw, this.ch);
 
         let aspect = this.canvas.width / this.canvas.height;
@@ -79,7 +80,7 @@ export class ThreeShader2Channels {
 
         this.uniforms1 = {
             u_time: {type: 'f', value: 0.0},
-            u_texture: {type: 't', value: this.renderTarget2},
+            u_texture: {type: 't', value: this.renderTarget2.texture},
             u_noise: {type: 't', value: this.noiseTexture},
             u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
         };
@@ -99,88 +100,11 @@ export class ThreeShader2Channels {
         let fragmentShader = `            
             uniform vec2 u_screenSize;
             uniform float u_time;
-            uniform sampler2D u_texture;// this texture holds rendering from the previous frame
-            uniform sampler2D u_noise;// this is noise texture reference
             varying vec3 vPos;
-            
-            const int RotNum = 5;
-            const float ang = 2.0*3.1415926535/float(RotNum);
-            
-            mat2 m = mat2(cos(ang), sin(ang), -sin(ang), cos(ang));
-            mat2 mh = mat2(cos(ang*0.5), sin(ang*0.5), -sin(ang*0.5), cos(ang*0.5));
-            
-            vec4 randS(vec2 uv)
-            {
-                return texture(u_noise, uv * u_screenSize.xy / u_screenSize.xy) - vec4(0.5);
-            }
-            
-            float getRot(vec2 pos, vec2 b)
-            {
-                vec2 p = b;
-                float rot=0.0;
-                for (int i = 0; i < RotNum; i++)
-                {
-                    // rot+=dot(texture(u_texture,fract((pos+p)/u_screenSize.xy)).xy-vec2(0.5),p.yx*vec2(1,-1));
-            
-                    vec2 texelCoord = fract((pos + p) / u_screenSize.xy);
-            
-                    vec4 prevTexel = texture(u_texture, texelCoord);
-            
-                    vec2 rotor = p.yx * vec2(0, 1);
-            
-                    rot += 3.0 * dot(prevTexel.xy, rotor);
-            
-                    p = m*p;
-                }
-                return rot / float(RotNum) / dot(b, b);
-            }
             
             void main()
             {
-                vec2 pos = gl_FragCoord.xy;
-                vec2 uv = gl_FragCoord.xy / u_screenSize.xy;
-            
-                // TODO: iFrame -> u_time (Correct ?)
-                float rnd = randS(vec2(float(u_time) / u_screenSize.x, 0.5 / u_screenSize.y)).x;
-            
-                rnd = 0.0;
-            
-                vec2 b = vec2(cos(ang*rnd), sin(ang*rnd));
-                vec2 v=vec2(0);
-            
-                float bbMax= 1.0 * u_screenSize.y;
-                bbMax*=bbMax;
-            
-                for (int l=0;l < 10;l++)
-                {
-                    if (dot(b, b) > bbMax) break;
-                    vec2 p = b;
-                    for (int i=0;i<RotNum;i++)
-                    {
-                        v+=p.yx*getRot(pos + p, b);
-                        p = m*p;
-                    }
-                    b*=3.0;
-                }
-            
-                vec2 f = fract((pos + v * vec2(1, -1)) / u_screenSize.xy);
-            
-                gl_FragColor = texture(u_texture, f);
-            
-                // add a little "motor" in the center
-                // vec2 scr=(gl_FragCoord.xy/u_screenSize.xy)*2.0-vec2(1.0);
-                // gl_FragColor.xy += (0.01*scr.xy / (dot(scr,scr)/0.1+0.3));
-            
-                // if(iFrame<=4 || KEY_I>0.5) gl_FragColor=texture(iChannel2,gl_FragCoord.xy/u_screenSize.xy);
-            
-                if (u_time <= 0.01) {
-                    if ((uv.x >= 0.45 && uv.x <= 0.55) && (uv.y >= 0.45 && uv.y <= 0.55)) {
-                        gl_FragColor = vec4(0.0, 0.0, 0.2, 1.0);
-                    }
-                    else {
-                        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-                    }
-                }
+                gl_FragColor = vec4(1.0);
             }
             `;
 
@@ -196,7 +120,7 @@ export class ThreeShader2Channels {
             vertexColors: true
         });
 
-        const geometry = new THREE.PlaneGeometry(10, 10);
+        const geometry = new THREE.PlaneGeometry(7, 7);
 
         // cubeGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
         // cubeGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
@@ -214,7 +138,7 @@ export class ThreeShader2Channels {
 
         this.uniforms2 = {
             u_time: {type: 'f', value: 0.0},
-            u_texture: {type: 't', value: this.renderTarget1},
+            u_texture: {type: 't', value: this.renderTarget1.texture},
             u_noise: {type: 't', value: this.noiseTexture},
             u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
         };
@@ -235,88 +159,11 @@ export class ThreeShader2Channels {
         let fragmentShader = `            
             uniform vec2 u_screenSize;
             uniform float u_time;
-            uniform sampler2D u_texture;// this texture holds rendering from the previous frame
-            uniform sampler2D u_noise;// this is noise texture reference
             varying vec3 vPos;
-            
-            const int RotNum = 5;
-            const float ang = 2.0*3.1415926535/float(RotNum);
-            
-            mat2 m = mat2(cos(ang), sin(ang), -sin(ang), cos(ang));
-            mat2 mh = mat2(cos(ang*0.5), sin(ang*0.5), -sin(ang*0.5), cos(ang*0.5));
-            
-            vec4 randS(vec2 uv)
-            {
-                return texture(u_noise, uv * u_screenSize.xy / u_screenSize.xy) - vec4(0.5);
-            }
-            
-            float getRot(vec2 pos, vec2 b)
-            {
-                vec2 p = b;
-                float rot=0.0;
-                for (int i = 0; i < RotNum; i++)
-                {
-                    // rot+=dot(texture(u_texture,fract((pos+p)/u_screenSize.xy)).xy-vec2(0.5),p.yx*vec2(1,-1));
-            
-                    vec2 texelCoord = fract((pos + p) / u_screenSize.xy);
-            
-                    vec4 prevTexel = texture(u_texture, texelCoord);
-            
-                    vec2 rotor = p.yx * vec2(0, 1);
-            
-                    rot += 3.0 * dot(prevTexel.xy, rotor);
-            
-                    p = m*p;
-                }
-                return rot / float(RotNum) / dot(b, b);
-            }
             
             void main()
             {
-                vec2 pos = gl_FragCoord.xy;
-                vec2 uv = gl_FragCoord.xy / u_screenSize.xy;
-            
-                // TODO: iFrame -> u_time (Correct ?)
-                float rnd = randS(vec2(float(u_time) / u_screenSize.x, 0.5 / u_screenSize.y)).x;
-            
-                rnd = 0.0;
-            
-                vec2 b = vec2(cos(ang*rnd), sin(ang*rnd));
-                vec2 v=vec2(0);
-            
-                float bbMax= 1.0 * u_screenSize.y;
-                bbMax*=bbMax;
-            
-                for (int l=0;l < 10;l++)
-                {
-                    if (dot(b, b) > bbMax) break;
-                    vec2 p = b;
-                    for (int i=0;i<RotNum;i++)
-                    {
-                        v+=p.yx*getRot(pos + p, b);
-                        p = m*p;
-                    }
-                    b*=3.0;
-                }
-            
-                vec2 f = fract((pos + v * vec2(1, -1)) / u_screenSize.xy);
-            
-                gl_FragColor = texture(u_texture, f);
-            
-                // add a little "motor" in the center
-                // vec2 scr=(gl_FragCoord.xy/u_screenSize.xy)*2.0-vec2(1.0);
-                // gl_FragColor.xy += (0.01*scr.xy / (dot(scr,scr)/0.1+0.3));
-            
-                // if(iFrame<=4 || KEY_I>0.5) gl_FragColor=texture(iChannel2,gl_FragCoord.xy/u_screenSize.xy);
-            
-                if (u_time <= 0.01) {
-                    if ((uv.x >= 0.45 && uv.x <= 0.55) && (uv.y >= 0.45 && uv.y <= 0.55)) {
-                        gl_FragColor = vec4(0.0, 0.0, 0.2, 1.0);
-                    }
-                    else {
-                        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-                    }
-                }
+                gl_FragColor = vec4(1.0);
             }
             `;
 
@@ -332,7 +179,7 @@ export class ThreeShader2Channels {
             vertexColors: true
         });
 
-        const geometry = new THREE.PlaneGeometry(10, 10);
+        const geometry = new THREE.PlaneGeometry(7, 7);
 
         // cubeGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
         // cubeGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
@@ -349,39 +196,43 @@ export class ThreeShader2Channels {
     createPlane3() {
         this.uniforms3 = {
             u_time: {type: 'f', value: 0.0},
-            u_texture: {type: 't', value: this.renderTarget2},
+            u_texture: {type: 't', value: this.renderTarget2.texture},
             u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
         };
 
         let vertexShader = `
             uniform float u_time;
             uniform vec2 u_screenSize;
-            varying vec3 vPos;
             attribute float size;
             
             void main() {
-                vPos = position;        
                 gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
             }
             `;
 
 
+        // SHADER 3
         let fragmentShader = `
             uniform vec2 u_screenSize;
             uniform float u_time;
             uniform sampler2D u_texture;    // this texture holds rendering from the previous frame
-            varying vec3 vPos;
             
             void main() {
-                vec2 uv = gl_FragCoord.xy / u_screenSize.xy;
-                gl_FragColor = texture(u_texture, uv);
-                // gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+                vec2 uv = gl_FragCoord.xy / u_screenSize.xy;  
+                vec4 color = texture(u_texture, uv);
+                
+                // if (color == vec4(0.0)) {
+                //     color.r = 1.0;
+                //     color.a = 1.0;
+                // }
+                              
+                gl_FragColor = color;
             }
             `;
 
 
         const shaderMaterial = new THREE.ShaderMaterial({
-            uniforms: this.uniforms2,
+            uniforms: this.uniforms3,
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
 
@@ -391,7 +242,7 @@ export class ThreeShader2Channels {
             vertexColors: true
         });
 
-        const geometry = new THREE.PlaneGeometry(10, 10);
+        const geometry = new THREE.PlaneGeometry(7, 7);
 
         // cubeGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
         // cubeGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
@@ -406,20 +257,23 @@ export class ThreeShader2Channels {
 
 
     renderScene() {
-        this.renderer.render(this.scene1, this.camera, this.renderTarget1);
+        this.renderer.setRenderTarget(this.renderTarget1);
+        this.renderer.render(this.scene1, this.camera);
 
-        // assign the output of the first render to the second plane
+        // assign the output of the first render to the second shader
         this.uniforms2.u_texture.value = this.renderTarget1.texture;
 
 
-        // Now we render the second shader and assign it's texture to uniform1
-        this.renderer.render(this.scene2, this.camera, this.renderTarget2);
+        // Now we render the second shader
+        this.renderer.setRenderTarget(this.renderTarget2);
+        this.renderer.render(this.scene2, this.camera);
 
-        // assign the output of the first and third shaders
+        // and assign it's output to the first and third shaders
         this.uniforms1.u_texture.value = this.renderTarget2.texture;
         this.uniforms3.u_texture.value = this.renderTarget2.texture;
 
         // Finally render 3ed shader
+        this.renderer.setRenderTarget(null);
         this.renderer.render(this.scene3, this.camera);
     }
 
@@ -454,8 +308,6 @@ export class ThreeShader2Channels {
 
                 thisref.animateScene([thisref.objects]);
                 thisref.renderScene();
-
-
             },
 
             // onProgress callback currently not supported
