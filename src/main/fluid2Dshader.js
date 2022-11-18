@@ -34,7 +34,7 @@ export function getFragmentShader() {
         
                 vec2 rotor = p.yx * vec2(0, 1);
         
-                rot += 3.0 * dot(prevTexel.xy, rotor);
+                rot += 5.0 * dot(prevTexel.xy, rotor);
         
                 p = m*p;
             }
@@ -54,16 +54,16 @@ export function getFragmentShader() {
             vec2 b = vec2(cos(ang*rnd), sin(ang*rnd));
             vec2 v=vec2(0);
         
-            float bbMax= 1.0 * u_screenSize.y;
+            float bbMax = 1.0 * u_screenSize.y;
             bbMax*=bbMax;
         
-            for (int l=0;l < 10;l++)
+            for (int l=0;l < 4;l++)
             {
                 if (dot(b, b) > bbMax) break;
                 vec2 p = b;
                 for (int i=0;i<RotNum;i++)
                 {
-                    v+=p.yx*getRot(pos + p, b);
+                    v += p.yx * getRot(pos + p, b);
                     p = m*p;
                 }
                 b *= 3.0;
@@ -73,7 +73,7 @@ export function getFragmentShader() {
         
             gl_FragColor = texture(u_texture, f);
         
-            if (u_time <= 0.01) {
+            if (u_time <= 1.0) {
                 if ((uv.x >= 0.45 && uv.x <= 0.55) && (uv.y >= 0.45 && uv.y <= 0.55)) {
                     gl_FragColor = vec4(0.0, 0.0, 0.2, 1.0);
                 }
