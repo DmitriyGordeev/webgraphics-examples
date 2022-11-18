@@ -5,9 +5,10 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 /**
  * This is example of how to take previous frame as a texture and use it again:
- * first fragment shader will render to texture
- * second fragment shader will use 'uniform sampler2D u_texture' to use previous state
- * and finally will draw to the viewport
+ * example uses 3 channels (3 THREEJS scenes)
+ * the first 2 are bind together and uses each other's render results a texture, e.g.
+ * render result of the 1st shader is used as sampler2D texture in the second shader and vice-versa
+ * The third one finally renders to canvas and uses the texture from the second shader as well
  */
 
 
@@ -162,7 +163,7 @@ export class ThreeShader2Channels {
                         v+=p.yx*getRot(pos + p, b);
                         p = m*p;
                     }
-                    b*=3.0;
+                    b *= 3.0;
                 }
             
                 vec2 f = fract((pos + v * vec2(1, -1)) / u_screenSize.xy);
