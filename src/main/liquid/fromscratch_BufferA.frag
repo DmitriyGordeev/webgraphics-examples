@@ -56,25 +56,29 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
         for(int j = 0; j < ROT_NUM; j++) {
 
-            vec2 texelCoord = fract((pos + p) / iResolution.xy);
+            // vec2 texelCoord = fract((pos + p) / iResolution.xy);
+
+            vec2 texelCoord = fract(pos / iResolution.xy);
 
             vec4 prevTexel = texture(iChannel0, texelCoord);
 
             // vec2 pivotPoint = p.yx * vec2(-1, 1);
 
-            vec2 baseVector = b * vec2(-1, 1);
+            vec2 baseVector = vec2(1.0, 1.0);
 
-            v += 0.03 * dot(prevTexel.xy, baseVector);
+            // v += dot(baseVector, p);
+
+            v += 1.0 * dot(prevTexel.xy, baseVector);
             // v += 0.25 * dot(prevTexel.zy, baseVector);
             // v += 0.25 * dot(prevTexel.xz, baseVector);
             // v += 0.25 * dot(prevTexel.zx, baseVector);
 
-            p = m * p;
+            // p = m * p;
         }
     }
 
 
-
+    // fract() дает эффект зеркала
 
 
     // vec2 f = fract((pos + r * b) / iResolution.xy);
