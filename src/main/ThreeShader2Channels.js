@@ -22,6 +22,18 @@ export class ThreeShader2Channels {
 
         this.renderTarget1 = new THREE.WebGLRenderTarget(this.cw, this.ch);
         this.renderTarget2 = new THREE.WebGLRenderTarget(this.cw, this.ch);
+
+        this.loadAssets();
+    }
+
+    loadAssets() {
+        let thisref = this;
+        THREE.TextureLoader.load(
+            "textures/noise.jpg",
+            (texture) => {
+                thisref.noiseTexture = texture;
+            }
+        )
     }
 
     setupFrameCallback() {
@@ -77,6 +89,7 @@ export class ThreeShader2Channels {
         this.uniforms1 = {
             u_time: {type: 'f', value: 0.0},
             u_texture: {type: 't', value: this.renderTarget2},
+            u_noise: {type: 't', value: this.noiseTexture},
             u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
         };
 
@@ -94,7 +107,7 @@ export class ThreeShader2Channels {
 
         let fragmentShader = `
             uniform vec2 u_screenSize;
-            uniform float u_time;
+            uniform float u_time; 
             varying vec3 vPos;
             
             const float r = 0.1;
@@ -146,6 +159,7 @@ export class ThreeShader2Channels {
         this.uniforms2 = {
             u_time: {type: 'f', value: 0.0},
             u_texture: {type: 't', value: this.renderTarget1},
+            u_noise: {type: 't', value: this.noiseTexture},
             u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
         };
 
