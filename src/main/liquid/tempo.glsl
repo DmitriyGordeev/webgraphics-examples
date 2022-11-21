@@ -21,15 +21,13 @@ float getRot(vec2 offset, vec2 b) {
 
         // vec2 texelCoord = fract((offset + p) / iResolution.xy);
 
-
         vec2 texelCoord = (offset + p) / iResolution.xy;
-
 
         vec4 prevTexel = texture(iChannel0, texelCoord);
 
         vec2 picker = p.yx * vec2(-1.0, 1.0);
 
-        rot += 0.8 * dot(prevTexel.xy, picker) * dot(prevTexel.xy, picker);
+        rot += 0.1 * dot(prevTexel.xy, picker) * dot(prevTexel.xy, picker);
 
         p = m * p;
 
@@ -53,32 +51,31 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 
 
-
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
 
         vec2 p = b;
 
         for(int j = 0; j < ROT_NUM; j++) {
 
 
-            v += p.yx * 1.0 * getRot(pos + p, 1.5 * b);
+            v += 0.05 * p.yx * getRot(pos + p, 2.0 * b);
 
 
             p = m * p;
 
         }
 
-        b += 2.0;
+        b += 10.0;
     }
 
 
     // vec2 f = fract((pos + v * vec2(-1, 1)) / iResolution.xy);
 
 
-    vec2 grav = iTime * vec2(0.0, -0.14);
+    vec2 grav = iTime * vec2(0.0, -0.08);
     v += grav;
 
-    vec2 f = (pos + v * vec2(-1, 1)) / iResolution.xy;
+    vec2 f = (pos + v * vec2(-1.0, 1.5)) / iResolution.xy;
 
 
     fragColor=texture(iChannel0, f);
@@ -87,13 +84,24 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     if (iFrame < 4) {
 
-        if ((uv.x >= 0.0 && uv.x <= 0.99) && (uv.y >= 0.0 && uv.y <= 0.4)) {
+//        if ((uv.x >= 0.0 && uv.x <= 0.99) && (uv.y >= 0.0 && uv.y <= 0.4)) {
+//            fragColor = vec4(0.0, 0.0, 0.2, 1.0);
+//            // fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+//        }
+//        else {
+//            fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+//            // fragColor = vec4(0.0, 0.0, 0.2, 1.0);
+//        }
+
+
+        if (uv.x >= uv.y) {
             fragColor = vec4(0.0, 0.0, 0.2, 1.0);
-            // fragColor = vec4(1.0, 1.0, 1.0, 1.0);
         }
         else {
             fragColor = vec4(1.0, 1.0, 1.0, 1.0);
-            // fragColor = vec4(0.0, 0.0, 0.2, 1.0);
         }
+
+
+
     }
 }
