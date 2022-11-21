@@ -23,7 +23,7 @@ float getRot(vec2 offset, vec2 b) {
 
         vec4 prevTexel = texture(iChannel0, texelCoord);
 
-        vec2 picker = p.yx * vec2(1, 1);
+        vec2 picker = p.yx * vec2(1, -1);
 
         rot += 1.0 * dot(prevTexel.xy, picker);
 
@@ -57,7 +57,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         for(int j = 0; j < ROT_NUM; j++) {
 
 
-
             v += p.yx * getRot(pos + p, b);
 
 
@@ -69,13 +68,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
 
 
-    // fract() дает эффект зеркала
-
-
-    // vec2 f = fract((pos + r * b) / iResolution.xy);
-
-
-    vec2 f = fract((pos + v) / iResolution.xy);
+    vec2 f = fract((pos + v * 10.0 * vec2(1, -1)) / iResolution.xy);
 
 
     fragColor=texture(iChannel0, f);
