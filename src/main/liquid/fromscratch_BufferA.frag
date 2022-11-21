@@ -19,11 +19,15 @@ float getRot(vec2 offset, vec2 b) {
 
     for (int i = 0; i < ROT_NUM; i++) {
 
-        vec2 texelCoord = fract((offset + p) / iResolution.xy);
+        // vec2 texelCoord = fract((offset + p) / iResolution.xy);
+
+
+        vec2 texelCoord = (offset + p) / iResolution.xy;
+
 
         vec4 prevTexel = texture(iChannel0, texelCoord);
 
-        vec2 picker = p.yx * vec2(1, -1);
+        vec2 picker = p.yx * vec2(-1, 1);
 
         rot += 1.0 * dot(prevTexel.xy, picker);
 
@@ -68,7 +72,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
 
 
-    vec2 f = fract((pos + v * 10.0 * vec2(1, -1)) / iResolution.xy);
+    vec2 f = fract((pos + v * vec2(-1, 1)) / iResolution.xy);
 
 
     fragColor=texture(iChannel0, f);
@@ -77,7 +81,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     if (iFrame < 4) {
 
-        if ((uv.x >= 0.45 && uv.x <= 0.55) && (uv.y >= 0.1 && uv.y <= 0.9)) {
+        if ((uv.x >= 0.01 && uv.x <= 0.99) && (uv.y >= 0.0 && uv.y <= 0.4)) {
             fragColor = vec4(0.0, 0.0, 0.2, 1.0);
             // fragColor = vec4(1.0, 1.0, 1.0, 1.0);
         }
