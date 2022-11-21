@@ -11,7 +11,7 @@ vec4 randS(vec2 uv)
 }
 
 
-float getRot(vec2 pos, vec2 b) {
+float getRot(vec2 offset, vec2 b) {
 
     vec2 p = b;
 
@@ -19,13 +19,13 @@ float getRot(vec2 pos, vec2 b) {
 
     for (int i = 0; i < ROT_NUM; i++) {
 
-        vec2 texelCoord = fract((pos + p) / iResolution.xy);
+        vec2 texelCoord = fract((offset + p) / iResolution.xy);
 
         vec4 prevTexel = texture(iChannel0, texelCoord);
 
-        vec2 pivotPoint = p.yx * vec2(0, 1);
+        vec2 picker = p.yx * vec2(1, 1);
 
-        rot += 0.1 * dot(prevTexel.xy, pivotPoint);
+        rot += 1.0 * dot(prevTexel.xy, picker);
 
         p = m * p;
 
@@ -50,35 +50,22 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 10; i++) {
 
         vec2 p = b;
 
         for(int j = 0; j < ROT_NUM; j++) {
 
-            // vec2 texelCoord = fract((pos + p) / iResolution.xy);
-
-            vec2 texelCoord = fract(pos / iResolution.xy);
-
-            vec4 prevTexel = texture(iChannel0, texelCoord);
 
 
-
-            // vec2 pivotPoint = p.yx * vec2(-1, 1);
-
-
-
-            // v += 0.01 * dot(vec2(1.0), p);
-
-            // v += 0.001 * dot(prevTexel.xyz, vec3(1.0));
-
-            // v += 0.01 * dot(prevTexel.xy, p.yx * vec2(0, 1));
+            v += p.yx * getRot(pos + p, b);
 
 
             p = m * p;
 
-
         }
+
+        b *= 2.0;
     }
 
 
