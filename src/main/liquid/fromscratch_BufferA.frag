@@ -50,7 +50,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
 
         vec2 p = b;
 
@@ -62,18 +62,22 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
             vec4 prevTexel = texture(iChannel0, texelCoord);
 
+
+
             // vec2 pivotPoint = p.yx * vec2(-1, 1);
 
-            vec2 baseVector = vec2(1.0, 1.0);
 
-            // v += dot(baseVector, p);
 
-            v += 1.0 * dot(prevTexel.xy, baseVector);
-            // v += 0.25 * dot(prevTexel.zy, baseVector);
-            // v += 0.25 * dot(prevTexel.xz, baseVector);
-            // v += 0.25 * dot(prevTexel.zx, baseVector);
+            // v += 0.01 * dot(vec2(1.0), p);
 
-            // p = m * p;
+            // v += 0.001 * dot(prevTexel.xyz, vec3(1.0));
+
+            // v += 0.01 * dot(prevTexel.xy, p.yx * vec2(0, 1));
+
+
+            p = m * p;
+
+
         }
     }
 
@@ -95,9 +99,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
         if ((uv.x >= 0.45 && uv.x <= 0.55) && (uv.y >= 0.1 && uv.y <= 0.9)) {
             fragColor = vec4(0.0, 0.0, 0.2, 1.0);
+            // fragColor = vec4(1.0, 1.0, 1.0, 1.0);
         }
         else {
             fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            // fragColor = vec4(0.0, 0.0, 0.2, 1.0);
         }
     }
 }
