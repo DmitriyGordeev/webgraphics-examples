@@ -1,5 +1,5 @@
 
-#define ROT_NUM 5
+#define ROT_NUM 3
 
 const float ang = 2.0*3.1415926535 / float(ROT_NUM);
 mat2 m = mat2(cos(ang),sin(ang),-sin(ang),cos(ang));
@@ -29,9 +29,9 @@ float getRot(vec2 offset, vec2 b) {
 
         vec2 picker = p.yx * vec2(-1.0, 1.0);
 
-        rot += 2.0 * dot(prevTexel.xy, picker) * dot(prevTexel.xy, picker);
+        rot += 2.0 * dot(prevTexel.xy, picker) * dot(prevTexel.xy, 0.15 * picker);
 
-        p = m * p;
+        p = 3.5 * m * p;
 
     }
 
@@ -53,21 +53,21 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 1; i++) {
 
         vec2 p = b;
 
         for(int j = 0; j < ROT_NUM; j++) {
 
 
-            v += 0.3 * p.yx * getRot(pos + p, 0.25 * b);
+            v += 1.0 * p.yx * getRot(pos + p, 0.25 * b);
 
 
             p = m * p;
 
         }
 
-        b += 1.5;
+        b += 1.0;
     }
 
 
@@ -83,13 +83,18 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
 
     if (uv.x > 0.5) {
-        v.x += 1.01;
+        // v.x += 1.01;
+        v.x += 0.99;
     }
 
 
-    if (uv.x >= 0.02 && uv.x <= 0.98) {
-        v.y -= 1.001;
+    if (uv.x >= 0.5 && uv.x <= 0.5) {
+        v.y -= 1.2;
     }
+
+
+    // vec2 f = (pos + v * vec2(-2.0, 1.0)) / iResolution.xy;
+
 
 
     vec2 f = (pos + v * vec2(-2.0, 1.0)) / iResolution.xy;
@@ -105,7 +110,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 
         // rectangle
-        if ((uv.x >= 0.4 && uv.x <= 0.6) && (uv.y >= 0.0 && uv.y <= 0.2)) {
+        if ((uv.x >= 0.49 && uv.x <= 0.51) && (uv.y >= 0.0 && uv.y <= 0.2)) {
             fragColor = vec4(0.0, 0.0, 0.2, 1.0);
             // fragColor = vec4(1.0, 1.0, 1.0, 1.0);
         }
