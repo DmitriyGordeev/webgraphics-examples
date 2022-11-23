@@ -12,12 +12,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 
     if (pos.y <= 0.2) {
-
         if (dot(texel.xyz, vec3(1.0)) <= 1.0) {
             fragColor = vec4(vec3(0.0), 1.0);
         }
-
-
     }
 
 
