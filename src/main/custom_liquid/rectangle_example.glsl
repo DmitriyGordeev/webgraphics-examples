@@ -28,15 +28,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float r = 0.01 * rand(uv);
 
 
-
-
-
-
-    // TODO: где существуют глоб переменные ?\
-    // TODO: сколько раз выполняется main
-
-
-
     vec2 center = boxCenter;
     center.y -= 0.05 * iTime;
 
