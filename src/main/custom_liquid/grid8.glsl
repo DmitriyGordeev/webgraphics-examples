@@ -1,6 +1,8 @@
-vec2 boxCenter = vec2(0.5);
+vec2 figureCenter = vec2(0.5);
 float w = 0.5;
 float h = 0.5;
+
+
 
 
 // coeffs
@@ -28,12 +30,15 @@ bool drawBox(vec2 center, vec2 uv) {
 }
 
 
+bool drawCircle(vec2 center, vec2 uv, float radius) {
+    return (uv.x - center.x) * (uv.x - center.x) + (uv.y - center.y) * (uv.y - center.y) <= radius * radius;
+}
+
+
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 uv = fragCoord.xy / iResolution.xy;
-
-
 
     // previous color here
     float C0 = texture(iChannel0, uv).r;
@@ -108,12 +113,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     newColor0 += (colorPush + colorPull + colorGrav) / 3.0;
 
 
+    if (newColor0 == 0.0) {
+        fragColor = vec4(newColor0, 0.0, 1.0, 1.0);
+    }
+    else {
+        fragColor = vec4(newColor0, 0.0, 0.0, 1.0);
+    }
 
-    fragColor = vec4(newColor0, 0.0, 0.0, 1.0);
 
 
     if (iFrame < 4) {
-        if (drawBox(boxCenter, uv)) {
+        if (drawCircle(figureCenter, uv, 0.1)) {
             fragColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
         else {
