@@ -51,6 +51,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float colorPull = C0 * C1 * pullCoeff;
     float colorPush = C1 * pushCoeff;
     float colorGrav = C1 * gravCoeff;
+    if (C1 > 0.5) {
+        newColor0 += C1 / 2.0;
+    }
 
 
     // Point 2
@@ -59,7 +62,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     colorPush = C2 * pushCoeff;
     colorGrav = C2 * gravCoeff;
 
-    newColor0 = C2;
 
 
     // Point 3
@@ -67,9 +69,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     colorPull = C0 * C3 * pullCoeff;
     colorPush = C3 * pushCoeff;
     colorGrav = C3 * gravCoeff;
-
-    if (uv.y - offset < 0.0 || C1 > 0.0 && C3 > 0.0) {
-        newColor0 = max(C1, C3);
+    if (C3 > 0.5) {
+        newColor0 += C3 / 2.0;
     }
 
 
@@ -80,9 +81,27 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     colorGrav = 0.0;
 
 
-    if (uv.y - offset < 0.0) {
-        newColor0 = C0;
+    if (C0 == 0.0) {
+        // newColor0 += (C2 + C4) / 2.0;
+        if (C4 == 0.0)
+            newColor0 = C2;
+        else {
+            // newColor0 += (C2 + C4) / 2.0;
+        }
     }
+    else {
+        newColor0 += max(C2, C4);
+    }
+
+
+    // Floor:
+    if (uv.y - offset < 0.0) {
+        newColor0 += 0.3;
+    }
+
+
+
+    // TODO: check if all are 0.5 it will be 0.5
 
 
     fragColor = vec4(newColor0, 0.0, 0.0, 1.0);
@@ -91,7 +110,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     if (iFrame < 4) {
         if (drawCircle(figureCenter, uv, 0.1)) {
-            fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+            fragColor = vec4(0.5, 0.0, 0.0, 1.0);
         }
         else {
             fragColor = vec4(vec3(0.0), 1.0);
