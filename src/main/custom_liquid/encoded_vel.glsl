@@ -28,13 +28,13 @@ bool drawCircle(vec2 center, vec2 uv, float radius) {
 
 // color to impulse
 vec3 cti(vec4 color) {
-    return vec3(color.r, 2 * color.g - 1.0, 2 * color.b  - 1.0);
+    return vec3(color.r, 2.0 * color.g - 1.0, 2.0 * color.b  - 1.0);
 }
 
 
 // impulse to color
 vec4 itc(vec3 vel) {
-     return vec4(vel.r, (vel.g + 1) / 2.0, (vel.b + 1) / 2.0, 1.0);
+     return vec4(vel.r, (vel.g + 1.0) / 2.0, (vel.b + 1.0) / 2.0, 1.0);
 }
 
 
@@ -80,6 +80,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     newM0 /= float(count);
 
 
+
     // 3. Xvel change
     float newVg0 = I0.g;
     if (I1.g > 0.0) {
@@ -106,7 +107,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // Initial figure
     if (iFrame < 2) {
         if (drawCircle(figureCenter, uv, 0.1)) {
-            fragColor = vec4(0.5, 0.0, 0.0, 1.0);
+            fragColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
         else {
             fragColor = vec4(vec3(0.0), 1.0);
