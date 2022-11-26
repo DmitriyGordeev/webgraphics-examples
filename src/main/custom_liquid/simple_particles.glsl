@@ -3,7 +3,7 @@ float w = 0.5;
 float h = 0.5;
 
 
-int numPoints = 10;
+int numPoints = 2;
 
 // coeffs
 float offset = 0.1;
@@ -31,6 +31,31 @@ bool drawCircle(vec2 center, vec2 uv, float radius) {
 }
 
 
+float collectColors(vec2 uv) {
+
+    float outColor = 0.0;
+    float angle = rand(uv);
+    float prevColorHere = texture(iChannel0, uv).r;
+
+    for (int i = 0; i < numPoints; i++) {
+
+        float angleAdd = float(i) * PI / float(numPoints);
+        angle += angleAdd;
+
+        // TODO: we can use smaller or bigger offset
+
+        vec2 point = uv + 0.1 * offset * vec2(cos(angle), sin(angle));
+        float previousColor = texture(iChannel0, point).r;
+
+        float Cpush = previousColor * pushCoeff;
+        float Cpull = prevColorHere * previousColor * pullCoeff;
+
+        outColor += Cpush;
+    }
+    return outColor;
+}
+
+
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
@@ -47,23 +72,21 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     for (int i = 0; i < numPoints; i++) {
 
         float angleAdd = float(i) * PI / float(numPoints);
-
         angle += angleAdd;
-
         vec2 point = uv + offset * vec2(cos(angle), sin(angle));
-        float previousColor = texture(iChannel0, point).r;
 
-        float Cpush = previousColor * pushCoeff;
-        float Cpull = C0 * previousColor * pullCoeff;
-        newColor += Cpush - Cpull;
+        // float previousColor = texture(iChannel0, point).r;
 
-        // angle += float(i) * PI / float(numPoints);
+        float outColor = collectColors(point);
+
+        float Cpush = outColor * pushCoeff;
+        float Cpull = C0 * outColor * pullCoeff;
+        newColor += Cpush;
+
+        offset *= 1.0;
     }
 
-
-
     fragColor = vec4(newColor, 0.0, 0.0, 1.0);
-
 
 
     if (iFrame < 4) {
