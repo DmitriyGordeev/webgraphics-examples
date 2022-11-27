@@ -53,21 +53,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec4 C4 = texture(iChannel0, uv + vec2(0.0, -offset));  vec3 I4 = cti(C4);
 
 
-    // 1. mass outcome
-    float newM0 = I0.r * (1.0 - (I0.g + I0.b) / 2.0);
+    // 1. mass decreasing
+    float newM0 = I0.r * (1.0 - sqrt(I0.g * I0.g + I0.b * I0.b));
 
-    // 2. mass income
+
+    // 2. mass increasing
     if (I1.g > 0.0)
-        newM0 += I1.r * I1.g / 2.0;
+        newM0 += I1.r * I1.g;
 
     if (I2.b < 0.0)
-        newM0 += I2.r * abs(I2.b) / 2.0;
+        newM0 += I2.r * abs(I2.b);
 
     if (I3.g < 0.0)
-        newM0 += I3.r * abs(I3.g) / 2.0;
+        newM0 += I3.r * abs(I3.g);
 
     if (I4.b > 0.0)
-        newM0 += I4.r * I4.b / 2.0;
+        newM0 += I4.r * I4.b;
 
 
     // change in velocity
@@ -85,12 +86,26 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         newVelY += I4.b * I4.r / (I4.r + I0.r);
 
 
+
+
+    float velLen = sqrt(newVelX * newVelX  + newVelY * newVelY);
+    newVelX /= velLen;
+    newVelY /= velLen;
+
+
     if (newM0 == 0.0) {
         newVelX = 0.0;
         newVelY = 0.0;
     }
 
-    fragColor = itc(vec3(newM0, newVelX, newVelY));
+
+    vec4 finalColor = itc(vec3(newM0, newVelX, newVelY));
+
+    // if (finalColor.g == 0.5 && finalColor.b == 0.0)
+        // finalColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+
+    fragColor = finalColor;
 
 
 
@@ -98,7 +113,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     if (iFrame < 2) {
         if (drawCircle(figureCenter, uv, 0.1)) {
 
-            fragColor = itc(vec3(1.0, 0.0, -0.01));
+            fragColor = itc(vec3(1.0, 0.0, -1.0));
 
         }
         else {
