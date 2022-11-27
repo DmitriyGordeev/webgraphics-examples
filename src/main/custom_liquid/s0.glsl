@@ -45,60 +45,24 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // colors at the previous frame
     vec4 C0 = texture(iChannel0, uv);
-    vec3 I0 = cti(C0);
-                                                            // Convert colors to impulses
-    vec4 C1 = texture(iChannel0, uv + vec2(-offset, 0.0));  vec3 I1 = cti(C1);
-    vec4 C2 = texture(iChannel0, uv + vec2(0.0, offset));   vec3 I2 = cti(C2);
-    vec4 C3 = texture(iChannel0, uv + vec2(offset, 0.0));   vec3 I3 = cti(C3);
-    vec4 C4 = texture(iChannel0, uv + vec2(0.0, -offset));  vec3 I4 = cti(C4);
+
+    vec4 C1 = texture(iChannel0, uv + vec2(-offset, 0.0));
+    vec4 C2 = texture(iChannel0, uv + vec2(0.0, offset));
+    vec4 C3 = texture(iChannel0, uv + vec2(offset, 0.0));
+    vec4 C4 = texture(iChannel0, uv + vec2(0.0, -offset));
 
 
-    // 1. mass outcome
-    float newM0 = I0.r * (1.0 - (I0.g + I0.b) / 2.0);
+    float newC0 = C0.r + C1.r + C2.r + C3.r + C4.r;
+    newC0 /= 5.0;
 
-    // 2. mass income
-    if (I1.g > 0.0)
-        newM0 += I1.r * I1.g / 2.0;
-
-    if (I2.b < 0.0)
-        newM0 += I2.r * abs(I2.b) / 2.0;
-
-    if (I3.g < 0.0)
-        newM0 += I3.r * abs(I3.g) / 2.0;
-
-    if (I4.b > 0.0)
-        newM0 += I4.r * I4.b / 2.0;
-
-
-    // change in velocity
-    float newVelX = I0.g;
-    if (I1.g > 0.0)
-        newVelX += I1.g * I1.r / (I1.r + I0.r);
-    if (I3.g < 0.0)
-        newVelX += I3.g * I3.r / (I3.r + I0.r);
-
-
-    float newVelY = I0.b;
-    if (I2.b < 0.0)
-        newVelY += I2.b * I2.r / (I2.r + I0.r);
-    if (I4.b > 0.0)
-        newVelY += I4.b * I4.r / (I4.r + I0.r);
-
-
-    if (newM0 == 0.0) {
-        newVelX = 0.0;
-        newVelY = 0.0;
-    }
-
-    fragColor = itc(vec3(newM0, newVelX, newVelY));
-
+    fragColor = vec4(newC0, 0.0, 0.0, 1.0);
 
 
     // Initial figure
     if (iFrame < 2) {
         if (drawCircle(figureCenter, uv, 0.1)) {
 
-            fragColor = itc(vec3(1.0, 0.0, -0.01));
+            fragColor = itc(vec3(1.0, 0.0, 0.0));
 
         }
         else {
