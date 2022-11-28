@@ -2,14 +2,14 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.01;
+float offset = 0.025;
 
 
 const float PI = 2.0 * 3.1415926535;
 const float sqrt2 = sqrt(2.0);
 
 
-float rand(vec2 co){
+float rand(vec2 co) {
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
@@ -34,7 +34,7 @@ vec3 cti(vec4 color) {
 
 // impulse to color
 vec4 itc(vec3 vel) {
-     return vec4(vel.r, (vel.g + 1.0) / 2.0, (vel.b + 1.0) / 2.0, 1.0);
+    return vec4(vel.r, (vel.g + 1.0) / 2.0, (vel.b + 1.0) / 2.0, 1.0);
 }
 
 
@@ -46,15 +46,28 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // colors at the previous frame
     vec4 C0 = texture(iChannel0, uv);
     vec3 I0 = cti(C0);
-                                                            // Convert colors to impulses
+    // Convert colors to impulses
     vec4 C1 = texture(iChannel0, uv + vec2(-offset, 0.0));  vec3 I1 = cti(C1);
     vec4 C2 = texture(iChannel0, uv + vec2(0.0, offset));   vec3 I2 = cti(C2);
     vec4 C3 = texture(iChannel0, uv + vec2(offset, 0.0));   vec3 I3 = cti(C3);
     vec4 C4 = texture(iChannel0, uv + vec2(0.0, -offset));  vec3 I4 = cti(C4);
 
 
+
     // 1. mass decreasing
     float newM0 = I0.r * (1.0 - sqrt(I0.g * I0.g + I0.b * I0.b));
+
+
+    // check if point-4 is boundary
+    if (uv.y - 2.0 * offset < 0.0) {
+        if (I4.b < 0.0)
+            I4.b *= -1.0;       // revert y-velocity
+
+        if (I0.b < 0.0)
+            newM0 = I0.r * (1.0 - sqrt(I0.g * I0.g));
+    }
+
+
 
 
 
@@ -81,15 +94,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     float newVelY = I0.b;
-    if (I2.b < 0.0)
-        newVelY += I2.b * I2.r / (I2.r + I0.r);
-    if (I4.b > 0.0)
-        newVelY += I4.b * I4.r / (I4.r + I0.r);
+    if (uv.y - offset < 0.0) {
+        newVelY *= -1.0;
+    }
+    else {
+        if (I2.b < 0.0)
+            newVelY += I2.b * I2.r / (I2.r + I0.r);
+        if (I4.b > 0.0)
+            newVelY += I4.b * I4.r / (I0.r + I4.r);
+    }
 
 
 
-
-    float velLen = sqrt(newVelX * newVelX  + newVelY * newVelY);
+    float velLen = sqrt(newVelX * newVelX + newVelY * newVelY);
     if (velLen != 0.0) {
         newVelX /= velLen;
         newVelY /= velLen;
@@ -104,16 +121,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     vec4 finalColor = itc(vec3(newM0, newVelX, newVelY));
 
-    // TODO: ошибка, когда начальные скорости 0
-    fragColor = finalColor;
 
+    fragColor = finalColor;
 
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawCircle(figureCenter, uv, 0.1)) {
+        if (drawCircle(figureCenter, uv, 0.2)) {
 
-            fragColor = itc(vec3(1.0, 0.0, 0.0));
+            fragColor = itc(vec3(1.0, 0.0, -0.1));
 
         }
         else {
