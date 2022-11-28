@@ -75,12 +75,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // mass outcome
     float r01 = 0.0;
     if (I0.g > 0.0)
-        float r01 = abs(I0.r - I1.r) * w0 * I0.g;       // TODO: проверить знаки!
+        float r01 = w0 * I0.g;
 
     // mass income from point 1
     float r10 = 0.0;
     if (I1.g < 0.0)
-        float r10 = abs(I1.r - I0.r) * w1 * abs(I1.g);  // TODO: проверить знаки!
+        float r10 = w1 * abs(I1.g);
 
     // new mass:
     float deltaMass01 = I0.r - r01 + r10;
@@ -100,14 +100,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // mass outcome
     float r02 = 0.0;
     float dot02 = dot(vel0, e2);
-    if (dot(vel0, e2) > 0.0)
-        r02 = (I0.r - I2.r) * w0 * dot02;           // TODO: проверить знаки!
+    if (dot02 > 0.0)
+        r02 = w0 * dot02;
 
     // mass income from point 2
     float r20 = 0.0;
     float dot20 = dot(vec2(I2.g, I2.b), -e2);
     if (dot20 > 0.0)
-        float r20 = (I2.r - I0.r) * w2 * dot20;     // TODO: проверить знаки!
+        float r20 = w2 * dot20;
 
     // new mass:
     float deltaMass02 = I0.r - r02 + r20;
@@ -127,12 +127,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // mass outcome
     float r03 = 0.0;
     if (I0.b > 0.0)
-        float r03 = abs(I0.r - I3.r) * w0 * I0.b;       // TODO: проверить знаки!
+        float r03 = w0 * I0.b;
 
     // mass income from point 3
     float r30 = 0.0;
     if (I3.b < 0.0)
-        float r30 = abs(I3.r - I0.r) * w3 * abs(I3.b);  // TODO: проверить знаки!
+        float r30 = w3 * abs(I3.b);
 
     // new mass:
     float deltaMass03 = I0.r - r03 + r30;
@@ -154,13 +154,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float r04 = 0.0;
     float dot04 = dot(vel0, e4);
     if (dot04 > 0.0)
-        r04 = (I0.r - I4.r) * w0 * dot04;           // TODO: проверить знаки!
+        r04 = w0 * dot04;
 
     // mass income from point 4
     float r40 = 0.0;
     float dot40 = dot(vec2(I4.g, I4.b), -e4);
     if (dot40 > 0.0)
-        float r40 = (I4.r - I0.r) * w4 * dot40;     // TODO: проверить знаки!
+        float r40 = w4 * dot40;
 
     // new mass:
     float deltaMass04 = I0.r - r04 + r40;
@@ -182,12 +182,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // mass outcome
     float r05 = 0.0;
     if (I0.g < 0.0)
-        float r05 = abs(I0.r - I5.r) * w0 * abs(I0.g);       // TODO: проверить знаки!
+        float r05 = w0 * abs(I0.g);
 
     // mass income from point 5
     float r50 = 0.0;
     if (I5.g > 0.0)
-        float r50 = abs(I5.r - I0.r) * w5 * abs(I5.g);      // TODO: проверить знаки!
+        float r50 = w5 * I5.g;
 
     // new mass:
     float deltaMass05 = I0.r - r05 + r50;
@@ -209,13 +209,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float r06 = 0.0;
     float dot06 = dot(vel0, e6);
     if (dot06 > 0.0)
-        r06 = (I0.r - I6.r) * w0 * dot06;           // TODO: проверить знаки!
+        r06 = w0 * dot06;
 
     // mass income from point 6
     float r60 = 0.0;
     float dot60 = dot(vec2(I6.g, I6.b), -e6);
     if (dot60 > 0.0)
-        float r60 = (I6.r - I0.r) * w6 * dot60;     // TODO: проверить знаки!
+        float r60 = w6 * dot60;
 
     // new mass:
     float deltaMass06 = I0.r - r06 + r60;
@@ -236,12 +236,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // mass outcome
     float r07 = 0.0;
     if (I0.b < 0.0)
-        float r07 = abs(I0.r - I7.r) * w0 * abs(I0.b);       // TODO: проверить знаки!
+        float r07 = w0 * abs(I0.b);
 
     // mass income from point 7
     float r70 = 0.0;
     if (I7.b > 0.0)
-        float r70 = abs(I7.r - I0.r) * w7 * I7.b;           // TODO: проверить знаки!
+        float r70 = w7 * I7.b;
 
     // new mass:
     float deltaMass07 = I0.r - r07 + r70;
@@ -263,13 +263,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float r08 = 0.0;
     float dot08 = dot(vel0, e8);
     if (dot08 > 0.0)
-        r08 = (I0.r - I8.r) * w0 * dot08;           // TODO: проверить знаки!
+        r08 = w0 * dot08;
 
     // mass income from point 8
     float r80 = 0.0;
     float dot80 = dot(vec2(I8.g, I8.b), -e8);
     if (dot80 > 0.0)
-        float r80 = (I8.r - I0.r) * w8 * dot80;     // TODO: проверить знаки!
+        float r80 = w8 * dot80;
 
     // new mass:
     float deltaMass08 = I0.r - r08 + r80;
@@ -293,6 +293,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float newVelY0 = velY1 + velY2 + velY3 + velY4 + velY5 + velY6 + velY7 + velY8;
 
     // TODO: normalize newVelX0, newVelY0 by squared sum ?
+    float velLen = sqrt(newVelX0 * newVelX0 + newVelY0 * newVelY0);
+    if (velLen > 0.0) {
+        newVelX0 /= velLen;
+        newVelY0 /= velLen;
+    }
 
     vec4 finalColor = itc(vec3(newMass0, newVelX0, newVelY0));
 
