@@ -57,6 +57,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float newM0 = I0.r * (1.0 - sqrt(I0.g * I0.g + I0.b * I0.b));
 
 
+
     // 2. mass increasing
     if (I1.g > 0.0)
         newM0 += I1.r * I1.g;
@@ -89,8 +90,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     float velLen = sqrt(newVelX * newVelX  + newVelY * newVelY);
-    newVelX /= velLen;
-    newVelY /= velLen;
+    if (velLen != 0.0) {
+        newVelX /= velLen;
+        newVelY /= velLen;
+    }
 
 
     if (newM0 == 0.0) {
@@ -101,10 +104,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     vec4 finalColor = itc(vec3(newM0, newVelX, newVelY));
 
-    // if (finalColor.g == 0.5 && finalColor.b == 0.0)
-        // finalColor = vec4(0.0, 0.0, 0.0, 1.0);
-
-
+    // TODO: ошибка, когда начальные скорости 0
     fragColor = finalColor;
 
 
@@ -113,7 +113,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     if (iFrame < 2) {
         if (drawCircle(figureCenter, uv, 0.1)) {
 
-            fragColor = itc(vec3(1.0, 0.0, -1.0));
+            fragColor = itc(vec3(1.0, 0.0, 0.0));
 
         }
         else {
