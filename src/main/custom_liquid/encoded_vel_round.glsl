@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.025;
+float offset = 0.001;
 
 
 const float PI = 2.0 * 3.1415926535;
@@ -67,23 +67,25 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec4 C8 = texture(iChannel0, uv + offset * e8);         vec3 I8 = cti(C8);
 
     vec2 vel0 = vec2(I0.g, I0.b);
-    float w0 = I0.r / (I0.r + I1.r);
+
 
     // Point 1
+    float w0 = I0.r / (I0.r + I1.r);
     float w1 = I1.r / (I0.r + I1.r);
 
     // mass outcome
     float r01 = 0.0;
     if (I0.g > 0.0)
-        float r01 = w0 * I0.g;
+        r01 = w0 * I0.g;
 
     // mass income from point 1
     float r10 = 0.0;
     if (I1.g < 0.0)
-        float r10 = w1 * abs(I1.g);
+        r10 = w1 * abs(I1.g);
 
     // new mass:
-    float deltaMass01 = I0.r - r01 + r10;
+    // float newMass01 = I0.r - r01 + r10;
+    float deltaMass01 = r10 - r01;
 
     // velocity
     float velX1 = 0.0;
@@ -95,6 +97,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Point 2
+    w0 = I0.r / (I0.r + I2.r);
     float w2 = I2.r / (I0.r + I2.r);
 
     // mass outcome
@@ -107,10 +110,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float r20 = 0.0;
     float dot20 = dot(vec2(I2.g, I2.b), -e2);
     if (dot20 > 0.0)
-        float r20 = w2 * dot20;
+        r20 = w2 * dot20;
 
     // new mass:
-    float deltaMass02 = I0.r - r02 + r20;
+    // float newMass02 = I0.r - r02 + r20;
+    float deltaMass02 = r20 - r02;
 
     // velocity
     float velX2 = 0.0;
@@ -122,20 +126,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Point 3
+    w0 = I0.r / (I0.r + I3.r);
     float w3 = I3.r / (I0.r + I3.r);
 
     // mass outcome
     float r03 = 0.0;
     if (I0.b > 0.0)
-        float r03 = w0 * I0.b;
+        r03 = w0 * I0.b;
 
     // mass income from point 3
     float r30 = 0.0;
     if (I3.b < 0.0)
-        float r30 = w3 * abs(I3.b);
+        r30 = abs(I3.b);
 
     // new mass:
-    float deltaMass03 = I0.r - r03 + r30;
+    // float newMass03 = I0.r - r03 + r30;
+    float deltaMass03 = r30 - r03;
 
     // velocity
     float velX3 = 0.0;
@@ -148,6 +154,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Point 4
+    w0 = I0.r / (I0.r + I4.r);
     float w4 = I4.r / (I0.r + I4.r);
 
     // mass outcome
@@ -160,10 +167,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float r40 = 0.0;
     float dot40 = dot(vec2(I4.g, I4.b), -e4);
     if (dot40 > 0.0)
-        float r40 = w4 * dot40;
+        r40 = w4 * dot40;
 
     // new mass:
-    float deltaMass04 = I0.r - r04 + r40;
+    // float newMass04 = I0.r - r04 + r40;
+    float deltaMass04 = r40 - r04;
 
     // velocity
     float velX4 = 0.0;
@@ -177,20 +185,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Point 5
+    w0 = I0.r / (I0.r + I5.r);
     float w5 = I5.r / (I0.r + I5.r);
 
     // mass outcome
     float r05 = 0.0;
     if (I0.g < 0.0)
-        float r05 = w0 * abs(I0.g);
+        r05 = w0 * abs(I0.g);
 
     // mass income from point 5
     float r50 = 0.0;
     if (I5.g > 0.0)
-        float r50 = w5 * I5.g;
+        r50 = w5 * I5.g;
 
     // new mass:
-    float deltaMass05 = I0.r - r05 + r50;
+    // float newMass05 = I0.r - r05 + r50;
+    float deltaMass05 = r50 - r05;
 
     // velocity
     float velX5 = 0.0;
@@ -203,6 +213,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Point 6
+    w0 = I0.r / (I0.r + I6.r);
     float w6 = I6.r / (I0.r + I6.r);
 
     // mass outcome
@@ -215,10 +226,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float r60 = 0.0;
     float dot60 = dot(vec2(I6.g, I6.b), -e6);
     if (dot60 > 0.0)
-        float r60 = w6 * dot60;
+        r60 = w6 * dot60;
 
     // new mass:
-    float deltaMass06 = I0.r - r06 + r60;
+    // float newMass06 = I0.r - r06 + r60;
+    float deltaMass06 = r60 - r06;
 
     // velocity
     float velX6 = 0.0;
@@ -231,20 +243,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Point 7
+    w0 = I0.r / (I0.r + I7.r);
     float w7 = I7.r / (I0.r + I7.r);
 
     // mass outcome
     float r07 = 0.0;
     if (I0.b < 0.0)
-        float r07 = w0 * abs(I0.b);
+        r07 = w0 * abs(I0.b);
 
     // mass income from point 7
     float r70 = 0.0;
     if (I7.b > 0.0)
-        float r70 = w7 * I7.b;
+        r70 = w7 * I7.b;
 
     // new mass:
-    float deltaMass07 = I0.r - r07 + r70;
+    // float newMass07 = I0.r - r07 + r70;
+    float deltaMass07 = r70 - r07;
 
     // velocity
     float velX7 = 0.0;
@@ -257,6 +271,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Point 8
+    w0 = I0.r / (I0.r + I8.r);
     float w8 = I8.r / (I0.r + I8.r);
 
     // mass outcome
@@ -269,10 +284,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float r80 = 0.0;
     float dot80 = dot(vec2(I8.g, I8.b), -e8);
     if (dot80 > 0.0)
-        float r80 = w8 * dot80;
+        r80 = w8 * dot80;
 
     // new mass:
-    float deltaMass08 = I0.r - r08 + r80;
+    // float newMass08 = I0.r - r08 + r80;
+    float deltaMass08 = r80 - r08;
 
     // velocity
     float velX8 = 0.0;
@@ -284,22 +300,35 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
 
-    float newMass0 = deltaMass01 + deltaMass02 + deltaMass03 +
-                        deltaMass04 + deltaMass05 + deltaMass06 +
-                        deltaMass07 + deltaMass08;
+    // float newMass0 = newMass01 + newMass02 + newMass03 +
+    //                        newMass04 + newMass05 + newMass06 +
+    //                        newMass07 + newMass08 - 8.0 * I0.r;
 
 
-    float newVelX0 = velX1 + velX2 + velX3 + velX4 + velX5 + velX6 + velX7 + velX8;
-    float newVelY0 = velY1 + velY2 + velY3 + velY4 + velY5 + velY6 + velY7 + velY8;
+    float newMass = deltaMass01 + deltaMass02 + deltaMass03 +
+    deltaMass04 + deltaMass05 + deltaMass06 + deltaMass07 + deltaMass08;
+
+
+    float newVelX0 = I0.g + velX1 + velX2 + velX3 + velX4 + velX5 + velX6 + velX7 + velX8;
+    float newVelY0 = I0.b + velY1 + velY2 + velY3 + velY4 + velY5 + velY6 + velY7 + velY8;
 
     // TODO: normalize newVelX0, newVelY0 by squared sum ?
     float velLen = sqrt(newVelX0 * newVelX0 + newVelY0 * newVelY0);
     if (velLen > 0.0) {
-        newVelX0 /= velLen;
-        newVelY0 /= velLen;
+        // newVelX0 /= velLen;
+        // newVelY0 /= velLen;
     }
 
-    vec4 finalColor = itc(vec3(newMass0, newVelX0, newVelY0));
+
+    if (newMass == 0.0) {
+        newVelX0 = 0.0;
+        newVelY0 = 0.0;
+    }
+
+
+    vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
+
+
 
     fragColor = finalColor;
 
@@ -307,9 +336,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawCircle(figureCenter, uv, 0.2)) {
+        if (drawBox(figureCenter, uv, 0.2, 0.2)) {
 
-            fragColor = itc(vec3(1.0, 0.0, 0.0));
+            fragColor = itc(vec3(1.0, 0.0, -1.0));
 
         }
         else {
