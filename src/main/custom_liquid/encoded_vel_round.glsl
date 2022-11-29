@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.001;
+float offset = 0.01;
 
 
 const float PI = 2.0 * 3.1415926535;
@@ -92,7 +92,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float velY1 = 0.0;
     if (I1.g < 0.0) {
         velX1 = I0.g * w0 + I1.g * w1;
-        velY1 = I0.b * w0 + I1.b * w1;
+        // velY1 = I0.b * w0 + I1.b * w1;
     }
 
 
@@ -147,7 +147,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float velX3 = 0.0;
     float velY3 = 0.0;
     if (I3.b < 0.0) {
-        velX3 = I0.g * w0 + I3.g * w3;
+        //velX3 = I0.g * w0 + I3.g * w3;
         velY3 = I0.b * w0 + I3.b * w3;
     }
 
@@ -299,35 +299,24 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     }
 
 
-
-    // float newMass0 = newMass01 + newMass02 + newMass03 +
-    //                        newMass04 + newMass05 + newMass06 +
-    //                        newMass07 + newMass08 - 8.0 * I0.r;
-
-
     float newMass = deltaMass01 + deltaMass02 + deltaMass03 +
     deltaMass04 + deltaMass05 + deltaMass06 + deltaMass07 + deltaMass08;
 
 
-    float newVelX0 = I0.g + velX1 + velX2 + velX3 + velX4 + velX5 + velX6 + velX7 + velX8;
-    float newVelY0 = I0.b + velY1 + velY2 + velY3 + velY4 + velY5 + velY6 + velY7 + velY8;
-
-    // TODO: normalize newVelX0, newVelY0 by squared sum ?
-    float velLen = sqrt(newVelX0 * newVelX0 + newVelY0 * newVelY0);
-    if (velLen > 0.0) {
-        // newVelX0 /= velLen;
-        // newVelY0 /= velLen;
-    }
-
-
-    if (newMass == 0.0) {
-        newVelX0 = 0.0;
-        newVelY0 = 0.0;
+    float newVelX0 = 0.0;
+    float newVelY0 = 0.0;
+    if (newMass > 0.0) {
+        newVelX0 = I0.g + velX1 + velX2 + velX3 + velX4 + velX5 + velX6 + velX7 + velX8;
+        newVelY0 = I0.b + velY1 + velY2 + velY3 + velY4 + velY5 + velY6 + velY7 + velY8;
     }
 
 
     vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
 
+    if (finalColor.r == 0.0) {
+        finalColor.b = 0.5;
+        finalColor.g = 0.5;
+    }
 
 
     fragColor = finalColor;
@@ -336,9 +325,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawBox(figureCenter, uv, 0.2, 0.2)) {
+        if (drawBox(figureCenter, uv, 0.2, 0.3)) {
 
-            fragColor = itc(vec3(1.0, 0.0, -1.0));
+            fragColor = itc(vec3(1.0, -0.01, 0.01));
 
         }
         else {
