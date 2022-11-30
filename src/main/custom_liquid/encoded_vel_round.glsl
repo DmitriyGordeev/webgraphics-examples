@@ -37,6 +37,10 @@ vec4 itc(vec3 vel) {
     return vec4(vel.r, (vel.g + 1.0) / 2.0, (vel.b + 1.0) / 2.0, 1.0);
 }
 
+
+
+
+
 const float a1 = 0.0;
 const float a2 = PI / 4.0;
 const float a3 = PI / 2.0;
@@ -55,6 +59,13 @@ const vec2 e5 = vec2(cos(a5), sin(a5));
 const vec2 e6 = vec2(cos(a6), sin(a6));
 const vec2 e7 = vec2(cos(a7), sin(a7));
 const vec2 e8 = vec2(cos(a8), sin(a8));
+
+
+
+float weightSum(vec2 vel) {
+    return dot(vel, e1) + dot(vel, e2) + dot(vel, e3) + dot(vel, e4) +
+            dot(vel, e5) + dot(vel, e6) + dot(vel, e7) + dot(vel, e8);
+}
 
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
@@ -78,256 +89,185 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 vel0 = vec2(I0.g, I0.b);
 
 
-    // Point 1
-    float w0 = I0.r / (I0.r + I1.r);
-    float w1 = I1.r / (I0.r + I1.r);
+    float S = weightSum(vel0);
 
-    // mass outcome
-    float r01 = 0.0;
-    float dot01 = dot(vel0, e1);
-    if (dot01 > 0.0)
-        r01 = w0 * dot01;
+    // total mass outflow
+    float massOutflow = 0.0;
+    float w01 = dot(vel0, e1) / S;
+    float w02 = dot(vel0, e2) / S;
+    float w03 = dot(vel0, e3) / S;
+    float w04 = dot(vel0, e4) / S;
+    float w05 = dot(vel0, e5) / S;
+    float w06 = dot(vel0, e6) / S;
+    float w07 = dot(vel0, e7) / S;
+    float w08 = dot(vel0, e8) / S;
 
-    // mass income from point 1
-    float r10 = 0.0;
-    float dot10 = dot(vec2(I2.g, I2.b), -e1);
-    if (dot10 > 0.0)
-        r10 = w1 * dot10;
+    if (w01 > 0.0)
+        massOutflow += w01 * I0.r;
+    if (w02 > 0.0)
+        massOutflow += w02 * I0.r;
+    if (w03 > 0.0)
+        massOutflow += w03 * I0.r;
+    if (w04 > 0.0)
+        massOutflow += w04 * I0.r;
+    if (w05 > 0.0)
+        massOutflow += w05 * I0.r;
+    if (w06 > 0.0)
+        massOutflow += w06 * I0.r;
+    if (w07 > 0.0)
+        massOutflow += w07 * I0.r;
+    if (w08 > 0.0)
+        massOutflow += w08 * I0.r;
 
-    // new mass:
-    // float newMass01 = I0.r - r01 + r10;
-    float deltaMass01 = r10 - r01;
 
-    // velocity
-    float velX1 = 0.0;
-    float velY1 = 0.0;
-    // if (I1.g < 0.0) {
-        velX1 = I0.g * w0 + I1.g * w1;
-        velY1 = I0.b * w0 + I1.b * w1;
-    // }
+    // total mass inflow
+    float massInflow = 0.0;
 
-
-    // Point 2
-    w0 = I0.r / (I0.r + I2.r);
-    float w2 = I2.r / (I0.r + I2.r);
-
-    // mass outcome
-    float r02 = 0.0;
-    float dot02 = dot(vel0, e2);
-    if (dot02 > 0.0)
-        r02 = w0 * dot02;
-
-    // mass income from point 2
-    float r20 = 0.0;
-    float dot20 = dot(vec2(I2.g, I2.b), -e2);
-    if (dot20 > 0.0)
-        r20 = w2 * dot20;
-
-    // new mass:
-    // float newMass02 = I0.r - r02 + r20;
-    float deltaMass02 = r20 - r02;
+    // point 1
+    vec2 vel1 = vec2(I1.g, I1.b);
+    float S1 = weightSum(vel1);
+    if (dot(vel1, -e1) > 0.0)
+        massInflow = I1.r * dot(vel1, -e1) / S1;
 
     // velocity
-    float velX2 = 0.0;
-    float velY2 = 0.0;
-    // if (dot20 > 0.0) {
-        velX2 = I0.g * w0 + I2.g * w2;
-        velY2 = I0.b * w0 + I2.b * w2;
-    // }
+    float mw0 = I0.r / (I0.r + I1.r);
+    float mw1 = I1.r / (I0.r + I1.r);
+    float deltaVelX1 = 0.0;
+    float deltaVelY1 = 0.0;
+    if (dot(vel0, vel1) < 0.0) {
+        deltaVelX1 += mw0 * I0.g + mw1 * I1.g;
+        deltaVelY1 += mw0 * I0.b + mw1 * I1.b;
+    }
 
 
-    // Point 3
-    w0 = I0.r / (I0.r + I3.r);
-    float w3 = I3.r / (I0.r + I3.r);
-
-    // mass outcome
-    float r03 = 0.0;
-    float dot03 = dot(vel0, e3);
-    if (dot03 > 0.0)
-        r03 = w0 * dot03;
-
-    // mass income from point 3
-    float r30 = 0.0;
-    float dot30 = dot(vec2(I3.g, I3.b), -e3);
-    if (dot30 < 0.0)
-        r30 = w3 * dot30;
-
-    // new mass:
-    // float newMass03 = I0.r - r03 + r30;
-    float deltaMass03 = r30 - r03;
+    // point 2
+    vec2 vel2 = vec2(I2.g, I2.b);
+    float S2 = weightSum(vel2);
+    if (dot(vel2, -e2) > 0.0)
+        massInflow = I2.r * dot(vel2, -e2) / S2;
 
     // velocity
-    float velX3 = 0.0;
-    float velY3 = 0.0;
-    // if (I3.b < 0.0) {
-        velX3 = I0.g * w0 + I3.g * w3;
-        velY3 = I0.b * w0 + I3.b * w3;
-    // }
+    mw0 = I0.r / (I0.r + I1.r);
+    float mw2 = I2.r / (I0.r + I2.r);
+    float deltaVelX2 = 0.0;
+    float deltaVelY2 = 0.0;
+    if (dot(vel0, vel2) < 0.0) {
+        deltaVelX2 += mw0 * I0.g + mw2 * I2.g;
+        deltaVelY2 += mw0 * I0.b + mw2 * I2.b;
+    }
 
 
-
-    // Point 4
-    w0 = I0.r / (I0.r + I4.r);
-    float w4 = I4.r / (I0.r + I4.r);
-
-
-    // mass outcome
-    float r04 = 0.0;
-    float dot04 = dot(vel0, e4);
-    if (dot04 > 0.0)
-        r04 = w0 * dot04;
-
-    // mass income from point 4
-    float r40 = 0.0;
-    float dot40 = dot(vec2(I4.g, I4.b), -e4);
-    if (dot40 > 0.0)
-        r40 = w4 * dot40;
-
-    // new mass:
-    // float newMass04 = I0.r - r04 + r40;
-    float deltaMass04 = r40 - r04;
+    // point 3
+    vec2 vel3 = vec2(I3.g, I3.b);
+    float S3 = weightSum(vel3);
+    if (dot(vel3, -e3) > 0.0)
+        massInflow = I3.r * dot(vel3, -e3) / S3;
 
     // velocity
-    float velX4 = 0.0;
-    float velY4 = 0.0;
-    // if (dot40 > 0.0) {
-        velX4 = I0.g * w0 + I4.g * w4;
-        velY4 = I0.b * w0 + I4.b * w4;
-    // }
+    mw0 = I0.r / (I0.r + I3.r);
+    float mw3 = I3.r / (I0.r + I3.r);
+    float deltaVelX3 = 0.0;
+    float deltaVelY3 = 0.0;
+    if (dot(vel0, vel3) < 0.0) {
+        deltaVelX3 += mw0 * I0.g + mw3 * I3.g;
+        deltaVelY3 += mw0 * I0.b + mw3 * I3.b;
+    }
 
 
-
-
-    // Point 5
-    w0 = I0.r / (I0.r + I5.r);
-    float w5 = I5.r / (I0.r + I5.r);
-
-    // mass outcome
-    float r05 = 0.0;
-    float dot05 = dot(vel0, e5);
-    if (dot05 < 0.0)
-        r05 = w0 * dot05;
-
-    // mass income from point 5
-    float r50 = 0.0;
-    float dot50 = dot(vec2(I5.g, I5.b), -e5);
-    if (dot50 > 0.0)
-        r50 = w5 * dot50;
-
-    // new mass:
-    // float newMass05 = I0.r - r05 + r50;
-    float deltaMass05 = r50 - r05;
+    // point 4
+    vec2 vel4 = vec2(I4.g, I4.b);
+    float S4 = weightSum(vel4);
+    if (dot(vel4, -e4) > 0.0)
+        massInflow = I4.r * dot(vel4, -e4) / S4;
 
     // velocity
-    float velX5 = 0.0;
-    float velY5 = 0.0;
-    // if (I5.g > 0.0) {
-        velX5 = I0.g * w0 + I5.g * w5;
-        velY5 = I0.b * w0 + I5.b * w5;
-    // }
+    mw0 = I0.r / (I0.r + I4.r);
+    float mw4 = I4.r / (I0.r + I4.r);
+    float deltaVelX4 = 0.0;
+    float deltaVelY4 = 0.0;
+    if (dot(vel0, vel4) < 0.0) {
+        deltaVelX4 += mw0 * I0.g + mw4 * I4.g;
+        deltaVelY4 += mw0 * I0.b + mw4 * I4.b;
+    }
 
 
-
-    // Point 6
-    w0 = I0.r / (I0.r + I6.r);
-    float w6 = I6.r / (I0.r + I6.r);
-
-
-    // mass outcome
-    float r06 = 0.0;
-    float dot06 = dot(vel0, e6);
-    if (dot06 > 0.0)
-        r06 = w0 * dot06;
-
-    // mass income from point 6
-    float r60 = 0.0;
-    float dot60 = dot(vec2(I6.g, I6.b), -e6);
-    if (dot60 > 0.0)
-        r60 = w6 * dot60;
-
-    // new mass:
-    // float newMass06 = I0.r - r06 + r60;
-    float deltaMass06 = r60 - r06;
+    // point 5
+    vec2 vel5 = vec2(I5.g, I5.b);
+    float S5 = weightSum(vel5);
+    if (dot(vel5, -e5) > 0.0)
+        massInflow = I5.r * dot(vel5, -e5) / S5;
 
     // velocity
-    float velX6 = 0.0;
-    float velY6 = 0.0;
-    // if (dot60 > 0.0) {
-        velX6 = I0.g * w0 + I6.g * w6;
-        velY6 = I0.b * w0 + I6.b * w6;
-    // }
+    mw0 = I0.r / (I0.r + I5.r);
+    float mw5 = I5.r / (I0.r + I5.r);
+    float deltaVelX5 = 0.0;
+    float deltaVelY5 = 0.0;
+    if (dot(vel0, vel5) < 0.0) {
+        deltaVelX5 += mw0 * I0.g + mw5 * I5.g;
+        deltaVelY5 += mw0 * I0.b + mw5 * I5.b;
+    }
 
 
-    // Point 7
-    w0 = I0.r / (I0.r + I7.r);
-    float w7 = I7.r / (I0.r + I7.r);
-
-    // mass outcome
-    float r07 = 0.0;
-    float dot07 = dot(vel0, e7);
-    if (dot07 > 0.0)
-        r07 = w0 * dot07;
-
-    // mass income from point 7
-    float r70 = 0.0;
-    float dot70 = dot(vec2(I7.g, I7.b), -e7);
-    if (dot70 > 0.0)
-        r70 = w7 * dot70;
-
-    // new mass:
-    // float newMass07 = I0.r - r07 + r70;
-    float deltaMass07 = r70 - r07;
+    // point 6
+    vec2 vel6 = vec2(I6.g, I6.b);
+    float S6 = weightSum(vel6);
+    if (dot(vel6, -e6) > 0.0)
+        massInflow = I6.r * dot(vel6, -e6) / S6;
 
     // velocity
-    float velX7 = 0.0;
-    float velY7 = 0.0;
-    // if (I7.b > 0.0) {
-        velX7 = I0.g * w0 + I7.g * w7;
-        velY7 = I0.b * w0 + I7.b * w7;
-    // }
+    mw0 = I0.r / (I0.r + I6.r);
+    float mw6 = I6.r / (I0.r + I6.r);
+    float deltaVelX6 = 0.0;
+    float deltaVelY6 = 0.0;
+    if (dot(vel0, vel6) < 0.0) {
+        deltaVelX6 += mw0 * I0.g + mw6 * I6.g;
+        deltaVelY6 += mw0 * I0.b + mw6 * I6.b;
+    }
 
 
 
-    // Point 8
-    w0 = I0.r / (I0.r + I8.r);
-    float w8 = I8.r / (I0.r + I8.r);
-
-
-    // mass outcome
-    float r08 = 0.0;
-    float dot08 = dot(vel0, e8);
-    if (dot08 > 0.0)
-        r08 = w0 * dot08;
-
-    // mass income from point 8
-    float r80 = 0.0;
-    float dot80 = dot(vec2(I8.g, I8.b), -e8);
-    if (dot80 > 0.0)
-        r80 = w8 * dot80;
-
-    // new mass:
-    // float newMass08 = I0.r - r08 + r80;
-    float deltaMass08 = r80 - r08;
+    // point 7
+    vec2 vel7 = vec2(I7.g, I7.b);
+    float S7 = weightSum(vel7);
+    if (dot(vel7, -e7) > 0.0)
+        massInflow = I7.r * dot(vel7, -e7) / S7;
 
     // velocity
-    float velX8 = 0.0;
-    float velY8 = 0.0;
-    // if (dot80 > 0.0) {
-        velX8 = I0.g * w0 + I8.g * w8;
-        velY8 = I0.b * w0 + I8.b * w8;
-    // }
-
-
-    float newMass = I0.r + deltaMass01 + deltaMass02 + deltaMass03 +
-        deltaMass04 + deltaMass05 + deltaMass06 + deltaMass07 + deltaMass08;
+    mw0 = I0.r / (I0.r + I7.r);
+    float mw7 = I7.r / (I0.r + I7.r);
+    float deltaVelX7 = 0.0;
+    float deltaVelY7 = 0.0;
+    if (dot(vel0, vel7) < 0.0) {
+        deltaVelX7 += mw0 * I0.g + mw7 * I7.g;
+        deltaVelY7 += mw0 * I0.b + mw7 * I7.b;
+    }
 
 
 
-    float newVelX0 = 0.0;
-    float newVelY0 = 0.0;
+    // point 8
+    vec2 vel8 = vec2(I8.g, I8.b);
+    float S8 = weightSum(vel8);
+    if (dot(vel8, -e8) > 0.0)
+        massInflow = I8.r * dot(vel8, -e8) / S8;
+
+    // velocity
+    mw0 = I0.r / (I0.r + I8.r);
+    float mw8 = I8.r / (I0.r + I8.r);
+    float deltaVelX8 = 0.0;
+    float deltaVelY8 = 0.0;
+    if (dot(vel0, vel8) < 0.0) {
+        deltaVelX8 += mw0 * I0.g + mw8 * I8.g;
+        deltaVelY8 += mw0 * I0.b + mw8 * I8.b;
+    }
+
+
+    float newMass = I0.r - massOutflow + massInflow;
+
+    float newVelX0 = I0.g;
+    float newVelY0 = I0.b;
     if (newMass > 0.0) {
-       newVelX0 = velX1 + velX2 + velX3 + velX4 + velX5 + velX6 + velX7 + velX8;
-       newVelY0 = velY1 + velY2 + velY3 + velY4 + velY5 + velY6 + velY7 + velY8;
+       newVelX0 += deltaVelX1 + deltaVelX2 + deltaVelX3 + deltaVelX4 + deltaVelX5 + deltaVelX6 + deltaVelX7 + deltaVelX8;
+       newVelY0 += deltaVelY1 + deltaVelY2 + deltaVelY3 + deltaVelY4 + deltaVelY5 + deltaVelY6 + deltaVelY7 + deltaVelY8;
     }
 
 
@@ -343,7 +283,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     if (iFrame < 2) {
         if (drawBox(figureCenter, uv, 0.2, 0.3)) {
 
-            fragColor = itc(vec3(1.0, 0.0, -0.01));
+            fragColor = itc(vec3(1.0, 0.0, 0.0));
 
         }
         else {
