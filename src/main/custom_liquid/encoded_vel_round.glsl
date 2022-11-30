@@ -5,7 +5,7 @@ vec2 figureCenter = vec2(0.5);
 float offset = 0.02;
 
 
-const float PI = 2.0 * 3.1415926535;
+const float PI = 3.1415926535;
 const float sqrt2 = sqrt(2.0);
 
 
@@ -49,6 +49,9 @@ const float a5 = PI;
 const float a6 = 5.0 * PI / 4.0;
 const float a7 = 6.0 * PI / 4.0;
 const float a8 = 7.0 * PI / 4.0;
+
+
+
 
 
 const vec2 e1 = vec2(cos(a1), sin(a1));
@@ -318,12 +321,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
-
-    if (e7.x < -0.99) {
-        finalColor.r = 0.0;
-        finalColor.g = 0.0;
-        finalColor.b = 0.0;
-    }
 
     fragColor = finalColor;
 
