@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.001;
+float offset = 0.02;
 
 
 const float PI = 2.0 * 3.1415926535;
@@ -47,7 +47,7 @@ const float a3 = PI / 2.0;
 const float a4 = 3.0 * PI / 4.0;
 const float a5 = PI;
 const float a6 = 5.0 * PI / 4.0;
-const float a7 = -PI / 2.0;
+const float a7 = 6.0 * PI / 4.0;
 const float a8 = 7.0 * PI / 4.0;
 
 
@@ -63,8 +63,24 @@ const vec2 e8 = vec2(cos(a8), sin(a8));
 
 
 float weightSum(vec2 vel) {
-    return dot(vel, e1) + dot(vel, e2) + dot(vel, e3) + dot(vel, e4) +
-            dot(vel, e5) + dot(vel, e6) + dot(vel, e7) + dot(vel, e8);
+    float outValue = 0.0;
+    if (dot(vel, e1) > 0.0)
+        outValue += dot(vel, e1);
+    if (dot(vel, e2) > 0.0)
+        outValue += dot(vel, e2);
+    if (dot(vel, e3) > 0.0)
+        outValue += dot(vel, e3);
+    if (dot(vel, e4) > 0.0)
+        outValue += dot(vel, e4);
+    if (dot(vel, e5) > 0.0)
+        outValue += dot(vel, e5);
+    if (dot(vel, e6) > 0.0)
+        outValue += dot(vel, e6);
+    if (dot(vel, e7) > 0.0)
+        outValue += dot(vel, e7);
+    if (dot(vel, e8) > 0.0)
+        outValue += dot(vel, e8);
+    return outValue;
 }
 
 
@@ -102,22 +118,47 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float w07 = dot(vel0, e7) / S;
     float w08 = dot(vel0, e8) / S;
 
-    if (w01 > 0.0)
+    float checkSum = 0.0;
+    if (w01 > 0.0) {
         massOutflow += w01 * I0.r;
-    if (w02 > 0.0)
+        checkSum += w01;
+    }
+
+    if (w02 > 0.0) {
         massOutflow += w02 * I0.r;
-    if (w03 > 0.0)
+        checkSum += w02;
+    }
+
+    if (w03 > 0.0) {
         massOutflow += w03 * I0.r;
-    if (w04 > 0.0)
+        checkSum += w03;
+    }
+
+    if (w04 > 0.0) {
         massOutflow += w04 * I0.r;
-    if (w05 > 0.0)
+        checkSum += w04;
+    }
+
+    if (w05 > 0.0) {
         massOutflow += w05 * I0.r;
-    if (w06 > 0.0)
+        checkSum += w05;
+    }
+
+    if (w06 > 0.0) {
         massOutflow += w06 * I0.r;
-    if (w07 > 0.0)
+        checkSum += w06;
+    }
+
+    if (w07 > 0.0) {
         massOutflow += w07 * I0.r;
-    if (w08 > 0.0)
+        checkSum += w07;
+    }
+
+    if (w08 > 0.0) {
         massOutflow += w08 * I0.r;
+        checkSum += w08;
+    }
+
 
 
     // total mass inflow
@@ -147,7 +188,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         massInflow = I2.r * dot(vel2, -e2) / S2;
 
     // velocity
-    mw0 = I0.r / (I0.r + I1.r);
+    mw0 = I0.r / (I0.r + I2.r);
     float mw2 = I2.r / (I0.r + I2.r);
     float deltaVelX2 = 0.0;
     float deltaVelY2 = 0.0;
@@ -261,6 +302,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     }
 
 
+    // TODO: newMass < 0.0 - massInflow is too big negative ?
+
     float newMass = I0.r - massOutflow + massInflow;
 
     float newVelX0 = I0.g;
@@ -271,9 +314,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     }
 
 
+
+
+
     vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
 
-
+    if (e7.x < -0.99) {
+        finalColor.r = 0.0;
+        finalColor.g = 0.0;
+        finalColor.b = 0.0;
+    }
 
     fragColor = finalColor;
 
@@ -283,7 +333,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     if (iFrame < 2) {
         if (drawBox(figureCenter, uv, 0.2, 0.3)) {
 
-            fragColor = itc(vec3(1.0, 0.0, 0.0));
+            fragColor = itc(vec3(0.8, 0.0, -0.01));
 
         }
         else {
