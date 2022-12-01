@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.02;
+float offset = 0.005;
 
 
 const float PI = 3.1415926535;
@@ -96,13 +96,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec3 I0 = cti(C0);
 
     // Convert colors to impulses
-    vec4 C1 = texture(iChannel0, uv + vec2(offset, 0.0));   vec3 I1 = cti(C1);
+    vec4 C1 = texture(iChannel0, uv + offset * e1);         vec3 I1 = cti(C1);
     vec4 C2 = texture(iChannel0, uv + offset * e2);         vec3 I2 = cti(C2);
-    vec4 C3 = texture(iChannel0, uv + vec2(0.0, offset));   vec3 I3 = cti(C3);
+    vec4 C3 = texture(iChannel0, uv + offset * e3);         vec3 I3 = cti(C3);
     vec4 C4 = texture(iChannel0, uv + offset * e4);         vec3 I4 = cti(C4);
-    vec4 C5 = texture(iChannel0, uv + vec2(-offset, 0.0));  vec3 I5 = cti(C5);
+    vec4 C5 = texture(iChannel0, uv + offset * e5);         vec3 I5 = cti(C5);
     vec4 C6 = texture(iChannel0, uv + offset * e6);         vec3 I6 = cti(C6);
-    vec4 C7 = texture(iChannel0, uv + vec2(0.0, -offset));  vec3 I7 = cti(C7);
+    vec4 C7 = texture(iChannel0, uv + offset * e7);         vec3 I7 = cti(C7);
     vec4 C8 = texture(iChannel0, uv + offset * e8);         vec3 I8 = cti(C8);
 
     vec2 vel0 = vec2(I0.g, I0.b);
@@ -176,12 +176,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // velocity
     float mw0 = I0.r / (I0.r + I1.r);
     float mw1 = I1.r / (I0.r + I1.r);
-    float deltaVelX1 = 0.0;
-    float deltaVelY1 = 0.0;
-    if (dot(vel0, vel1) < 0.0) {
-        deltaVelX1 += mw0 * I0.g + mw1 * I1.g;
-        deltaVelY1 += mw0 * I0.b + mw1 * I1.b;
-    }
+    float vf = dot(vel1, e1) / length(vel1);
+    float newVelX1 = vel0.x * mw0 - vel1.x * vf * mw1;
+    float newVelY1 = vel0.y * mw0 - vel1.y * vf * mw1;
+
+//    if (dot(vel0, vel1) < 0.0) {
+//        deltaVelX1 += mw0 * I0.g + mw1 * I1.g;
+//        deltaVelY1 += mw0 * I0.b + mw1 * I1.b;
+//    }
+
 
 
     // point 2
@@ -193,12 +196,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // velocity
     mw0 = I0.r / (I0.r + I2.r);
     float mw2 = I2.r / (I0.r + I2.r);
-    float deltaVelX2 = 0.0;
-    float deltaVelY2 = 0.0;
-    if (dot(vel0, vel2) < 0.0) {
-        deltaVelX2 += mw0 * I0.g + mw2 * I2.g;
-        deltaVelY2 += mw0 * I0.b + mw2 * I2.b;
-    }
+    vf = dot(vel2, e2) / length(vel2);
+    float newVelX2 = vel0.x * mw0 - vel2.x * vf * mw2;
+    float newVelY2 = vel0.y * mw0 - vel2.y * vf * mw2;
+
+//    float deltaVelX2 = 0.0;
+//    float deltaVelY2 = 0.0;
+//    if (dot(vel0, vel2) < 0.0) {
+//        deltaVelX2 += mw0 * I0.g + mw2 * I2.g;
+//        deltaVelY2 += mw0 * I0.b + mw2 * I2.b;
+//    }
 
 
     // point 3
@@ -210,12 +217,20 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // velocity
     mw0 = I0.r / (I0.r + I3.r);
     float mw3 = I3.r / (I0.r + I3.r);
-    float deltaVelX3 = 0.0;
-    float deltaVelY3 = 0.0;
-    if (dot(vel0, vel3) < 0.0) {
-        deltaVelX3 += mw0 * I0.g + mw3 * I3.g;
-        deltaVelY3 += mw0 * I0.b + mw3 * I3.b;
-    }
+    vf = dot(vel3, e3) / length(vel3);
+    float newVelX3 = vel0.x * mw0 - vel3.x * vf * mw3;
+    float newVelY3 = vel0.y * mw0 - vel3.y * vf * mw3;
+
+//    float deltaVelX3 = 0.0;
+//    float deltaVelY3 = 0.0;
+//    if (dot(vel0, vel3) < 0.0) {
+//        deltaVelX3 += mw0 * I0.g + mw3 * I3.g;
+//        deltaVelY3 += mw0 * I0.b + mw3 * I3.b;
+//    }
+//    else {
+//        deltaVelX3 = I3.g;
+//        deltaVelY3 = I3.b;
+//    }
 
 
     // point 4
@@ -227,12 +242,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // velocity
     mw0 = I0.r / (I0.r + I4.r);
     float mw4 = I4.r / (I0.r + I4.r);
-    float deltaVelX4 = 0.0;
-    float deltaVelY4 = 0.0;
-    if (dot(vel0, vel4) < 0.0) {
-        deltaVelX4 += mw0 * I0.g + mw4 * I4.g;
-        deltaVelY4 += mw0 * I0.b + mw4 * I4.b;
-    }
+    vf = dot(vel4, e4) / length(vel4);
+    float newVelX4 = vel0.x * mw0 - vel4.x * vf * mw4;
+    float newVelY4 = vel0.y * mw0 - vel4.y * vf * mw4;
+
+//    float deltaVelX4 = 0.0;
+//    float deltaVelY4 = 0.0;
+//    if (dot(vel0, vel4) < 0.0) {
+//        deltaVelX4 += mw0 * I0.g + mw4 * I4.g;
+//        deltaVelY4 += mw0 * I0.b + mw4 * I4.b;
+//    }
 
 
     // point 5
@@ -244,12 +263,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // velocity
     mw0 = I0.r / (I0.r + I5.r);
     float mw5 = I5.r / (I0.r + I5.r);
-    float deltaVelX5 = 0.0;
-    float deltaVelY5 = 0.0;
-    if (dot(vel0, vel5) < 0.0) {
-        deltaVelX5 += mw0 * I0.g + mw5 * I5.g;
-        deltaVelY5 += mw0 * I0.b + mw5 * I5.b;
-    }
+    vf = dot(vel5, e5) / length(vel5);
+    float newVelX5 = vel0.x * mw0 - vel5.x * vf * mw5;
+    float newVelY5 = vel0.y * mw0 - vel5.y * vf * mw5;
+
+//    float deltaVelX5 = 0.0;
+//    float deltaVelY5 = 0.0;
+//    if (dot(vel0, vel5) < 0.0) {
+//        deltaVelX5 += mw0 * I0.g + mw5 * I5.g;
+//        deltaVelY5 += mw0 * I0.b + mw5 * I5.b;
+//    }
 
 
     // point 6
@@ -261,12 +284,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // velocity
     mw0 = I0.r / (I0.r + I6.r);
     float mw6 = I6.r / (I0.r + I6.r);
-    float deltaVelX6 = 0.0;
-    float deltaVelY6 = 0.0;
-    if (dot(vel0, vel6) < 0.0) {
-        deltaVelX6 += mw0 * I0.g + mw6 * I6.g;
-        deltaVelY6 += mw0 * I0.b + mw6 * I6.b;
-    }
+    vf = dot(vel6, e6) / length(vel6);
+    float newVelX6 = vel0.x * mw0 - vel6.x * vf * mw6;
+    float newVelY6 = vel0.y * mw0 - vel6.y * vf * mw6;
+
+//    float deltaVelX6 = 0.0;
+//    float deltaVelY6 = 0.0;
+//    if (dot(vel0, vel6) < 0.0) {
+//        deltaVelX6 += mw0 * I0.g + mw6 * I6.g;
+//        deltaVelY6 += mw0 * I0.b + mw6 * I6.b;
+//    }
 
 
 
@@ -279,12 +306,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // velocity
     mw0 = I0.r / (I0.r + I7.r);
     float mw7 = I7.r / (I0.r + I7.r);
-    float deltaVelX7 = 0.0;
-    float deltaVelY7 = 0.0;
-    if (dot(vel0, vel7) < 0.0) {
-        deltaVelX7 += mw0 * I0.g + mw7 * I7.g;
-        deltaVelY7 += mw0 * I0.b + mw7 * I7.b;
-    }
+    vf = dot(vel7, e7) / length(vel7);
+    float newVelX7 = vel0.x * mw0 - vel7.x * vf * mw7;
+    float newVelY7 = vel0.y * mw0 - vel7.y * vf * mw7;
+
+//    float deltaVelX7 = 0.0;
+//    float deltaVelY7 = 0.0;
+//    if (dot(vel0, vel7) < 0.0) {
+//        deltaVelX7 += mw0 * I0.g + mw7 * I7.g;
+//        deltaVelY7 += mw0 * I0.b + mw7 * I7.b;
+//    }
 
 
 
@@ -297,30 +328,43 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // velocity
     mw0 = I0.r / (I0.r + I8.r);
     float mw8 = I8.r / (I0.r + I8.r);
-    float deltaVelX8 = 0.0;
-    float deltaVelY8 = 0.0;
-    if (dot(vel0, vel8) < 0.0) {
-        deltaVelX8 += mw0 * I0.g + mw8 * I8.g;
-        deltaVelY8 += mw0 * I0.b + mw8 * I8.b;
-    }
+    vf = dot(vel8, e8) / length(vel8);
+    float newVelX8 = vel0.x * mw0 - vel8.x * vf * mw8;
+    float newVelY8 = vel0.y * mw0 - vel8.y * vf * mw8;
 
+//    float deltaVelX8 = 0.0;
+//    float deltaVelY8 = 0.0;
+//    if (dot(vel0, vel8) < 0.0) {
+//        deltaVelX8 += mw0 * I0.g + mw8 * I8.g;
+//        deltaVelY8 += mw0 * I0.b + mw8 * I8.b;
+//    }
 
-    // TODO: newMass < 0.0 - massInflow is too big negative ?
 
     float newMass = I0.r - massOutflow + massInflow;
 
-    float newVelX0 = I0.g;
-    float newVelY0 = I0.b;
+    float newVelX0 = 0.0;
+    float newVelY0 = 0.0;
     if (newMass > 0.0) {
-       newVelX0 += deltaVelX1 + deltaVelX2 + deltaVelX3 + deltaVelX4 + deltaVelX5 + deltaVelX6 + deltaVelX7 + deltaVelX8;
-       newVelY0 += deltaVelY1 + deltaVelY2 + deltaVelY3 + deltaVelY4 + deltaVelY5 + deltaVelY6 + deltaVelY7 + deltaVelY8;
+       newVelX0 += newVelX1 + newVelX2 + newVelX3 + newVelX4 + newVelX5 + newVelX6 + newVelX7 + newVelX8;
+       newVelY0 += newVelY1 + newVelY2 + newVelY3 + newVelY4 + newVelY5 + newVelY6 + newVelY7 + newVelY8;
     }
-
-
 
 
 
     vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
+
+
+    // TODO: ошибка в точных сравнениях ?
+
+    // TODO: должно выполняться!
+    // if (w07 * I0.r == I3.r * dot(vel3, -e3) / S3) {
+
+    if (newVelX1 == 0.0) {
+         finalColor.r = 1.0;
+         finalColor.g = 1.0;
+         finalColor.b = 1.0;
+    }
+
 
     fragColor = finalColor;
 
@@ -328,9 +372,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawBox(figureCenter, uv, 0.2, 0.3)) {
+        if (drawBox(figureCenter, uv, 0.3, offset * 3.0)) {
 
-            fragColor = itc(vec3(0.8, 0.0, -0.01));
+            fragColor = itc(vec3(1.0, 0.0, -1.0));
 
         }
         else {
