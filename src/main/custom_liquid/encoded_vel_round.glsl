@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.03;
+float offset = 0.005;
 
 
 const float PI = 3.1415926535;
@@ -347,6 +347,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         newVelY8 -= dir / length(deltaVel80) * deltaVel80.y * mw8;
     }
     
+    // TODO: if massOutflow != I0.r -> сделать доп условие точного сравнения ?
 
     float newMass = I0.r - massOutflow + massInflow;
 
@@ -357,20 +358,32 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
        newVelX0 += newVelX1 + newVelX2 + newVelX3 + newVelX4 + newVelX5 + newVelX6 + newVelX7 + newVelX8;
        newVelY0 += newVelY1 + newVelY2 + newVelY3 + newVelY4 + newVelY5 + newVelY6 + newVelY7 + newVelY8;
     }
-    
 
     vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
 
 
-    // TODO: ошибка в точных сравнениях ?
 
-    // if (abs(dir / length(deltaVel70) * deltaVel70.x * mw7) < 1000000.0) {
 
-    if (false) {
-        finalColor.r = 0.0;
-        finalColor.b = 0.0;
-        finalColor.g = 0.0;
+
+    float massIN4 = I4.r * dot(vel4, -e4) / S4;
+    float massIN3 = I3.r * dot(vel3, -e3) / S3;
+    float massIN2 = I2.r * dot(vel2, -e2) / S2;
+    float massIN5 = I5.r * dot(vel5, -e5) / S5;
+    float massIN1 = I1.r * dot(vel1, -e1) / S1;
+
+    float massOUT6 = w06 * I0.r;
+    float massOUT7 = w07 * I0.r;
+    float massOUT8 = w08 * I0.r;
+    float massOUT1 = w01 * I0.r;
+    float massOUT5 = w05 * I0.r;
+
+    if (massIN5 == 0.0) {
+        finalColor = vec4(0.0);
     }
+
+
+
+
 
     fragColor = finalColor;
 
