@@ -121,80 +121,92 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float w08 = dot(vel0, e8) / S;
 
     float checkSum = 0.0;
-//    if (w01 > 0.0) {
-//        massOutflow += w01 * I0.r;
-//        checkSum += w01;
-//    }
-//
-//    if (w02 > 0.0) {
-//        massOutflow += w02 * I0.r;
-//        checkSum += w02;
-//    }
+    if (w01 > 0.0) {
+        massOutflow += w01 * I0.r;
+        checkSum += w01;
+    }
+
+    if (w02 > 0.0) {
+        massOutflow += w02 * I0.r;
+        checkSum += w02;
+    }
 
     if (w03 > 0.0) {
         massOutflow += w03 * I0.r;
         checkSum += w03;
     }
 
-//    if (w04 > 0.0) {
-//        massOutflow += w04 * I0.r;
-//        checkSum += w04;
-//    }
-//
-//    if (w05 > 0.0) {
-//        massOutflow += w05 * I0.r;
-//        checkSum += w05;
-//    }
-//
-//    if (w06 > 0.0) {
-//        massOutflow += w06 * I0.r;
-//        checkSum += w06;
-//    }
+    if (w04 > 0.0) {
+        massOutflow += w04 * I0.r;
+        checkSum += w04;
+    }
+
+    if (w05 > 0.0) {
+        massOutflow += w05 * I0.r;
+        checkSum += w05;
+    }
+
+    if (w06 > 0.0) {
+        massOutflow += w06 * I0.r;
+        checkSum += w06;
+    }
 
     if (w07 > 0.0) {
         massOutflow += w07 * I0.r;
         checkSum += w07;
     }
 
-//    if (w08 > 0.0) {
-//        massOutflow += w08 * I0.r;
-//        checkSum += w08;
-//    }
+    if (w08 > 0.0) {
+        massOutflow += w08 * I0.r;
+        checkSum += w08;
+    }
 
 
 
     // total mass inflow
     float massInflow = 0.0;
 
-//    // point 1
-//    vec2 vel1 = vec2(I1.g, I1.b);
-//    float S1 = weightSum(vel1);
-//    if (dot(vel1, -e1) > 0.0)
-//        massInflow = I1.r * dot(vel1, -e1) / S1;
-//
-//    // velocity
-//    float mw0 = I0.r / (I0.r + I1.r);
-//    float mw1 = I1.r / (I0.r + I1.r);
-//
-//    vec2 v10 = dot(vel1, -e1) * -e1;
-//    float newVelX1 = vel0.x * mw0 + mw1 * v10.x;
-//    float newVelY1 = vel0.x * mw0 + mw1 * v10.y;
-//
-//
-//
-//    // point 2
-//    vec2 vel2 = vec2(I2.g, I2.b);
-//    float S2 = weightSum(vel2);
-//    if (dot(vel2, -e2) > 0.0)
-//        massInflow = I2.r * dot(vel2, -e2) / S2;
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I2.r);
-//    float mw2 = I2.r / (I0.r + I2.r);
-//
-//    vec2 v20 = dot(vel2, -e2) * -e2;
-//    float newVelX2 = vel0.x * mw0 + mw2 * v20.x;
-//    float newVelY2 = vel0.x * mw0 + mw2 * v20.y;
+    // point 1
+    vec2 vel1 = vec2(I1.g, I1.b);
+    float S1 = weightSum(vel1);
+    if (dot(vel1, -e1) > 0.0)
+        massInflow = I1.r * dot(vel1, -e1) / S1;
+
+    // velocity
+    float mw0 = I0.r / (I0.r + I1.r);
+    float mw1 = I1.r / (I0.r + I1.r);
+
+    vec2 deltaVel10 = vel1 - vel0;
+    float newVelX1 = I0.g;
+    float newVelY1 = I0.b;
+
+    float dir = dot(deltaVel10, e1);
+    if (dir < 0.0 && length(vel1) > 0.0001 && length(deltaVel10) > 0.0001) {
+        newVelX1 -= dir / length(deltaVel10) * deltaVel10.x * mw1;
+        newVelY1 -= dir / length(deltaVel10) * deltaVel10.y * mw1;
+    }
+
+
+
+    // point 2
+    vec2 vel2 = vec2(I2.g, I2.b);
+    float S2 = weightSum(vel2);
+    if (dot(vel2, -e2) > 0.0)
+        massInflow = I2.r * dot(vel2, -e2) / S2;
+
+    // velocity
+    mw0 = I0.r / (I0.r + I2.r);
+    float mw2 = I2.r / (I0.r + I2.r);
+
+    vec2 deltaVel20 = vel2 - vel0;
+    float newVelX2 = I0.g;
+    float newVelY2 = I0.b;
+
+    dir = dot(deltaVel20, e2);
+    if (dir < 0.0 && length(vel2) > 0.0001 && length(deltaVel20) > 0.0001) {
+        newVelX2 -= dir / length(deltaVel20) * deltaVel20.x * mw2;
+        newVelY2 -= dir / length(deltaVel20) * deltaVel20.y * mw2;
+    }
 
 
 
@@ -208,70 +220,90 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         massInflow = I3.r * dot(vel3, -e3) / S3;
 
     // velocity
-    float mw0 = I0.r / (I0.r + I3.r);
+    mw0 = I0.r / (I0.r + I3.r);
     float mw3 = I3.r / (I0.r + I3.r);
 
     vec2 deltaVel30 = vel3 - vel0;
     float newVelX3 = I0.g;
     float newVelY3 = I0.b;
 
-    float dir = dot(deltaVel30, e3);
-
-    // TODO: что-то не так с формулой
+    dir = dot(deltaVel30, e3);
     if (dir < 0.0 && length(vel3) > 0.0001 && length(deltaVel30) > 0.0001) {
-
-        // TODO: newVelX3 слишком большой
         newVelX3 -= dir / length(deltaVel30) * deltaVel30.x * mw3;
         newVelY3 -= dir / length(deltaVel30) * deltaVel30.y * mw3;
     }
 
 
+    
+    // point 4
+    vec2 vel4 = vec2(I4.g, I4.b);
+    float S4 = weightSum(vel4);
 
-//    // point 4
-//    vec2 vel4 = vec2(I4.g, I4.b);
-//    float S4 = weightSum(vel4);
-//    if (dot(vel4, -e4) > 0.0)
-//        massInflow = I4.r * dot(vel4, -e4) / S4;
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I4.r);
-//    float mw4 = I4.r / (I0.r + I4.r);
-//
-//    vec2 v40 = dot(vel4, -e4) * -e4;
-//    float newVelX4 = vel0.x * mw0 + mw4 * v40.x;
-//    float newVelY4 = vel0.x * mw0 + mw4 * v40.y;
-//
-//
-//
-//
-//    // point 5
-//    vec2 vel5 = vec2(I5.g, I5.b);
-//    float S5 = weightSum(vel5);
-//    if (dot(vel5, -e5) > 0.0)
-//        massInflow = I5.r * dot(vel5, -e5) / S5;
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I5.r);
-//    float mw5 = I5.r / (I0.r + I5.r);
-//
-//    vec2 v50 = dot(vel5, -e5) * -e5;
-//    float newVelX5 = vel0.x * mw0 + mw5 * v50.x;
-//    float newVelY5 = vel0.x * mw0 + mw5 * v50.y;
+    // TODO: massInflow может быть отрицательным ?
+    if (dot(vel4, -e4) > 0.0)
+        massInflow = I4.r * dot(vel4, -e4) / S4;
 
+    // velocity
+    mw0 = I0.r / (I0.r + I4.r);
+    float mw4 = I4.r / (I0.r + I4.r);
 
-//    // point 6
-//    vec2 vel6 = vec2(I6.g, I6.b);
-//    float S6 = weightSum(vel6);
-//    if (dot(vel6, -e6) > 0.0)
-//        massInflow = I6.r * dot(vel6, -e6) / S6;
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I6.r);
-//    float mw6 = I6.r / (I0.r + I6.r);
-//
-//    vec2 v60 = dot(vel6, -e6) * -e6;
-//    float newVelX6 = vel0.x * mw0 + mw6 * v60.x;
-//    float newVelY6 = vel0.x * mw0 + mw6 * v60.y;
+    vec2 deltaVel40 = vel4 - vel0;
+    float newVelX4 = I0.g;
+    float newVelY4 = I0.b;
+
+    dir = dot(deltaVel40, e4);
+    if (dir < 0.0 && length(vel4) > 0.0001 && length(deltaVel40) > 0.0001) {
+        newVelX4 -= dir / length(deltaVel40) * deltaVel40.x * mw4;
+        newVelY4 -= dir / length(deltaVel40) * deltaVel40.y * mw4;
+    }
+    
+    
+    
+    // point 5
+    vec2 vel5 = vec2(I5.g, I5.b);
+    float S5 = weightSum(vel5);
+
+    // TODO: massInflow может быть отрицательным ?
+    if (dot(vel5, -e5) > 0.0)
+        massInflow = I5.r * dot(vel5, -e5) / S5;
+
+    // velocity
+    mw0 = I0.r / (I0.r + I5.r);
+    float mw5 = I5.r / (I0.r + I5.r);
+
+    vec2 deltaVel50 = vel5 - vel0;
+    float newVelX5 = I0.g;
+    float newVelY5 = I0.b;
+
+    dir = dot(deltaVel50, e5);
+    if (dir < 0.0 && length(vel5) > 0.0001 && length(deltaVel50) > 0.0001) {
+        newVelX5 -= dir / length(deltaVel50) * deltaVel50.x * mw5;
+        newVelY5 -= dir / length(deltaVel50) * deltaVel50.y * mw5;
+    }
+    
+    
+
+    // point 6
+    vec2 vel6 = vec2(I6.g, I6.b);
+    float S6 = weightSum(vel6);
+
+    // TODO: massInflow может быть отрицательным ?
+    if (dot(vel6, -e6) > 0.0)
+        massInflow = I6.r * dot(vel6, -e6) / S6;
+
+    // velocity
+    mw0 = I0.r / (I0.r + I6.r);
+    float mw6 = I6.r / (I0.r + I6.r);
+
+    vec2 deltaVel60 = vel6 - vel0;
+    float newVelX6 = I0.g;
+    float newVelY6 = I0.b;
+
+    dir = dot(deltaVel60, e6);
+    if (dir < 0.0 && length(vel6) > 0.0001 && length(deltaVel60) > 0.0001) {
+        newVelX6 -= dir / length(deltaVel60) * deltaVel60.x * mw6;
+        newVelY6 -= dir / length(deltaVel60) * deltaVel60.y * mw6;
+    }
 
 
 
@@ -293,25 +325,28 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         newVelX7 -= dir / length(deltaVel70) * deltaVel70.x * mw7;
         newVelY7 -= dir / length(deltaVel70) * deltaVel70.y * mw7;
     }
+    
 
 
+    // point 8
+    vec2 vel8 = vec2(I8.g, I8.b);
+    float S8 = weightSum(vel8);
+    if (dot(vel8, -e8) > 0.0)
+        massInflow = I8.r * dot(vel8, -e8) / S8;
 
+    // velocity
+    mw0 = I0.r / (I0.r + I8.r);
+    float mw8 = I8.r / (I0.r + I8.r);
 
-//    // point 8
-//    vec2 vel8 = vec2(I8.g, I8.b);
-//    float S8 = weightSum(vel8);
-//    if (dot(vel8, -e8) > 0.0)
-//        massInflow = I8.r * dot(vel8, -e8) / S8;
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I8.r);
-//    float mw8 = I8.r / (I0.r + I8.r);
-//
-//    vec2 v80 = dot(vel8, -e8) * -e8;
-//    float newVelX8 = vel0.x * mw0 + mw8 * v80.x;
-//    float newVelY8 = vel0.x * mw0 + mw8 * v80.y;
-
-
+    vec2 deltaVel80 = vel8 - vel0;
+    float newVelX8 = I0.g;
+    float newVelY8 = I0.b;
+    dir = dot(deltaVel80, e8);
+    if (dir < 0.0 && length(vel8) > 0.0001 && length(deltaVel80) > 0.0001) {
+        newVelX8 -= dir / length(deltaVel80) * deltaVel80.x * mw8;
+        newVelY8 -= dir / length(deltaVel80) * deltaVel80.y * mw8;
+    }
+    
 
     float newMass = I0.r - massOutflow + massInflow;
 
@@ -319,14 +354,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float newVelX0 = 0.0;
     float newVelY0 = 0.0;
     if (newMass > 0.0) {
-//       newVelX0 += newVelX1 + newVelX2 + newVelX3 + newVelX4 + newVelX5 + newVelX6 + newVelX7 + newVelX8;
-//       newVelY0 += newVelY1 + newVelY2 + newVelY3 + newVelY4 + newVelY5 + newVelY6 + newVelY7 + newVelY8;
-
-        newVelX0 += newVelX3 + newVelX7;
-        newVelY0 += newVelY3 + newVelY7;
+       newVelX0 += newVelX1 + newVelX2 + newVelX3 + newVelX4 + newVelX5 + newVelX6 + newVelX7 + newVelX8;
+       newVelY0 += newVelY1 + newVelY2 + newVelY3 + newVelY4 + newVelY5 + newVelY6 + newVelY7 + newVelY8;
     }
-
-
+    
 
     vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
 
