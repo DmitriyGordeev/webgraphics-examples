@@ -370,6 +370,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float massIN2 = I2.r * dot(vel2, -e2) / S2;
     float massIN5 = I5.r * dot(vel5, -e5) / S5;
     float massIN1 = I1.r * dot(vel1, -e1) / S1;
+    float massIN6 = I6.r * dot(vel6, -e6) / S6;  // TODO: ошибка здесь! massIN6 отрицательный
+
+
 
     float massOUT6 = w06 * I0.r;
     float massOUT7 = w07 * I0.r;
@@ -377,10 +380,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float massOUT1 = w01 * I0.r;
     float massOUT5 = w05 * I0.r;
 
-    if (massIN5 == 0.0) {
+    float massOUT2 = w02 * I0.r;
+
+    if (massIN6 < 0.0) {
         finalColor = vec4(0.0);
     }
-
 
 
 
