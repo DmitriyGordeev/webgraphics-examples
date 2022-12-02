@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.001;
+float offset = 0.03;
 
 
 const float PI = 3.1415926535;
@@ -54,13 +54,13 @@ const float a8 = 7.0 * PI / 4.0;
 
 
 
-const vec2 e1 = vec2(cos(a1), sin(a1));
+const vec2 e1 = vec2(1.0, 0.0);
 const vec2 e2 = vec2(cos(a2), sin(a2));
-const vec2 e3 = vec2(cos(a3), sin(a3));
+const vec2 e3 = vec2(0.0, 1.0);
 const vec2 e4 = vec2(cos(a4), sin(a4));
-const vec2 e5 = vec2(cos(a5), sin(a5));
+const vec2 e5 = vec2(-1.0, 0.0);
 const vec2 e6 = vec2(cos(a6), sin(a6));
-const vec2 e7 = vec2(cos(a7), sin(a7));
+const vec2 e7 = vec2(0.0, -1.0);
 const vec2 e8 = vec2(cos(a8), sin(a8));
 
 
@@ -202,6 +202,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // point 3
     vec2 vel3 = vec2(I3.g, I3.b);
     float S3 = weightSum(vel3);
+
+    // TODO: massInflow может быть отрицательным ?
     if (dot(vel3, -e3) > 0.0)
         massInflow = I3.r * dot(vel3, -e3) / S3;
 
@@ -213,9 +215,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float newVelX3 = I0.g;
     float newVelY3 = I0.b;
 
-    // TODO: условие направления правильное
     float dir = dot(deltaVel30, e3);
-    if (dir < 0.0) {
+
+    // TODO: что-то не так с формулой
+    if (dir < 0.0 && length(vel3) > 0.0001 && length(deltaVel30) > 0.0001) {
+
+        // TODO: newVelX3 слишком большой
         newVelX3 -= dir / length(deltaVel30) * deltaVel30.x * mw3;
         newVelY3 -= dir / length(deltaVel30) * deltaVel30.y * mw3;
     }
@@ -284,7 +289,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float newVelX7 = I0.g;
     float newVelY7 = I0.b;
     dir = dot(deltaVel70, e7);
-    if (dir < 0.0) {
+    if (dir < 0.0 && length(vel7) > 0.0001 && length(deltaVel70) > 0.0001) {
         newVelX7 -= dir / length(deltaVel70) * deltaVel70.x * mw7;
         newVelY7 -= dir / length(deltaVel70) * deltaVel70.y * mw7;
     }
@@ -327,6 +332,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // TODO: ошибка в точных сравнениях ?
+
+    // if (abs(dir / length(deltaVel70) * deltaVel70.x * mw7) < 1000000.0) {
 
     if (false) {
         finalColor.r = 0.0;
