@@ -170,7 +170,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 vel1 = vec2(I1.g, I1.b);
     float S1 = weightSum(vel1);
     if (dot(vel1, -e1) > 0.0)
-        massInflow = I1.r * dot(vel1, -e1) / S1;
+        massInflow += I1.r * dot(vel1, -e1) / S1;
 
     // velocity
     float mw0 = I0.r / (I0.r + I1.r);
@@ -192,7 +192,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 vel2 = vec2(I2.g, I2.b);
     float S2 = weightSum(vel2);
     if (dot(vel2, -e2) > 0.0)
-        massInflow = I2.r * dot(vel2, -e2) / S2;
+        massInflow += I2.r * dot(vel2, -e2) / S2;
 
     // velocity
     mw0 = I0.r / (I0.r + I2.r);
@@ -217,7 +217,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // TODO: massInflow может быть отрицательным ?
     if (dot(vel3, -e3) > 0.0)
-        massInflow = I3.r * dot(vel3, -e3) / S3;
+        massInflow += I3.r * dot(vel3, -e3) / S3;
 
     // velocity
     mw0 = I0.r / (I0.r + I3.r);
@@ -241,7 +241,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // TODO: massInflow может быть отрицательным ?
     if (dot(vel4, -e4) > 0.0)
-        massInflow = I4.r * dot(vel4, -e4) / S4;
+        massInflow += I4.r * dot(vel4, -e4) / S4;
 
     // velocity
     mw0 = I0.r / (I0.r + I4.r);
@@ -265,7 +265,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // TODO: massInflow может быть отрицательным ?
     if (dot(vel5, -e5) > 0.0)
-        massInflow = I5.r * dot(vel5, -e5) / S5;
+        massInflow += I5.r * dot(vel5, -e5) / S5;
 
     // velocity
     mw0 = I0.r / (I0.r + I5.r);
@@ -289,7 +289,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // TODO: massInflow может быть отрицательным ?
     if (dot(vel6, -e6) > 0.0)
-        massInflow = I6.r * dot(vel6, -e6) / S6;
+        massInflow += I6.r * dot(vel6, -e6) / S6;
 
     // velocity
     mw0 = I0.r / (I0.r + I6.r);
@@ -311,7 +311,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 vel7 = vec2(I7.g, I7.b);
     float S7 = weightSum(vel7);
     if (dot(vel7, -e7) > 0.0)
-        massInflow = I7.r * dot(vel7, -e7) / S7;
+        massInflow += I7.r * dot(vel7, -e7) / S7;
 
     // velocity
     mw0 = I0.r / (I0.r + I7.r);
@@ -332,7 +332,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 vel8 = vec2(I8.g, I8.b);
     float S8 = weightSum(vel8);
     if (dot(vel8, -e8) > 0.0)
-        massInflow = I8.r * dot(vel8, -e8) / S8;
+        massInflow += I8.r * dot(vel8, -e8) / S8;
 
     // velocity
     mw0 = I0.r / (I0.r + I8.r);
@@ -355,8 +355,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float newVelX0 = 0.0;
     float newVelY0 = 0.0;
     if (newMass > 0.0) {
-       newVelX0 += newVelX1 + newVelX2 + newVelX3 + newVelX4 + newVelX5 + newVelX6 + newVelX7 + newVelX8;
-       newVelY0 += newVelY1 + newVelY2 + newVelY3 + newVelY4 + newVelY5 + newVelY6 + newVelY7 + newVelY8;
+//        newVelX0 = newVelX3 + newVelX7;
+//        newVelY0 = newVelY3 + newVelY7;
+
+        newVelX0 += newVelX1 + newVelX2 + newVelX3 + newVelX4 + newVelX5 + newVelX6 + newVelX7 + newVelX8;
+        newVelY0 += newVelY1 + newVelY2 + newVelY3 + newVelY4 + newVelY5 + newVelY6 + newVelY7 + newVelY8;
     }
 
     vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
@@ -365,24 +368,24 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
 
-    float massIN4 = I4.r * dot(vel4, -e4) / S4;
-    float massIN3 = I3.r * dot(vel3, -e3) / S3;
-    float massIN2 = I2.r * dot(vel2, -e2) / S2;
-    float massIN5 = I5.r * dot(vel5, -e5) / S5;
-    float massIN1 = I1.r * dot(vel1, -e1) / S1;
-    float massIN6 = I6.r * dot(vel6, -e6) / S6;  // TODO: ошибка здесь! massIN6 отрицательный
+//    float massIN4 = I4.r * dot(vel4, -e4) / S4;
+//    float massIN3 = I3.r * dot(vel3, -e3) / S3;
+//    float massIN2 = I2.r * dot(vel2, -e2) / S2;
+//    float massIN5 = I5.r * dot(vel5, -e5) / S5;
+//    float massIN1 = I1.r * dot(vel1, -e1) / S1;
+//    float massIN6 = I6.r * dot(vel6, -e6) / S6;  // TODO: ошибка здесь! massIN6 отрицательный
+//
+//
+//
+//    float massOUT6 = w06 * I0.r;
+//    float massOUT7 = w07 * I0.r;
+//    float massOUT8 = w08 * I0.r;
+//    float massOUT1 = w01 * I0.r;
+//    float massOUT5 = w05 * I0.r;
+//
+//    float massOUT2 = w02 * I0.r;
 
-
-
-    float massOUT6 = w06 * I0.r;
-    float massOUT7 = w07 * I0.r;
-    float massOUT8 = w08 * I0.r;
-    float massOUT1 = w01 * I0.r;
-    float massOUT5 = w05 * I0.r;
-
-    float massOUT2 = w02 * I0.r;
-
-    if (massIN6 < 0.0) {
+    if (abs(massInflow - massOutflow) < 0.1) {
         finalColor = vec4(0.0);
     }
 
