@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.005;
+float offset = 0.01;
 
 
 const float PI = 3.1415926535;
@@ -234,7 +234,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     }
 
 
-    
+
     // point 4
     vec2 vel4 = vec2(I4.g, I4.b);
     float S4 = weightSum(vel4);
@@ -256,9 +256,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         newVelX4 -= dir / length(deltaVel40) * deltaVel40.x * mw4;
         newVelY4 -= dir / length(deltaVel40) * deltaVel40.y * mw4;
     }
-    
-    
-    
+
+
+
     // point 5
     vec2 vel5 = vec2(I5.g, I5.b);
     float S5 = weightSum(vel5);
@@ -280,14 +280,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         newVelX5 -= dir / length(deltaVel50) * deltaVel50.x * mw5;
         newVelY5 -= dir / length(deltaVel50) * deltaVel50.y * mw5;
     }
-    
-    
+
+
 
     // point 6
     vec2 vel6 = vec2(I6.g, I6.b);
     float S6 = weightSum(vel6);
 
-    // TODO: massInflow может быть отрицательным ?
     if (dot(vel6, -e6) > 0.0)
         massInflow += I6.r * dot(vel6, -e6) / S6;
 
@@ -325,7 +324,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         newVelX7 -= dir / length(deltaVel70) * deltaVel70.x * mw7;
         newVelY7 -= dir / length(deltaVel70) * deltaVel70.y * mw7;
     }
-    
+
 
 
     // point 8
@@ -346,8 +345,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         newVelX8 -= dir / length(deltaVel80) * deltaVel80.x * mw8;
         newVelY8 -= dir / length(deltaVel80) * deltaVel80.y * mw8;
     }
-    
-    // TODO: if massOutflow != I0.r -> сделать доп условие точного сравнения ?
+
+
 
     float newMass = I0.r - massOutflow + massInflow;
 
@@ -355,9 +354,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float newVelX0 = 0.0;
     float newVelY0 = 0.0;
     if (newMass > 0.0) {
-//        newVelX0 = newVelX3 + newVelX7;
-//        newVelY0 = newVelY3 + newVelY7;
-
         newVelX0 += newVelX1 + newVelX2 + newVelX3 + newVelX4 + newVelX5 + newVelX6 + newVelX7 + newVelX8;
         newVelY0 += newVelY1 + newVelY2 + newVelY3 + newVelY4 + newVelY5 + newVelY6 + newVelY7 + newVelY8;
     }
@@ -366,31 +362,36 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
 
+    float massIN1 = I1.r * dot(vel1, -e1) / S1;
+    float massIN2 = I2.r * dot(vel2, -e2) / S2;
+    float massIN3 = I3.r * dot(vel3, -e3) / S3;
+    float massIN4 = I4.r * dot(vel4, -e4) / S4;
+    float massIN5 = I5.r * dot(vel5, -e5) / S5;
+    float massIN6 = I6.r * dot(vel6, -e6) / S6;  // TODO: ошибка здесь! massIN6 отрицательный
+    float massIN7 = I7.r * dot(vel7, -e7) / S7;
+    float massIN8 = I8.r * dot(vel8, -e8) / S8;
 
 
-//    float massIN4 = I4.r * dot(vel4, -e4) / S4;
-//    float massIN3 = I3.r * dot(vel3, -e3) / S3;
-//    float massIN2 = I2.r * dot(vel2, -e2) / S2;
-//    float massIN5 = I5.r * dot(vel5, -e5) / S5;
-//    float massIN1 = I1.r * dot(vel1, -e1) / S1;
-//    float massIN6 = I6.r * dot(vel6, -e6) / S6;  // TODO: ошибка здесь! massIN6 отрицательный
-//
-//
-//
-//    float massOUT6 = w06 * I0.r;
-//    float massOUT7 = w07 * I0.r;
-//    float massOUT8 = w08 * I0.r;
-//    float massOUT1 = w01 * I0.r;
-//    float massOUT5 = w05 * I0.r;
-//
-//    float massOUT2 = w02 * I0.r;
+    float massOUT1 = w01 * I0.r;
+    float massOUT2 = w02 * I0.r;
+    float massOUT3 = w03 * I0.r;
+    float massOUT4 = w04 * I0.r;
+    float massOUT5 = w05 * I0.r;
+    float massOUT6 = w06 * I0.r;
+    float massOUT7 = w07 * I0.r;
+    float massOUT8 = w08 * I0.r;
 
-    if (abs(massInflow - massOutflow) < 0.1) {
+
+    // TODO: приток массы уменьшается - почему ?
+    // if (abs(massIN2 + massIN3 + massIN4 - massOUT6 - massOUT7 - massOUT8) < 0.0001) {
+    //    finalColor = vec4(0.0);
+    //}
+
+
+    // massOutflow и massInflow уменьшаются с (потому что размазываются?)
+    if (false) {
         finalColor = vec4(0.0);
     }
-
-
-
 
     fragColor = finalColor;
 
@@ -398,9 +399,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawBox(figureCenter, uv, 0.3, 0.4)) {
+        if (drawCircle(figureCenter, uv, 0.1)) {
 
-            fragColor = itc(vec3(1.0, 0.0, -1.0));
+            fragColor = itc(vec3(1.0, 0.0, -0.01));
 
         }
         else {
