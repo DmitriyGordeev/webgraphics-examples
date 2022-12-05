@@ -90,23 +90,22 @@ float weightSum(vec2 vel) {
 
 float getMassInflow(vec2 vel, vec2 e, float mass) {
     float s = weightSum(vel);
-    if (dot(vel, -e) > 0.0)
-    return mass * dot(vel, -e) / s;
+    if (dot(vel, -e) > 0.0) {
+        return mass * dot(vel, -e) / s;
+    }
     return 0.0;
 }
 
 
 vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
-    // float mw0 = mass0 / (mass0 + mass);
     float mw = mass / (mass0 + mass);
 
     vec2 deltaVel = vel - vel0;
     float dir = dot(deltaVel, e);
-    if (dir < 0.0 && length(vel) > 0.0001 && length(deltaVel) > 0.0001) {
+    if (dir < 0.0 && length(vel) > 0.000001 && length(deltaVel) > 0.000001) {
         vel.x -= dir / length(deltaVel) * deltaVel.x * mw;
         vel.y -= dir / length(deltaVel) * deltaVel.y * mw;
     }
-
     return vel;
 }
 
@@ -150,7 +149,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float w07 = 0.0;
     float w08 = 0.0;
 
-    if (S > 0.000001) {
+    if (S > 0.01) {
         w01 = dot(vel0, e1) / S;
         w02 = dot(vel0, e2) / S;
         w03 = dot(vel0, e3) / S;
