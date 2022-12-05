@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.01;
+float offset = 0.005;
 
 
 const float PI = 3.1415926535;
@@ -67,24 +67,52 @@ const vec2 e8 = vec2(cos(a8), sin(a8));
 
 float weightSum(vec2 vel) {
     float outValue = 0.0;
-//    if (dot(vel, e1) > 0.0)
-//        outValue += dot(vel, e1);
+    if (dot(vel, e1) > 0.0)
+    outValue += dot(vel, e1);
     if (dot(vel, e2) > 0.0)
-        outValue += dot(vel, e2);
-//    if (dot(vel, e3) > 0.0)
-//        outValue += dot(vel, e3);
-//    if (dot(vel, e4) > 0.0)
-//        outValue += dot(vel, e4);
-//    if (dot(vel, e5) > 0.0)
-//        outValue += dot(vel, e5);
+    outValue += dot(vel, e2);
+    if (dot(vel, e3) > 0.0)
+    outValue += dot(vel, e3);
+    if (dot(vel, e4) > 0.0)
+    outValue += dot(vel, e4);
+    if (dot(vel, e5) > 0.0)
+    outValue += dot(vel, e5);
     if (dot(vel, e6) > 0.0)
-        outValue += dot(vel, e6);
-//    if (dot(vel, e7) > 0.0)
-//        outValue += dot(vel, e7);
-//    if (dot(vel, e8) > 0.0)
-//        outValue += dot(vel, e8);
+    outValue += dot(vel, e6);
+    if (dot(vel, e7) > 0.0)
+    outValue += dot(vel, e7);
+    if (dot(vel, e8) > 0.0)
+    outValue += dot(vel, e8);
     return outValue;
 }
+
+
+
+float getMassInflow(vec2 vel, vec2 e, float mass) {
+    float s = weightSum(vel);
+    if (dot(vel, -e) > 0.0)
+    return mass * dot(vel, -e) / s;
+    return 0.0;
+}
+
+
+vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
+    // float mw0 = mass0 / (mass0 + mass);
+    float mw = mass / (mass0 + mass);
+
+    vec2 deltaVel = vel - vel0;
+    float dir = dot(deltaVel, e);
+    if (dir < 0.0 && length(vel) > 0.0001 && length(deltaVel) > 0.0001) {
+        vel.x -= dir / length(deltaVel) * deltaVel.x * mw;
+        vel.y -= dir / length(deltaVel) * deltaVel.y * mw;
+    }
+
+    return vel;
+}
+
+
+
+
 
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
@@ -133,360 +161,113 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         w08 = dot(vel0, e8) / S;
     }
 
-    float checkSum = 0.0;
-//    if (w01 > 0.0) {
-//        if (I1.r + w01 * I0.r > 1.0)
-//            massOutflow += 1.0 - I1.r;
-//        else
-//            massOutflow += w01 * I0.r;
-//        checkSum += w01;
-//    }
+    if (w01 > 0.0) {
+        massOutflow += w01 * I0.r;
+    }
 
     if (w02 > 0.0) {
-        if (I2.r + w02 * I0.r > 1.0)
-            massOutflow += 1.0 - I2.r;
-        else
-            massOutflow += w02 * I0.r;
-        checkSum += w02;
+        massOutflow += w02 * I0.r;
     }
 
-//    if (w03 > 0.0) {
-//        if (I3.r + w03 * I0.r > 1.0)
-//            massOutflow += 1.0 - I3.r;
-//        else
-//            massOutflow += w03 * I0.r;
-//        checkSum += w03;
-//    }
+    if (w03 > 0.0) {
+        massOutflow += w03 * I0.r;
+    }
 
-//    if (w04 > 0.0) {
-//        if (I4.r + w04 * I0.r > 1.0)
-//            massOutflow += 1.0 - I4.r;
-//        else
-//            massOutflow += w04 * I0.r;
-//        checkSum += w04;
-//    }
-//
-//    if (w05 > 0.0) {
-//        if (I5.r + w05 * I0.r > 1.0)
-//            massOutflow += 1.0 - I5.r;
-//        else
-//            massOutflow += w05 * I0.r;
-//        checkSum += w05;
-//    }
+    if (w04 > 0.0) {
+        massOutflow += w04 * I0.r;
+    }
+
+    if (w05 > 0.0) {
+        massOutflow += w05 * I0.r;
+    }
 
     if (w06 > 0.0) {
-        if (I6.r + w06 * I0.r > 1.0)
-            massOutflow += 1.0 - I6.r;
-        else
-            massOutflow += w06 * I0.r;
-        checkSum += w06;
+        massOutflow += w06 * I0.r;
     }
 
-//    if (w07 > 0.0) {
-//        if (I7.r + w07 * I0.r > 1.0)
-//            massOutflow += 1.0 - I7.r;
-//        else
-//            massOutflow += w07 * I0.r;
-//
-//        checkSum += w07;
-//    }
-//
-//    if (w08 > 0.0) {
-//        if (I8.r + w08 * I0.r > 1.0)
-//            massOutflow += 1.0 - I8.r;
-//        else
-//            massOutflow += w08 * I0.r;
-//        checkSum += w08;
-//    }
+    if (w07 > 0.0) {
+        massOutflow += w07 * I0.r;
+    }
+
+    if (w08 > 0.0) {
+        massOutflow += w08 * I0.r;
+    }
 
 
 
     // total mass inflow
     float massInflow = 0.0;
 
-//    // point 1
-//    vec2 vel1 = vec2(I1.g, I1.b);
-//    float S1 = weightSum(vel1);
-//    if (dot(vel1, -e1) > 0.0) {
-//        float massInflow10 = I1.r * dot(vel1, -e1) / S1;
-//        if (I0.r + massInflow10 > 1.0)
-//            massInflow += 1.0 - I0.r;
-//        else
-//            massInflow += massInflow10;
-//    }
-//
-//    // velocity
-//    float mw0 = I0.r / (I0.r + I1.r);
-//    float mw1 = I1.r / (I0.r + I1.r);
-//
-//    vec2 deltaVel10 = vel1 - vel0;
-//    float newVelX1 = I0.g;
-//    float newVelY1 = I0.b;
-//
-//    float dir = dot(deltaVel10, e1);
-//    if (dir < 0.0 && length(vel1) > 0.0001 && length(deltaVel10) > 0.0001) {
-//        newVelX1 -= dir / length(deltaVel10) * deltaVel10.x * mw1;
-//        newVelY1 -= dir / length(deltaVel10) * deltaVel10.y * mw1;
-//    }
 
+    // point 1
+    vec2 vel1 = vec2(I1.g, I1.b);
+    massInflow += getMassInflow(vel1, e1, I1.r);
+    vec2 newVel10 = getNewVel(vel0, vel1, I0.r, I1.r, e1);
 
 
     // point 2
     vec2 vel2 = vec2(I2.g, I2.b);
-    float S2 = weightSum(vel2);
-    if (dot(vel2, -e2) > 0.0) {
-        float massInflow20 = I2.r * dot(vel2, -e2) / S2;
-        if (I0.r + massInflow20 > 1.0)
-            massInflow += 1.0 - I0.r;
-        else
-            massInflow += massInflow20;
-    }
-
-    // velocity
-    float mw0 = I0.r / (I0.r + I2.r);
-    float mw2 = I2.r / (I0.r + I2.r);
-
-    vec2 deltaVel20 = vel2 - vel0;
-    float newVelX2 = I0.g;
-    float newVelY2 = I0.b;
-
-    float dir = dot(deltaVel20, e2);
-    if (dir < 0.0 && length(vel2) > 0.0001 && length(deltaVel20) > 0.0001) {
-        newVelX2 -= dir / length(deltaVel20) * deltaVel20.x * mw2;
-        newVelY2 -= dir / length(deltaVel20) * deltaVel20.y * mw2;
-    }
+    massInflow += getMassInflow(vel2, e2, I2.r);
+    vec2 newVel20 = getNewVel(vel0, vel2, I0.r, I2.r, e2);
 
 
+    // point 3
+    vec2 vel3 = vec2(I3.g, I3.b);
+    massInflow += getMassInflow(vel3, e3, I3.r);
+    vec2 newVel30 = getNewVel(vel0, vel3, I0.r, I3.r, e3);
 
 
-//    // point 3
-//    vec2 vel3 = vec2(I3.g, I3.b);
-//    float S3 = weightSum(vel3);
-//    if (dot(vel3, -e3) > 0.0) {
-//        float massInflow30 = I3.r * dot(vel3, -e3) / S3;
-//        if (I0.r + massInflow30 > 1.0)
-//            massInflow += 1.0 - I0.r;
-//        else
-//            massInflow += massInflow30;
-//    }
-//
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I3.r);
-//    float mw3 = I3.r / (I0.r + I3.r);
-//
-//    vec2 deltaVel30 = vel3 - vel0;
-//    float newVelX3 = I0.g;
-//    float newVelY3 = I0.b;
-//
-//    dir = dot(deltaVel30, e3);
-//    if (dir < 0.0 && length(vel3) > 0.0001 && length(deltaVel30) > 0.0001) {
-//        newVelX3 -= dir / length(deltaVel30) * deltaVel30.x * mw3;
-//        newVelY3 -= dir / length(deltaVel30) * deltaVel30.y * mw3;
-//    }
-//
-//
-//
-//    // point 4
-//    vec2 vel4 = vec2(I4.g, I4.b);
-//    float S4 = weightSum(vel4);
-//
-//    if (dot(vel4, -e4) > 0.0) {
-//        float massInflow40 = I4.r * dot(vel4, -e4) / S4;
-//        if (I0.r + massInflow40 > 1.0)
-//            massInflow += 1.0 - I0.r;
-//        else
-//            massInflow += massInflow40;
-//    }
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I4.r);
-//    float mw4 = I4.r / (I0.r + I4.r);
-//
-//    vec2 deltaVel40 = vel4 - vel0;
-//    float newVelX4 = I0.g;
-//    float newVelY4 = I0.b;
-//
-//    dir = dot(deltaVel40, e4);
-//    if (dir < 0.0 && length(vel4) > 0.0001 && length(deltaVel40) > 0.0001) {
-//        newVelX4 -= dir / length(deltaVel40) * deltaVel40.x * mw4;
-//        newVelY4 -= dir / length(deltaVel40) * deltaVel40.y * mw4;
-//    }
-//
-//
-//
-//    // point 5
-//    vec2 vel5 = vec2(I5.g, I5.b);
-//    float S5 = weightSum(vel5);
-//
-//    // TODO: massInflow может быть отрицательным ?
-//    if (dot(vel5, -e5) > 0.0) {
-//        float massInflow50 = I5.r * dot(vel5, -e5) / S5;
-//        if (I0.r + massInflow50 > 1.0)
-//            massInflow += 1.0 - I0.r;
-//        else
-//            massInflow += massInflow50;
-//    }
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I5.r);
-//    float mw5 = I5.r / (I0.r + I5.r);
-//
-//    vec2 deltaVel50 = vel5 - vel0;
-//    float newVelX5 = I0.g;
-//    float newVelY5 = I0.b;
-//
-//    dir = dot(deltaVel50, e5);
-//    if (dir < 0.0 && length(vel5) > 0.0001 && length(deltaVel50) > 0.0001) {
-//        newVelX5 -= dir / length(deltaVel50) * deltaVel50.x * mw5;
-//        newVelY5 -= dir / length(deltaVel50) * deltaVel50.y * mw5;
-//    }
+    // point 4
+    vec2 vel4 = vec2(I4.g, I4.b);
+    massInflow += getMassInflow(vel4, e4, I4.r);
+    vec2 newVel40 = getNewVel(vel0, vel4, I0.r, I4.r, e4);
 
+
+    // point 5
+    vec2 vel5 = vec2(I5.g, I5.b);
+    massInflow += getMassInflow(vel5, e5, I5.r);
+    vec2 newVel50 = getNewVel(vel0, vel5, I0.r, I5.r, e5);
 
 
     // point 6
     vec2 vel6 = vec2(I6.g, I6.b);
-    float S6 = weightSum(vel6);
-
-    if (dot(vel6, -e6) > 0.0) {
-        float massInflow60 = I6.r * dot(vel6, -e6) / S6;
-        if (I0.r + massInflow60 > 1.0)
-            massInflow += 1.0 - I0.r;
-        else
-            massInflow += massInflow60;
-    }
-
-    // velocity
-    mw0 = I0.r / (I0.r + I6.r);
-    float mw6 = I6.r / (I0.r + I6.r);
-
-    vec2 deltaVel60 = vel6 - vel0;
-    float newVelX6 = I0.g;
-    float newVelY6 = I0.b;
-
-    dir = dot(deltaVel60, e6);
-    if (dir < 0.0 && length(vel6) > 0.0001 && length(deltaVel60) > 0.0001) {
-        newVelX6 -= dir / length(deltaVel60) * deltaVel60.x * mw6;
-        newVelY6 -= dir / length(deltaVel60) * deltaVel60.y * mw6;
-    }
+    massInflow += getMassInflow(vel6, e6, I6.r);
+    vec2 newVel60 = getNewVel(vel0, vel6, I0.r, I6.r, e6);
 
 
+    // point 7
+    vec2 vel7 = vec2(I7.g, I7.b);
+    massInflow += getMassInflow(vel7, e7, I7.r);
+    vec2 newVel70 = getNewVel(vel0, vel7, I0.r, I7.r, e7);
 
-//    // point 7
-//    vec2 vel7 = vec2(I7.g, I7.b);
-//    float S7 = weightSum(vel7);
-//    if (dot(vel7, -e7) > 0.0) {
-//        float massInflow70 = I7.r * dot(vel7, -e7) / S7;
-//        if (I0.r + massInflow70 > 1.0)
-//            massInflow += 1.0 - I0.r;
-//        else
-//            massInflow += massInflow70;
-//    }
-//
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I7.r);
-//    float mw7 = I7.r / (I0.r + I7.r);
-//
-//    vec2 deltaVel70 = vel7 - vel0;
-//    float newVelX7 = I0.g;
-//    float newVelY7 = I0.b;
-//    dir = dot(deltaVel70, e7);
-//    if (dir < 0.0 && length(vel7) > 0.0001 && length(deltaVel70) > 0.0001) {
-//        newVelX7 -= dir / length(deltaVel70) * deltaVel70.x * mw7;
-//        newVelY7 -= dir / length(deltaVel70) * deltaVel70.y * mw7;
-//    }
-//
-//
-//    // point 8
-//    vec2 vel8 = vec2(I8.g, I8.b);
-//    float S8 = weightSum(vel8);
-//    if (dot(vel8, -e8) > 0.0) {
-//        float massInflow80 = I8.r * dot(vel8, -e8) / S8;
-//        if (I0.r + massInflow80 > 1.0)
-//            massInflow += 1.0 - I0.r;
-//        else
-//            massInflow += massInflow80;
-//    }
-//
-//    // velocity
-//    mw0 = I0.r / (I0.r + I8.r);
-//    float mw8 = I8.r / (I0.r + I8.r);
-//
-//    vec2 deltaVel80 = vel8 - vel0;
-//    float newVelX8 = I0.g;
-//    float newVelY8 = I0.b;
-//    dir = dot(deltaVel80, e8);
-//    if (dir < 0.0 && length(vel8) > 0.0001 && length(deltaVel80) > 0.0001) {
-//        newVelX8 -= dir / length(deltaVel80) * deltaVel80.x * mw8;
-//        newVelY8 -= dir / length(deltaVel80) * deltaVel80.y * mw8;
-//    }
 
+    // point 8
+    vec2 vel8 = vec2(I8.g, I8.b);
+    massInflow += getMassInflow(vel8, e8, I8.r);
+    vec2 newVel80 = getNewVel(vel0, vel8, I0.r, I8.r, e8);
 
 
     float newMass = I0.r - massOutflow + massInflow;
 
-    // TODO: newMass < 0.0 не выполняется, значит исчезает из-за newMass = 0
 
-    float newVelX0 = 0.0;
-    float newVelY0 = 0.0;
+    vec2 newVel = vec2(0.0);
     if (newMass > 0.0) {
-//        newVelX0 += newVelX1 + newVelX2 + newVelX3 + newVelX4 + newVelX5 + newVelX6 + newVelX7 + newVelX8;
-//        newVelY0 += newVelY1 + newVelY2 + newVelY3 + newVelY4 + newVelY5 + newVelY6 + newVelY7 + newVelY8;
-
-        newVelX0 += newVelX2 + newVelX6;
-        newVelY0 += newVelY2 + newVelY6;
+        newVel += newVel10 + newVel20 + newVel30 +
+                newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
     }
 
 
-
-
-    vec4 finalColor = itc(vec3(newMass, newVelX0, newVelY0));
-
-
-
-
-
-
-//    float massIN1 = I1.r * dot(vel1, -e1) / S1;
-//    float massIN2 = I2.r * dot(vel2, -e2) / S2;
-//    float massIN3 = I3.r * dot(vel3, -e3) / S3;
-//    float massIN4 = I4.r * dot(vel4, -e4) / S4;
-//    float massIN5 = I5.r * dot(vel5, -e5) / S5;
-//    float massIN6 = I6.r * dot(vel6, -e6) / S6;  // TODO: ошибка здесь! massIN6 отрицательный
-//    float massIN7 = I7.r * dot(vel7, -e7) / S7;
-//    float massIN8 = I8.r * dot(vel8, -e8) / S8;
-
-
-//    float massOUT1 = w01 * I0.r;
-//    float massOUT2 = w02 * I0.r;
-//    float massOUT3 = w03 * I0.r;
-//    float massOUT4 = w04 * I0.r;
-//    float massOUT5 = w05 * I0.r;
-//    float massOUT6 = w06 * I0.r;
-//    float massOUT7 = w07 * I0.r;
-//    float massOUT8 = w08 * I0.r;
-
-
-    // TODO: приток массы уменьшается - почему ?
-    // if (abs(massIN2 + massIN3 + massIN4 - massOUT6 - massOUT7 - massOUT8) < 0.0001) {
-    //    finalColor = vec4(0.0);
-    //}
-
-
-    // TODO: почему масса быстро лопается?
-    // внезапно становится равной нулю ?
+    vec4 finalColor = itc(vec3(newMass, newVel.x, newVel.y));
 
 
     fragColor = finalColor;
-
 
 
     // Initial figure
     if (iFrame < 2) {
         if (drawBox(figureCenter, uv, 0.2, 0.3)) {
 
-            fragColor = itc(vec3(1.0, 0.0, -0.01));
+            fragColor = itc(vec3(1.0, 0.0, -1.0));
 
         }
         else {
