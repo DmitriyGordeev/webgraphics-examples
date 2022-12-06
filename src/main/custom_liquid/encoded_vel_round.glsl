@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.05;
+float offset = 0.01;
 
 
 const float PI = 3.1415926535;
@@ -245,9 +245,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float dir70 = dot(deltaVel70, e7);
     float mw7 = I7.r / (I0.r + I7.r);
 
-    // TODO: length(deltaVel70) > 0.2 - ???
+    // TODO: проблема в том, что mw != 0 и deltaVel != 0 одновременно
     vec2 newVel70_Debug = vec2(0.0);
-    if (dir70 < 0.0 && length(vel7) > 0.000001 && length(deltaVel70) > 0.2) {
+    if (dir70 < 0.0 && length(vel7) > 0.000001 && length(deltaVel70) > 0.0000001) {
         newVel70_Debug.y -= dir70 / length(deltaVel70) * deltaVel70.y * mw7;
     }
 
@@ -270,13 +270,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
 
-
-
     vec4 finalColor = itc(vec3(newMass, newVel.x, newVel.y));
 
 
-
-    if (newVel70_Debug.y == 0.0) {
+    // TODO: проблема в том, что существует эта точка
+    if (I7.r > 0.0 && I7.r < 1.0 && vel7.y < 0.0 && vel7.y > -1.0) {
         finalColor.r = 1.0;
         finalColor.g = 1.0;
         finalColor.b = 1.0;
@@ -289,7 +287,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawBox(figureCenter, uv, 0.2, 0.3)) {
+        if (drawCircle(figureCenter, uv, 0.2)) {
 
             fragColor = itc(vec3(1.0, 0.0, -1.0));
 
