@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.005;
+float offset = 0.05;
 
 
 const float PI = 3.1415926535;
@@ -67,22 +67,22 @@ const vec2 e8 = vec2(cos(a8), sin(a8));
 
 float weightSum(vec2 vel) {
     float outValue = 0.0;
-    if (dot(vel, e1) > 0.0)
-    outValue += dot(vel, e1);
-    if (dot(vel, e2) > 0.0)
-    outValue += dot(vel, e2);
+//    if (dot(vel, e1) > 0.0)
+//    outValue += dot(vel, e1);
+//    if (dot(vel, e2) > 0.0)
+//    outValue += dot(vel, e2);
     if (dot(vel, e3) > 0.0)
     outValue += dot(vel, e3);
-    if (dot(vel, e4) > 0.0)
-    outValue += dot(vel, e4);
-    if (dot(vel, e5) > 0.0)
-    outValue += dot(vel, e5);
-    if (dot(vel, e6) > 0.0)
-    outValue += dot(vel, e6);
+//    if (dot(vel, e4) > 0.0)
+//    outValue += dot(vel, e4);
+//    if (dot(vel, e5) > 0.0)
+//    outValue += dot(vel, e5);
+//    if (dot(vel, e6) > 0.0)
+//    outValue += dot(vel, e6);
     if (dot(vel, e7) > 0.0)
     outValue += dot(vel, e7);
-    if (dot(vel, e8) > 0.0)
-    outValue += dot(vel, e8);
+//    if (dot(vel, e8) > 0.0)
+//    outValue += dot(vel, e8);
     return outValue;
 }
 
@@ -103,7 +103,7 @@ vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
     vec2 deltaVel = vel - vel0;
     float dir = dot(deltaVel, e);
     if (dir < 0.0 && length(vel) > 0.000001 && length(deltaVel) > 0.000001) {
-        vel.x -= dir / length(deltaVel) * deltaVel.x * mw;
+        // vel.x -= dir / length(deltaVel) * deltaVel.x * mw;
         vel.y -= dir / length(deltaVel) * deltaVel.y * mw;
     }
     return vel;
@@ -149,48 +149,48 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float w07 = 0.0;
     float w08 = 0.0;
 
-    if (S > 0.01) {
-        w01 = dot(vel0, e1) / S;
-        w02 = dot(vel0, e2) / S;
+    if (S > 0.00001) {
+//        w01 = dot(vel0, e1) / S;
+//        w02 = dot(vel0, e2) / S;
         w03 = dot(vel0, e3) / S;
-        w04 = dot(vel0, e4) / S;
-        w05 = dot(vel0, e5) / S;
-        w06 = dot(vel0, e6) / S;
+//        w04 = dot(vel0, e4) / S;
+//        w05 = dot(vel0, e5) / S;
+//        w06 = dot(vel0, e6) / S;
         w07 = dot(vel0, e7) / S;
-        w08 = dot(vel0, e8) / S;
+//        w08 = dot(vel0, e8) / S;
     }
 
-    if (w01 > 0.0) {
-        massOutflow += w01 * I0.r;
-    }
-
-    if (w02 > 0.0) {
-        massOutflow += w02 * I0.r;
-    }
+//    if (w01 > 0.0) {
+//        massOutflow += w01 * I0.r;
+//    }
+//
+//    if (w02 > 0.0) {
+//        massOutflow += w02 * I0.r;
+//    }
 
     if (w03 > 0.0) {
         massOutflow += w03 * I0.r;
     }
 
-    if (w04 > 0.0) {
-        massOutflow += w04 * I0.r;
-    }
-
-    if (w05 > 0.0) {
-        massOutflow += w05 * I0.r;
-    }
-
-    if (w06 > 0.0) {
-        massOutflow += w06 * I0.r;
-    }
+//    if (w04 > 0.0) {
+//        massOutflow += w04 * I0.r;
+//    }
+//
+//    if (w05 > 0.0) {
+//        massOutflow += w05 * I0.r;
+//    }
+//
+//    if (w06 > 0.0) {
+//        massOutflow += w06 * I0.r;
+//    }
 
     if (w07 > 0.0) {
         massOutflow += w07 * I0.r;
     }
 
-    if (w08 > 0.0) {
-        massOutflow += w08 * I0.r;
-    }
+//    if (w08 > 0.0) {
+//        massOutflow += w08 * I0.r;
+//    }
 
 
 
@@ -199,39 +199,40 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // point 1
-    vec2 vel1 = vec2(I1.g, I1.b);
-    massInflow += getMassInflow(vel1, e1, I1.r);
-    vec2 newVel10 = getNewVel(vel0, vel1, I0.r, I1.r, e1);
-
-
-    // point 2
-    vec2 vel2 = vec2(I2.g, I2.b);
-    massInflow += getMassInflow(vel2, e2, I2.r);
-    vec2 newVel20 = getNewVel(vel0, vel2, I0.r, I2.r, e2);
+//    vec2 vel1 = vec2(I1.g, I1.b);
+//    massInflow += getMassInflow(vel1, e1, I1.r);
+//    vec2 newVel10 = getNewVel(vel0, vel1, I0.r, I1.r, e1);
+//
+//
+//    // point 2
+//    vec2 vel2 = vec2(I2.g, I2.b);
+//    massInflow += getMassInflow(vel2, e2, I2.r);
+//    vec2 newVel20 = getNewVel(vel0, vel2, I0.r, I2.r, e2);
 
 
     // point 3
     vec2 vel3 = vec2(I3.g, I3.b);
-    massInflow += getMassInflow(vel3, e3, I3.r);
+    float massInflow03 = getMassInflow(vel3, e3, I3.r);
+    massInflow += massInflow03;
     vec2 newVel30 = getNewVel(vel0, vel3, I0.r, I3.r, e3);
 
 
-    // point 4
-    vec2 vel4 = vec2(I4.g, I4.b);
-    massInflow += getMassInflow(vel4, e4, I4.r);
-    vec2 newVel40 = getNewVel(vel0, vel4, I0.r, I4.r, e4);
-
-
-    // point 5
-    vec2 vel5 = vec2(I5.g, I5.b);
-    massInflow += getMassInflow(vel5, e5, I5.r);
-    vec2 newVel50 = getNewVel(vel0, vel5, I0.r, I5.r, e5);
-
-
-    // point 6
-    vec2 vel6 = vec2(I6.g, I6.b);
-    massInflow += getMassInflow(vel6, e6, I6.r);
-    vec2 newVel60 = getNewVel(vel0, vel6, I0.r, I6.r, e6);
+//    // point 4
+//    vec2 vel4 = vec2(I4.g, I4.b);
+//    massInflow += getMassInflow(vel4, e4, I4.r);
+//    vec2 newVel40 = getNewVel(vel0, vel4, I0.r, I4.r, e4);
+//
+//
+//    // point 5
+//    vec2 vel5 = vec2(I5.g, I5.b);
+//    massInflow += getMassInflow(vel5, e5, I5.r);
+//    vec2 newVel50 = getNewVel(vel0, vel5, I0.r, I5.r, e5);
+//
+//
+//    // point 6
+//    vec2 vel6 = vec2(I6.g, I6.b);
+//    massInflow += getMassInflow(vel6, e6, I6.r);
+//    vec2 newVel60 = getNewVel(vel0, vel6, I0.r, I6.r, e6);
 
 
     // point 7
@@ -240,23 +241,47 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 newVel70 = getNewVel(vel0, vel7, I0.r, I7.r, e7);
 
 
-    // point 8
-    vec2 vel8 = vec2(I8.g, I8.b);
-    massInflow += getMassInflow(vel8, e8, I8.r);
-    vec2 newVel80 = getNewVel(vel0, vel8, I0.r, I8.r, e8);
+    vec2 deltaVel70 = vel7 - vel0;
+    float dir70 = dot(deltaVel70, e7);
+    float mw7 = I7.r / (I0.r + I7.r);
 
+    // TODO: length(deltaVel70) > 0.2 - ???
+    vec2 newVel70_Debug = vec2(0.0);
+    if (dir70 < 0.0 && length(vel7) > 0.000001 && length(deltaVel70) > 0.2) {
+        newVel70_Debug.y -= dir70 / length(deltaVel70) * deltaVel70.y * mw7;
+    }
+
+
+//    // point 8
+//    vec2 vel8 = vec2(I8.g, I8.b);
+//    massInflow += getMassInflow(vel8, e8, I8.r);
+//    vec2 newVel80 = getNewVel(vel0, vel8, I0.r, I8.r, e8);
 
     float newMass = I0.r - massOutflow + massInflow;
 
 
     vec2 newVel = vec2(0.0);
     if (newMass > 0.0) {
-        newVel += newVel10 + newVel20 + newVel30 +
-                newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
+//        newVel += newVel10 + newVel20 + newVel30 +
+//                newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
+
+        newVel += newVel30 + newVel70;
     }
 
 
+
+
+
     vec4 finalColor = itc(vec3(newMass, newVel.x, newVel.y));
+
+
+
+    if (newVel70_Debug.y == 0.0) {
+        finalColor.r = 1.0;
+        finalColor.g = 1.0;
+        finalColor.b = 1.0;
+    }
+
 
 
     fragColor = finalColor;
