@@ -1,6 +1,10 @@
-const vec2 figureCenter = vec2(0.5);
+vec2 figureCenter = vec2(0.5);
 
-const float offset = 0.01;
+
+// coeffs
+int offsetPx = 10;
+
+
 const float PI = 3.1415926535;
 const float sqrt2 = sqrt(2.0);
 
@@ -35,6 +39,8 @@ vec4 itc(vec3 vel) {
 
 
 
+
+
 const float a1 = 0.0;
 const float a2 = PI / 4.0;
 const float a3 = PI / 2.0;
@@ -43,7 +49,6 @@ const float a5 = PI;
 const float a6 = 5.0 * PI / 4.0;
 const float a7 = 6.0 * PI / 4.0;
 const float a8 = 7.0 * PI / 4.0;
-
 
 
 const vec2 e1 = vec2(1.0, 0.0);
@@ -57,9 +62,12 @@ const vec2 e8 = vec2(cos(a8), sin(a8));
 
 
 
-float getMassOutflow(vec2 vel, vec2 dir) {
 
-}
+
+
+
+
+
 
 
 
@@ -69,31 +77,51 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // colors at the previous frame
     vec4 C0 = texture(iChannel0, uv);
-    vec3 I0 = cti(C0);
 
-    // Convert colors to impulses
-    vec4 C1 = texture(iChannel0, uv + offset * e1);         vec3 I1 = cti(C1);
-    vec4 C2 = texture(iChannel0, uv + offset * e2);         vec3 I2 = cti(C2);
-    vec4 C3 = texture(iChannel0, uv + offset * e3);         vec3 I3 = cti(C3);
-    vec4 C4 = texture(iChannel0, uv + offset * e4);         vec3 I4 = cti(C4);
-    vec4 C5 = texture(iChannel0, uv + offset * e5);         vec3 I5 = cti(C5);
-    vec4 C6 = texture(iChannel0, uv + offset * e6);         vec3 I6 = cti(C6);
-    vec4 C7 = texture(iChannel0, uv + offset * e7);         vec3 I7 = cti(C7);
-    vec4 C8 = texture(iChannel0, uv + offset * e8);         vec3 I8 = cti(C8);
 
-    vec2 vel0 = vec2(I0.g, I0.b);
+
+//    // Convert colors to impulses
+//    vec4 C1 = texture(iChannel0, uv + offset * e1);         vec3 I1 = cti(C1);
+//    vec4 C2 = texture(iChannel0, uv + offset * e2);         vec3 I2 = cti(C2);
+//    vec4 C3 = texture(iChannel0, uv + offset * e3);         vec3 I3 = cti(C3);
+//    vec4 C4 = texture(iChannel0, uv + offset * e4);         vec3 I4 = cti(C4);
+//    vec4 C5 = texture(iChannel0, uv + offset * e5);         vec3 I5 = cti(C5);
+//    vec4 C6 = texture(iChannel0, uv + offset * e6);         vec3 I6 = cti(C6);
+//    vec4 C7 = texture(iChannel0, uv + offset * e7);         vec3 I7 = cti(C7);
+//    vec4 C8 = texture(iChannel0, uv + offset * e8);         vec3 I8 = cti(C8);
+
+
+    vec2 i7Coord = fragCoord.xy + vec2(0.0, -offsetPx);
+    vec2 i7CoordUV = i7Coord / iResolution.xy;
+    vec4 C7 = texture(iChannel0, i7CoordUV);
+    vec3 I7 = cti(C7);
+
+    vec2 vel7 = vec2(I7.g, I7.b);
+
+    vec4 finalColor = C0;
+
+    if (C7.r > 0.0 && C7.r < 1.0) {
+        finalColor.r = 1.0;
+        finalColor.g = 1.0;
+        finalColor.b = 1.0;
+    }
 
 
     fragColor = finalColor;
 
 
-
     // Initial figure
     if (iFrame < 2) {
-        if (drawBox(figureCenter, uv, 0.2, 0.3)) {
-            fragColor = itc(vec3(1.0, 0.0, -0.01));
+        if (drawBox(figureCenter, uv, 0.3, 0.3)) {
+
+            vec4 color = vec4(1.0, 0.5, -1.0, 1.0);
+            fragColor = color;
+
         }
         else {
+            // zero mass and zero speed (no liquid there)
+            // fragColor = vec4(0.0, 0.5, 0.5, 1.0);
+
             fragColor = itc(vec3(0.0));
         }
     }

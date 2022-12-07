@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5);
 
 
 // coeffs
-float offset = 0.01;
+int offsetPx = 10;
 
 
 const float PI = 3.1415926535;
@@ -98,12 +98,23 @@ float getMassInflow(vec2 vel, vec2 e, float mass) {
 
 
 vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
-    float mw = mass / (mass0 + mass);
 
+
+
+    // if (vel.y < 0.0 && vel.y > -1.0)
+    //    vel.y = -1.0;
+
+    // if (mass > 0.0 && mass < 1.0)
+    //    mass = 1.0;
+
+
+
+    float mw = mass / (mass0 + mass);
     vec2 deltaVel = vel - vel0;
+
     float dir = dot(deltaVel, e);
     if (dir < 0.0 && length(vel) > 0.000001 && length(deltaVel) > 0.000001) {
-        // vel.x -= dir / length(deltaVel) * deltaVel.x * mw;
+        vel.x -= dir / length(deltaVel) * deltaVel.x * mw;
         vel.y -= dir / length(deltaVel) * deltaVel.y * mw;
     }
     return vel;
@@ -111,7 +122,7 @@ vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
 
 
 
-
+bool frame1 = false;
 
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
@@ -120,7 +131,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // colors at the previous frame
     vec4 C0 = texture(iChannel0, uv);
+
     vec3 I0 = cti(C0);
+
 
     // Convert colors to impulses
     vec4 C1 = texture(iChannel0, uv + offset * e1);         vec3 I1 = cti(C1);
@@ -131,6 +144,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec4 C6 = texture(iChannel0, uv + offset * e6);         vec3 I6 = cti(C6);
     vec4 C7 = texture(iChannel0, uv + offset * e7);         vec3 I7 = cti(C7);
     vec4 C8 = texture(iChannel0, uv + offset * e8);         vec3 I8 = cti(C8);
+
 
     vec2 vel0 = vec2(I0.g, I0.b);
 
@@ -274,6 +288,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // TODO: проблема в том, что существует эта точка
+    // проблема в том, как работает texture() ???
     if (I7.r > 0.0 && I7.r < 1.0 && vel7.y < 0.0 && vel7.y > -1.0) {
         finalColor.r = 1.0;
         finalColor.g = 1.0;
@@ -281,15 +296,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     }
 
 
-
     fragColor = finalColor;
 
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawCircle(figureCenter, uv, 0.2)) {
+        if (drawBox(figureCenter, uv, 0.3, 0.3)) {
 
-            fragColor = itc(vec3(1.0, 0.0, -1.0));
+            vec4 color = vec4(1.0, 0.5, -1.0, 1.0);
+
+
+
+            fragColor = color;
+
 
         }
         else {
