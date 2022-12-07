@@ -1,8 +1,7 @@
 vec2 figureCenter = vec2(0.5);
 
 
-// coeffs
-int offsetPx = 10;
+const float offsetPx = 10.0;
 
 
 const float PI = 3.1415926535;
@@ -38,51 +37,48 @@ vec4 itc(vec3 vel) {
 }
 
 
-
-
-
-const float a1 = 0.0;
 const float a2 = PI / 4.0;
-const float a3 = PI / 2.0;
 const float a4 = 3.0 * PI / 4.0;
-const float a5 = PI;
 const float a6 = 5.0 * PI / 4.0;
-const float a7 = 6.0 * PI / 4.0;
 const float a8 = 7.0 * PI / 4.0;
 
 
-
-
-
-const vec2 e1 = vec2(1.0, 0.0);
-const vec2 e2 = vec2(cos(a2), sin(a2));
-const vec2 e3 = vec2(0.0, 1.0);
-const vec2 e4 = vec2(cos(a4), sin(a4));
-const vec2 e5 = vec2(-1.0, 0.0);
-const vec2 e6 = vec2(cos(a6), sin(a6));
-const vec2 e7 = vec2(0.0, -1.0);
-const vec2 e8 = vec2(cos(a8), sin(a8));
+const vec2 e1 = vec2(offsetPx, 0.0);
+const vec2 e2 = vec2(floor(offsetPx * cos(a2)), floor(offsetPx * sin(a2)));
+const vec2 e3 = vec2(0.0, offsetPx);
+const vec2 e4 = vec2(floor(offsetPx * cos(a4)), floor(offsetPx * sin(a4)));
+const vec2 e5 = vec2(-offsetPx, 0.0);
+const vec2 e6 = vec2(floor(offsetPx * cos(a6)), floor(offsetPx * sin(a6)));
+const vec2 e7 = vec2(0.0, -offsetPx);
+const vec2 e8 = vec2(floor(offsetPx * cos(a8)), floor(offsetPx * sin(a8)));
 
 
 
 float weightSum(vec2 vel) {
     float outValue = 0.0;
 //    if (dot(vel, e1) > 0.0)
-//    outValue += dot(vel, e1);
+//        outValue += dot(vel, e1) / offsetPx;
+//
 //    if (dot(vel, e2) > 0.0)
-//    outValue += dot(vel, e2);
+//        outValue += dot(vel, e2) / offsetPx;
+
     if (dot(vel, e3) > 0.0)
-    outValue += dot(vel, e3);
+        outValue += dot(vel, e3) / offsetPx;
+
 //    if (dot(vel, e4) > 0.0)
-//    outValue += dot(vel, e4);
+//        outValue += dot(vel, e4) / offsetPx;
+//
 //    if (dot(vel, e5) > 0.0)
-//    outValue += dot(vel, e5);
+//        outValue += dot(vel, e5) / offsetPx;
+//
 //    if (dot(vel, e6) > 0.0)
-//    outValue += dot(vel, e6);
+//        outValue += dot(vel, e6) / offsetPx;
+
     if (dot(vel, e7) > 0.0)
-    outValue += dot(vel, e7);
+        outValue += dot(vel, e7) / offsetPx;
+
 //    if (dot(vel, e8) > 0.0)
-//    outValue += dot(vel, e8);
+//        outValue += dot(vel, e8) / offsetPx;
     return outValue;
 }
 
@@ -91,38 +87,24 @@ float weightSum(vec2 vel) {
 float getMassInflow(vec2 vel, vec2 e, float mass) {
     float s = weightSum(vel);
     if (dot(vel, -e) > 0.0) {
-        return mass * dot(vel, -e) / s;
+        return mass * dot(vel, -e) / s / offsetPx;
     }
     return 0.0;
 }
 
 
 vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
-
-
-
-    // if (vel.y < 0.0 && vel.y > -1.0)
-    //    vel.y = -1.0;
-
-    // if (mass > 0.0 && mass < 1.0)
-    //    mass = 1.0;
-
-
-
     float mw = mass / (mass0 + mass);
     vec2 deltaVel = vel - vel0;
 
-    float dir = dot(deltaVel, e);
-    if (dir < 0.0 && length(vel) > 0.000001 && length(deltaVel) > 0.000001) {
-        vel.x -= dir / length(deltaVel) * deltaVel.x * mw;
-        vel.y -= dir / length(deltaVel) * deltaVel.y * mw;
+    float dir = dot(deltaVel, e) / offsetPx;
+    if (dir < 0.0 && length(deltaVel) > 0.000001) {
+        vel0.x -= dir / length(deltaVel) * deltaVel.x * mw;
+        vel0.y -= dir / length(deltaVel) * deltaVel.y * mw;
     }
-    return vel;
+    return vel0;
 }
 
-
-
-bool frame1 = false;
 
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
@@ -131,19 +113,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // colors at the previous frame
     vec4 C0 = texture(iChannel0, uv);
-
     vec3 I0 = cti(C0);
 
 
     // Convert colors to impulses
-    vec4 C1 = texture(iChannel0, uv + offset * e1);         vec3 I1 = cti(C1);
-    vec4 C2 = texture(iChannel0, uv + offset * e2);         vec3 I2 = cti(C2);
-    vec4 C3 = texture(iChannel0, uv + offset * e3);         vec3 I3 = cti(C3);
-    vec4 C4 = texture(iChannel0, uv + offset * e4);         vec3 I4 = cti(C4);
-    vec4 C5 = texture(iChannel0, uv + offset * e5);         vec3 I5 = cti(C5);
-    vec4 C6 = texture(iChannel0, uv + offset * e6);         vec3 I6 = cti(C6);
-    vec4 C7 = texture(iChannel0, uv + offset * e7);         vec3 I7 = cti(C7);
-    vec4 C8 = texture(iChannel0, uv + offset * e8);         vec3 I8 = cti(C8);
+    vec4 C1 = texture(iChannel0, (fragCoord.xy + e1) / iResolution.xy);     vec3 I1 = cti(C1);
+    vec4 C2 = texture(iChannel0, (fragCoord.xy + e2) / iResolution.xy);     vec3 I2 = cti(C2);
+    vec4 C3 = texture(iChannel0, (fragCoord.xy + e3) / iResolution.xy);     vec3 I3 = cti(C3);
+    vec4 C4 = texture(iChannel0, (fragCoord.xy + e4) / iResolution.xy);     vec3 I4 = cti(C4);
+    vec4 C5 = texture(iChannel0, (fragCoord.xy + e5) / iResolution.xy);     vec3 I5 = cti(C5);
+    vec4 C6 = texture(iChannel0, (fragCoord.xy + e6) / iResolution.xy);     vec3 I6 = cti(C6);
+    vec4 C7 = texture(iChannel0, (fragCoord.xy + e7) / iResolution.xy);     vec3 I7 = cti(C7);
+    vec4 C8 = texture(iChannel0, (fragCoord.xy + e8) / iResolution.xy);     vec3 I8 = cti(C8);
 
 
     vec2 vel0 = vec2(I0.g, I0.b);
@@ -163,14 +144,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float w07 = 0.0;
     float w08 = 0.0;
 
-    if (S > 0.00001) {
+    if (S > 0.0) {
 //        w01 = dot(vel0, e1) / S;
 //        w02 = dot(vel0, e2) / S;
-        w03 = dot(vel0, e3) / S;
+        w03 = dot(vel0, e3) / S / offsetPx;
 //        w04 = dot(vel0, e4) / S;
 //        w05 = dot(vel0, e5) / S;
 //        w06 = dot(vel0, e6) / S;
-        w07 = dot(vel0, e7) / S;
+        w07 = dot(vel0, e7) / S / offsetPx;
 //        w08 = dot(vel0, e8) / S;
     }
 
@@ -255,15 +236,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 newVel70 = getNewVel(vel0, vel7, I0.r, I7.r, e7);
 
 
+    // ---- DEBUG 7 ----
+    float mw70 = I7.r / (I0.r + I7.r);
     vec2 deltaVel70 = vel7 - vel0;
-    float dir70 = dot(deltaVel70, e7);
-    float mw7 = I7.r / (I0.r + I7.r);
 
-    // TODO: проблема в том, что mw != 0 и deltaVel != 0 одновременно
-    vec2 newVel70_Debug = vec2(0.0);
-    if (dir70 < 0.0 && length(vel7) > 0.000001 && length(deltaVel70) > 0.0000001) {
-        newVel70_Debug.y -= dir70 / length(deltaVel70) * deltaVel70.y * mw7;
+    float dir70 = dot(deltaVel70, e7) / offsetPx;
+    vec2 newVel0_DEBUG = vel0;
+
+    if (dir70 < 0.0 && length(vel0) > 0.000001 && length(deltaVel70) > 0.000001) {
+        newVel0_DEBUG.x -= dir70 / length(deltaVel70) * deltaVel70.x * mw70;
+        newVel0_DEBUG.y -= dir70 / length(deltaVel70) * deltaVel70.y * mw70;
     }
+    // ---- DEBUG 7 ----
 
 
 //    // point 8
@@ -286,15 +270,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     vec4 finalColor = itc(vec3(newMass, newVel.x, newVel.y));
 
-
-    // TODO: проблема в том, что существует эта точка
-    // проблема в том, как работает texture() ???
-    if (I7.r > 0.0 && I7.r < 1.0 && vel7.y < 0.0 && vel7.y > -1.0) {
+    if (I7.r > 0.0 && newVel0_DEBUG.y > -1.0) {
         finalColor.r = 1.0;
         finalColor.g = 1.0;
         finalColor.b = 1.0;
     }
-
 
     fragColor = finalColor;
 
@@ -303,13 +283,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     if (iFrame < 2) {
         if (drawBox(figureCenter, uv, 0.3, 0.3)) {
 
-            vec4 color = vec4(1.0, 0.5, -1.0, 1.0);
-
-
-
-            fragColor = color;
-
-
+            fragColor = vec4(1.0, 0.5, -1.0, 1.0);
         }
         else {
             // zero mass and zero speed (no liquid there)
