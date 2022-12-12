@@ -2,6 +2,7 @@ vec2 figureCenter = vec2(0.5, 0.5);
 
 
 const float offsetPx = 1.0;
+const float rPx = 10.0;
 
 const float PI = 3.1415926535;
 const float sqrt2 = sqrt(2.0);
@@ -21,6 +22,24 @@ bool drawBox(vec2 center, vec2 uv, float w, float h) {
 
 bool drawCircle(vec2 center, vec2 uv, float radius) {
     return (uv.x - center.x) * (uv.x - center.x) + (uv.y - center.y) * (uv.y - center.y) <= radius * radius;
+}
+
+
+float getRotation(vec2 pxCoords) {
+    float angle = PI / 6.0 * rand(pxCoords) + PI / 12.0;   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
+    float outValue = 0.0;
+    int rotations = 1;
+    while (angle <= 2.0 * PI) {
+        vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+
+        vec2 pos = (pxCoords + n) / iResolution.xy;
+        vec4 color = texture(iChannel0, pos);
+
+        outValue += dot(color.xy, n.xy);
+        angle += PI / 6.0 * rand(pxCoords) + PI / 12.0;
+        rotations += 1;
+    }
+    return outValue / float(rotations + 1);
 }
 
 
@@ -64,21 +83,21 @@ const vec2 e8 = -e4;
 float weightSum(vec2 vel) {
     float outValue = 0.0;
     if (dot(vel, e1) > 0.0)
-        outValue += dot(vel, e1);
+    outValue += dot(vel, e1);
     if (dot(vel, e2) > 0.0)
-        outValue += dot(vel, e2);
+    outValue += dot(vel, e2);
     if (dot(vel, e3) > 0.0)
-        outValue += dot(vel, e3);
+    outValue += dot(vel, e3);
     if (dot(vel, e4) > 0.0)
-        outValue += dot(vel, e4);
+    outValue += dot(vel, e4);
     if (dot(vel, e5) > 0.0)
-        outValue += dot(vel, e5);
+    outValue += dot(vel, e5);
     if (dot(vel, e6) > 0.0)
-        outValue += dot(vel, e6);
+    outValue += dot(vel, e6);
     if (dot(vel, e7) > 0.0)
-        outValue += dot(vel, e7);
+    outValue += dot(vel, e7);
     if (dot(vel, e8) > 0.0)
-        outValue += dot(vel, e8);
+    outValue += dot(vel, e8);
     return outValue;
 }
 
@@ -101,8 +120,8 @@ vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
     float dir = dot(deltaVel, e);
 
     if (dir > 0.0) {
-        vel0.x -= round(mw * dot(deltaVel, -e) * (-e.x));
-        vel0.y -= round(mw * dot(deltaVel, -e) * (-e.y));
+        vel0.x -= round(mw * dot(deltaVel, -e) * (- e.x));
+        vel0.y -= round(mw * dot(deltaVel, -e) * (- e.y));
     }
 
     // TODO: проверить, чтобы vel.x,y не выходили за -128, 127 ?
@@ -241,7 +260,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // point 8
     vec2 vel8 = vec2(I8.g, I8.b);
-    massInflow +=  getMassInflow(vel8, e8, I0.r, I8.r);
+    massInflow += getMassInflow(vel8, e8, I0.r, I8.r);
     vec2 newVel80 = getNewVel(vel0, vel8, I0.r, I8.r, e8);
 
 
@@ -251,52 +270,70 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     vec2 newVel = vec2(0.0);
-    if (newMass > 0.0) {
+    if (newMass > 1.0) {
         newVel += newVel10 + newVel20 + newVel30 +
-            newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
+        newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
     }
 
 
-        // BOUNDARIES -------------------
 
-        // Bottom
-        if ((fragCoord.xy + e7).y <= 0.0) {
-            if (newVel.y < 0.0)
-                newVel.y *= -1.0;
-        }
+    // BOUNDARIES -------------------
 
-        // Top
-        if ((fragCoord.xy + e3).y >= iResolution.y) {
-            if (newVel.y > 0.0)
-                newVel.y *= -1.0;
-        }
+    // Bottom
+    if ((fragCoord.xy + e7).y <= 0.0) {
+        if (newVel.y < 0.0)
+        newVel.y *= -1.0;
+    }
 
-        // Right
-        if ((fragCoord.xy + e1).x >= iResolution.x) {
-            if (newVel.x > 0.0)
-                newVel.x *= -1.0;
-        }
+    // Top
+    if ((fragCoord.xy + e3).y >= iResolution.y) {
+        if (newVel.y > 0.0)
+        newVel.y *= -1.0;
+    }
 
-        // Left
-        if ((fragCoord.xy + e5).x <= 0.0) {
-            if (newVel.x < 0.0)
-                newVel.x *= -1.0;
-        }
+    // Right
+    if ((fragCoord.xy + e1).x >= iResolution.x) {
+        if (newVel.x > 0.0)
+        newVel.x *= -1.0;
+    }
 
-        // -------------------
+    // Left
+    if ((fragCoord.xy + e5).x <= 0.0) {
+        if (newVel.x < 0.0)
+        newVel.x *= -1.0;
+    }
+
+    // -------------------
+    // Rotations
+    float r_angle = PI / 6.0 * rand(uv) + PI / 12.0;   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
+
+    float angle = r_angle;
+    vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+    int rotations = 1;
+    float rotation = 1.0;
+    while (angle <= 2.0 * PI) {
+        rotation += getRotation(fragCoord.xy + n);
+        angle += PI / 6.0 * rand(fragCoord.xy) + PI / 12.0;
+        n += 2.0 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+        rotations += 1;
+    }
+    n = n / float(rotations);
+
+    vec2 rotatorPos = (fragCoord.xy + n * vec2(-1.0, 1.0)) / iResolution.xy;
+    vec4 rotatorColor = texture(iChannel0, rotatorPos);
+    // --------------------------------------------
 
 
     vec4 finalColor = itc(vec3(newMass, newVel.x, newVel.y));
 
-    // TODO: главная проблема - почему фигура лопается?
+    finalColor += rotatorColor;
 
     fragColor = finalColor;
-
 
     // Initial figure
     if (iFrame < 2) {
         if (drawBox(figureCenter, uv, 0.2, 0.3)) {
-            fragColor = itc(vec3(255, 0, -127));
+            fragColor = itc(vec3(255, 1, 1));
         }
         else {
             fragColor = itc(vec3(0, 0, 0));
