@@ -3,7 +3,6 @@ vec2 figureCenter = vec2(0.5, 0.5);
 
 const float offsetPx = 1.0;
 
-
 const float PI = 3.1415926535;
 const float sqrt2 = sqrt(2.0);
 
@@ -25,8 +24,13 @@ bool drawCircle(vec2 center, vec2 uv, float radius) {
 }
 
 
+
 // color to impulse
 vec3 cti(vec4 color) {
+    color.r = clamp(color.r, 0.0, 1.0);
+    color.g = clamp(color.g, 0.0, 1.0);
+    color.b = clamp(color.b, 0.0, 1.0);
+
     int mass = int(color.r * 255.0);
     int velX = int(color.g * 255.0) - 128;
     int velY = int(color.b * 255.0) - 128;
@@ -36,9 +40,13 @@ vec3 cti(vec4 color) {
 
 // impulse to color
 vec4 itc(vec3 impulse) {
+    impulse.r = clamp(impulse.r, 0.0, 255.0);
+    impulse.g = clamp(impulse.g, -128.0, 127.0);
+    impulse.b = clamp(impulse.b, -128.0, 127.0);
+
     float r = float(impulse.r) / 255.0;
-    float g = float(impulse.g + 128) / 255.0;
-    float b = float(impulse.b + 128) / 255.0;
+    float g = float(impulse.g + 128.0) / 255.0;
+    float b = float(impulse.b + 128.0) / 255.0;
     return vec4(r, g, b, 1.0);
 }
 
@@ -80,35 +88,24 @@ float weightSum(vec2 vel) {
 float getMassInflow(vec2 vel, vec2 e, float mass0, float mass) {
     float s = weightSum(vel);
     if (dot(vel, -e) > 0.0) {
-        return min(floor(mass * dot(vel, -e) / s), 255.0 - mass0);
+        // return min(round(mass * dot(vel, -e) / s), 255.0 - mass0);
+        return round(mass * dot(vel, -e) / s);
     }
     return 0.0;
 }
 
 
-//float getMassInflowDeltaVel(vec2 vel, vec2 vel0, vec2 e, float mass) {
-//    vec2 deltaVel = vel - vel0;
-//    float dir = dot(deltaVel, -e) / offsetPx;
-//    if (dir > 0.0) {
-//        return dir * mass;
-//    }
-//    return 0.0;
-//}
-
-
 vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
+    float mw = 2.0 * mass / (mass0 + mass);
+    vec2 deltaVel = vel0 - vel;                 // vel in scale [-128, 127]
+    float dir = dot(deltaVel, e);
 
-    float mw = mass / (mass0 + mass);
-
-    vec2 deltaVel = vel - vel0;
-
-    float dir = dot(deltaVel, e) / offsetPx;
-
-    if (dir < 0.0 && length(deltaVel) > 0.000001) {
-        vel0.x -= dir / length(deltaVel) * deltaVel.x * mw;
-        vel0.y -= dir / length(deltaVel) * deltaVel.y * mw;
+    if (dir > 0.0) {
+        vel0.x -= round(mw * dot(deltaVel, -e) * (-e.x));
+        vel0.y -= round(mw * dot(deltaVel, -e) * (-e.y));
     }
 
+    // TODO: проверить, чтобы vel.x,y не выходили за -128, 127 ?
     return vel0;
 }
 
@@ -161,36 +158,39 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     }
 
     if (w01 > 0.0) {
-        massOutflow += min(floor(w01 * I0.r), 255 - I1.r);
+        massOutflow += round(w01 * I0.r);
     }
 
     if (w02 > 0.0) {
-        massOutflow += min(floor(w02 * I0.r), 255 - I2.r);
+        massOutflow += round(w02 * I0.r);
     }
 
     if (w03 > 0.0) {
-         massOutflow += min(floor(w03 * I0.r), 255 - I3.r);
+        massOutflow += round(w03 * I0.r);
     }
 
     if (w04 > 0.0) {
-         massOutflow += min(floor(w04 * I0.r), 255 - I4.r);
+        massOutflow += round(w04 * I0.r);
     }
 
     if (w05 > 0.0) {
-        massOutflow += min(floor(w05 * I0.r), 255 - I5.r);
+        massOutflow += round(w05 * I0.r);
     }
 
     if (w06 > 0.0) {
-        massOutflow += min(floor(w06 * I0.r), 255 - I6.r);
+        massOutflow += round(w06 * I0.r);
     }
 
     if (w07 > 0.0) {
-        massOutflow += min(floor(w07 * I0.r), 255 - I7.r);
+        massOutflow += round(w07 * I0.r);
     }
 
     if (w08 > 0.0) {
-        massOutflow += min(floor(w08 * I0.r), 255 - I8.r);
+        massOutflow += round(w08 * I0.r);
     }
+
+
+    // TODO: проверить, чтобы суммы масс не выходили за 0 и 255
 
 
     // total mass inflow
@@ -200,122 +200,106 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // point 1
     vec2 vel1 = vec2(I1.g, I1.b);
     massInflow += getMassInflow(vel1, e1, I0.r, I1.r);
+    vec2 newVel10 = getNewVel(vel0, vel1, I0.r, I1.r, e1);
 
 
     // point 2
     vec2 vel2 = vec2(I2.g, I2.b);
     massInflow += getMassInflow(vel2, e2, I0.r, I2.r);
+    vec2 newVel20 = getNewVel(vel0, vel2, I0.r, I2.r, e2);
 
 
     // point 3
     vec2 vel3 = vec2(I3.g, I3.b);
     massInflow += getMassInflow(vel3, e3, I0.r, I3.r);
+    vec2 newVel30 = getNewVel(vel0, vel3, I0.r, I3.r, e3);
 
 
     // point 4
     vec2 vel4 = vec2(I4.g, I4.b);
     massInflow += getMassInflow(vel4, e4, I0.r, I4.r);
+    vec2 newVel40 = getNewVel(vel0, vel4, I0.r, I4.r, e4);
 
 
     // point 5
     vec2 vel5 = vec2(I5.g, I5.b);
     massInflow += getMassInflow(vel5, e5, I0.r, I5.r);
+    vec2 newVel50 = getNewVel(vel0, vel5, I0.r, I5.r, e5);
 
 
     // point 6
     vec2 vel6 = vec2(I6.g, I6.b);
     massInflow += getMassInflow(vel6, e6, I0.r, I6.r);
+    vec2 newVel60 = getNewVel(vel0, vel6, I0.r, I6.r, e6);
 
 
     // point 7
     vec2 vel7 = vec2(I7.g, I7.b);
     massInflow += getMassInflow(vel7, e7, I0.r, I7.r);
+    vec2 newVel70 = getNewVel(vel0, vel7, I0.r, I7.r, e7);
 
 
     // point 8
     vec2 vel8 = vec2(I8.g, I8.b);
     massInflow +=  getMassInflow(vel8, e8, I0.r, I8.r);
+    vec2 newVel80 = getNewVel(vel0, vel8, I0.r, I8.r, e8);
 
 
 
     float newMass = I0.r - massOutflow + massInflow;
-    if (newMass < 1.0 / 255.0)
-    newMass = 0.0;
+    newMass = round(newMass);
 
 
     vec2 newVel = vec2(0.0);
     if (newMass > 0.0) {
-        //        newVel += newVel10 + newVel20 + newVel30 +
-        //            newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
-
-        newVel += newVel30 + newVel10 + newVel70 + newVel50;
+        newVel += newVel10 + newVel20 + newVel30 +
+            newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
     }
 
 
-    // newVel.x = floor(newVel.x * 255.0) / 255.0;
-    // newVel.y = floor(newVel.y * 255.0) / 255.0;
+        // BOUNDARIES -------------------
 
+        // Bottom
+        if ((fragCoord.xy + e7).y <= 0.0) {
+            if (newVel.y < 0.0)
+                newVel.y *= -1.0;
+        }
 
+        // Top
+        if ((fragCoord.xy + e3).y >= iResolution.y) {
+            if (newVel.y > 0.0)
+                newVel.y *= -1.0;
+        }
 
-    //    // BOUNDARIES -------------------
-    //
-    //    // Bottom
-    //    if ((fragCoord.xy + e7).y <= 0.0) {
-    //        if (newVel.y < 0.0)
-    //            newVel.y *= -1.0;
-    //    }
-    //
-    //    // Top
-    //    if ((fragCoord.xy + e3).y >= iResolution.y) {
-    //        if (newVel.y > 0.0)
-    //            newVel.y *= -1.0;
-    //    }
-    //
-    //    // Right
-    //    if ((fragCoord.xy + e1).x >= iResolution.x) {
-    //        if (newVel.x > 0.0)
-    //            newVel.x *= -1.0;
-    //    }
-    //
-    //    // Left
-    //    if ((fragCoord.xy + e5).x <= 0.0) {
-    //        if (newVel.x < 0.0)
-    //            newVel.x *= -1.0;
-    //    }
-    //
-    //    // -------------------
+        // Right
+        if ((fragCoord.xy + e1).x >= iResolution.x) {
+            if (newVel.x > 0.0)
+                newVel.x *= -1.0;
+        }
+
+        // Left
+        if ((fragCoord.xy + e5).x <= 0.0) {
+            if (newVel.x < 0.0)
+                newVel.x *= -1.0;
+        }
+
+        // -------------------
 
 
     vec4 finalColor = itc(vec3(newMass, newVel.x, newVel.y));
 
-
     // TODO: главная проблема - почему фигура лопается?
-
-
-    if (finalColor.r > 0.0 && finalColor.g == 0.5 && finalColor.b == 0.5) {
-
-        finalColor = vec4(1.0);
-
-    }
-
 
     fragColor = finalColor;
 
 
     // Initial figure
     if (iFrame < 2) {
-        //        if (drawBox(figureCenter, uv, 0.2, 0.3)) {
-
-
-        if (fragCoord.x >= 280.0 && fragCoord.x <= 300.0 && fragCoord.y >= 180.0 && fragCoord.y <= 200.0) {
-
-            fragColor = itc(vec3(1.0, 1.0, -1.0));
+        if (drawBox(figureCenter, uv, 0.2, 0.3)) {
+            fragColor = itc(vec3(255, 0, -127));
         }
         else {
-            // zero mass and zero speed (no liquid there)
-            // fragColor = vec4(0.0, 0.5, 0.5, 1.0);
-
-            fragColor = itc(vec3(0.0));
+            fragColor = itc(vec3(0, 0, 0));
         }
     }
 
