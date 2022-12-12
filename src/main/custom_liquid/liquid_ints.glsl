@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5, 0.5);
 
 
 const float offsetPx = 1.0;
-const float rPx = 10.0;
+const float rPx = 15.0;
 
 const float PI = 3.1415926535;
 const float sqrt2 = sqrt(2.0);
@@ -107,8 +107,7 @@ float weightSum(vec2 vel) {
 float getMassInflow(vec2 vel, vec2 e, float mass0, float mass) {
     float s = weightSum(vel);
     if (dot(vel, -e) > 0.0) {
-        // return min(round(mass * dot(vel, -e) / s), 255.0 - mass0);
-        return round(mass * dot(vel, -e) / s);
+        return mass * dot(vel, -e) / s;
     }
     return 0.0;
 }
@@ -120,11 +119,9 @@ vec2 getNewVel(vec2 vel0, vec2 vel, float mass0, float mass, vec2 e) {
     float dir = dot(deltaVel, e);
 
     if (dir > 0.0) {
-        vel0.x -= round(mw * dot(deltaVel, -e) * (- e.x));
-        vel0.y -= round(mw * dot(deltaVel, -e) * (- e.y));
+        vel0.x -= mw * dot(deltaVel, -e) * (- e.x);
+        vel0.y -= mw * dot(deltaVel, -e) * (- e.y);
     }
-
-    // TODO: проверить, чтобы vel.x,y не выходили за -128, 127 ?
     return vel0;
 }
 
@@ -266,13 +263,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     float newMass = I0.r - massOutflow + massInflow;
-    newMass = round(newMass);
 
 
     vec2 newVel = vec2(0.0);
     if (newMass > 1.0) {
         newVel += newVel10 + newVel20 + newVel30 +
-        newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
+            newVel40 + newVel50 + newVel60 + newVel70 + newVel80;
+
     }
 
 
@@ -314,26 +311,26 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     while (angle <= 2.0 * PI) {
         rotation += getRotation(fragCoord.xy + n);
         angle += PI / 6.0 * rand(fragCoord.xy) + PI / 12.0;
-        n += 2.0 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+        n += 0.1 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
         rotations += 1;
     }
     n = n / float(rotations);
 
-    vec2 rotatorPos = (fragCoord.xy + n * vec2(-1.0, 1.0)) / iResolution.xy;
+    vec2 rotatorPos = (fragCoord.xy + 10.0 * n * vec2(1.0, 1.0)) / iResolution.xy;
     vec4 rotatorColor = texture(iChannel0, rotatorPos);
     // --------------------------------------------
 
 
     vec4 finalColor = itc(vec3(newMass, newVel.x, newVel.y));
 
-    finalColor += rotatorColor;
+    finalColor = 0.8 * finalColor + 0.2 * rotatorColor;
 
     fragColor = finalColor;
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawBox(figureCenter, uv, 0.2, 0.3)) {
-            fragColor = itc(vec3(255, 1, 1));
+        if (drawBox(figureCenter, uv, 0.2, 0.2)) {
+            fragColor = itc(vec3(255, 100, -100));
         }
         else {
             fragColor = itc(vec3(0, 0, 0));
