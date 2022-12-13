@@ -2,7 +2,7 @@ vec2 figureCenter = vec2(0.5, 0.5);
 
 
 const float offsetPx = 1.0;
-const float rPx = 15.0;
+const float rPx = 10.0;
 
 const float PI = 3.1415926535;
 const float sqrt2 = sqrt(2.0);
@@ -107,7 +107,7 @@ float weightSum(vec2 vel) {
 float getMassInflow(vec2 vel, vec2 e, float mass0, float mass) {
     float s = weightSum(vel);
     if (dot(vel, -e) > 0.0) {
-        return mass * dot(vel, -e) / s;
+        return ceil(mass * dot(vel, -e) / s);
     }
     return 0.0;
 }
@@ -279,25 +279,25 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // Bottom
     if ((fragCoord.xy + e7).y <= 0.0) {
         if (newVel.y < 0.0)
-        newVel.y *= -1.0;
+        newVel.y *= -1.1;
     }
 
     // Top
     if ((fragCoord.xy + e3).y >= iResolution.y) {
         if (newVel.y > 0.0)
-        newVel.y *= -1.0;
+        newVel.y *= -1.1;
     }
 
     // Right
     if ((fragCoord.xy + e1).x >= iResolution.x) {
         if (newVel.x > 0.0)
-        newVel.x *= -1.0;
+        newVel.x *= -1.1;
     }
 
     // Left
     if ((fragCoord.xy + e5).x <= 0.0) {
         if (newVel.x < 0.0)
-        newVel.x *= -1.0;
+        newVel.x *= -1.1;
     }
 
     // -------------------
