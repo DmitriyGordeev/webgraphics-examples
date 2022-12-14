@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {DragControls} from 'three/addons/controls/DragControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {getFragmentShader} from "./fluid2Dshader";
-
+import {getDropShader} from "./dropShader";
 
 /**
  * This is example of how to take previous frame as a texture and use it again:
@@ -15,7 +15,7 @@ import {getFragmentShader} from "./fluid2Dshader";
 
 
 const planeWidth = 10;
-const planeHeight = planeWidth;
+const planeHeight = 10;
 
 
 export class ThreeShader2Channels {
@@ -99,12 +99,12 @@ export class ThreeShader2Channels {
             attribute float size;
             
             void main() {
-                vPos = position;        
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                vPos = position;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             }
-            `;
+        `;
 
-        let fragmentShader = getFragmentShader();
+        let fragmentShader = getDropShader();
 
 
         const shaderMaterial = new THREE.ShaderMaterial({
@@ -125,7 +125,7 @@ export class ThreeShader2Channels {
         // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
 
         this.plane1 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane1.rotation.y = 0.0;
+        this.plane1.rotation.y = 0.5;
         this.plane1.rotation.x = 0.0;
         this.scene1.add(this.plane1);
         this.objects.push(this.plane1);
@@ -154,7 +154,7 @@ export class ThreeShader2Channels {
             `;
 
         // SHADER 2
-        let fragmentShader = getFragmentShader();
+        let fragmentShader = getDropShader();
 
 
         const shaderMaterial = new THREE.ShaderMaterial({
@@ -175,7 +175,7 @@ export class ThreeShader2Channels {
         // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
 
         this.plane2 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane2.rotation.y = 0.0;
+        this.plane2.rotation.y = 0.5;
         this.plane2.rotation.x = 0.0;
         this.scene2.add(this.plane2);
         this.objects.push(this.plane2);
@@ -233,7 +233,7 @@ export class ThreeShader2Channels {
         // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
 
         this.plane3 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane3.rotation.y = 0.0;
+        this.plane3.rotation.y = 0.5;
         this.plane3.rotation.x = 0.0;
         this.scene3.add(this.plane3);
         this.objects.push(this.plane3);
