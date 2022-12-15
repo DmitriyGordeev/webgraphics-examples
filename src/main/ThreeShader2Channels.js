@@ -249,7 +249,7 @@ export class ThreeShader2Channels {
 
         this.plane3 = new THREE.Mesh(geometry, shaderMaterial);
         this.plane3.position.z = -1.0;
-        this.plane3.rotation.y = 0.0;
+        this.plane3.rotation.y = Math.PI / 2 - Math.PI / 12;
         this.plane3.rotation.x = 0.0;
         this.scene3.add(this.plane3);
         this.objects.push(this.plane3);
@@ -270,7 +270,8 @@ export class ThreeShader2Channels {
         this.cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
 
         this.cube.position.x = 1.0;
-        this.cube.position.z = 3.0;
+        this.cube.position.z = -3.0;
+        this.cube.rotation.y = Math.PI / 3.0;
 
         this.scene3.add(this.cube);
         this.objects.push(this.cube);
