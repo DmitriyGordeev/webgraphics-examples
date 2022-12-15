@@ -1,5 +1,3 @@
-
-
 export function getDropShader() {
     return `
         uniform vec2 u_screenSize;
@@ -74,25 +72,25 @@ export function getDropShader() {
         
             vec2 uv = vUV;
             
-        //    // Rotations
-        //    float r_angle = getRandAngle(uv * u_time);   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
-        //
-        //    float angle = r_angle;
-        //    vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
-        //    int rotations = 1;
-        //    float rotation = 1.0;
-        //    while (angle <= 2.0 * PI) {
-        //        rotation += getRotation(gl_FragCoord.xy + n);
-        //        angle += getRandAngle(gl_FragCoord.xy * u_time);
-        //        n += 2.0 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
-        //        rotations += 1;
-        //    }
-        //    n = n / float(rotations);
+           // Rotations
+           float r_angle = getRandAngle(uv * u_time);   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
+
+           float angle = r_angle;
+           vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+           int rotations = 1;
+           float rotation = 1.0;
+           while (angle <= 2.0 * PI) {
+               rotation += getRotation(gl_FragCoord.xy + n);
+               angle += getRandAngle(gl_FragCoord.xy * u_time);
+               n += 2.0 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+               rotations += 1;
+           }
+           n = n / float(rotations);
         
         
-        //    vec2 pos = (gl_FragCoord.xy + n * vec2(0.1 * sin(10.0 * u_time), 0.1 * cos(10.0 * u_time))) / u_screenSize.xy;
+            vec2 pos = (gl_FragCoord.xy + n * vec2(0.1 * sin(10.0 * u_time), 0.1 * cos(10.0 * u_time))) / u_screenSize.xy;
         
-            vec4 texel = texture(u_texture, gl_FragCoord.xy / u_screenSize.xy);
+            vec4 texel = texture(u_texture, pos);
             vec4 finalColor = texel;
             gl_FragColor = finalColor;
         

@@ -244,7 +244,7 @@ export class ThreeShader2Channels {
         // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
 
         this.plane3 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane3.rotation.y = 0.0;
+        this.plane3.rotation.y = Math.PI / 2.0 - Math.PI / 12.0;
         this.plane3.rotation.x = 0.0;
         this.scene3.add(this.plane3);
         this.objects.push(this.plane3);
