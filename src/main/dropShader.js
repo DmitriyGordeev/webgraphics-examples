@@ -7,7 +7,7 @@ export function getDropShader() {
         uniform sampler2D u_texture;    // this texture holds rendering from the previous frame
         uniform sampler2D u_noise;      // this is noise texture reference
         varying vec3 vPos;
-        
+        varying vec2 vUV;
         
         vec2 figureCenter = vec2(0.5, 0.5);
         
@@ -70,31 +70,34 @@ export function getDropShader() {
         
         void main()
         {
-            vec2 uv = gl_FragCoord.xy / u_screenSize.xy;
+            // vec2 uv = gl_FragCoord.xy / u_screenSize.xy;
+        
+            vec2 uv = vUV;
             
-            // Rotations
-            float r_angle = getRandAngle(gl_FragCoord.xy * u_time);   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
+        //    // Rotations
+        //    float r_angle = getRandAngle(uv * u_time);   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
+        //
+        //    float angle = r_angle;
+        //    vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+        //    int rotations = 1;
+        //    float rotation = 1.0;
+        //    while (angle <= 2.0 * PI) {
+        //        rotation += getRotation(gl_FragCoord.xy + n);
+        //        angle += getRandAngle(gl_FragCoord.xy * u_time);
+        //        n += 2.0 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+        //        rotations += 1;
+        //    }
+        //    n = n / float(rotations);
         
-            float angle = r_angle;
-            vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
-            int rotations = 1;
-            float rotation = 1.0;
-            while (angle <= 2.0 * PI) {
-                rotation += getRotation(gl_FragCoord.xy + n);
-                angle += getRandAngle(gl_FragCoord.xy * u_time);
-                n += 2.0 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
-                rotations += 1;
-            }
-            n = n / float(rotations);
         
+        //    vec2 pos = (gl_FragCoord.xy + n * vec2(0.1 * sin(10.0 * u_time), 0.1 * cos(10.0 * u_time))) / u_screenSize.xy;
         
-            vec2 pos = (gl_FragCoord.xy + n * vec2(0.1 * sin(10.0 * u_time), 0.1 * cos(10.0 * u_time))) / u_screenSize.xy;
-            vec4 texel = texture(u_texture, pos);
+            vec4 texel = texture(u_texture, gl_FragCoord.xy / u_screenSize.xy);
             vec4 finalColor = texel;
             gl_FragColor = finalColor;
         
             // Initial figure
-            if (u_time <= 0.2) {
+            if (u_time <= 2.0) {
                 if (drawCircle(figureCenter, uv, 0.15)) {
                     gl_FragColor = itc(vec3(255, -128, -128));
                 }

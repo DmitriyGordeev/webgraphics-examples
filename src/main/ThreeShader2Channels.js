@@ -14,8 +14,9 @@ import {getDropShader} from "./dropShader";
 
 
 
-const planeWidth = 10;
-const planeHeight = 10;
+const planeWidth = 20;
+const planeHeight = 20;
+const rotationY = 0.0;
 
 
 export class ThreeShader2Channels {
@@ -93,15 +94,17 @@ export class ThreeShader2Channels {
         };
 
         let vertexShader = `
-            uniform float u_time;
-            uniform vec2 u_screenSize;
-            varying vec3 vPos;
-            attribute float size;
-            
-            void main() {
-                vPos = position;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
+                uniform float u_time;
+                uniform vec2 u_screenSize;
+                varying vec3 vPos;
+                attribute float size;
+                varying vec2 vUV;
+                
+                void main() {
+                    vPos = position;
+                    vUV = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                }
         `;
 
         let fragmentShader = getDropShader();
@@ -125,7 +128,7 @@ export class ThreeShader2Channels {
         // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
 
         this.plane1 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane1.rotation.y = 0.5;
+        this.plane1.rotation.y = 0.0;
         this.plane1.rotation.x = 0.0;
         this.scene1.add(this.plane1);
         this.objects.push(this.plane1);
@@ -142,15 +145,17 @@ export class ThreeShader2Channels {
         };
 
         let vertexShader = `
-            uniform float u_time;
-            uniform vec2 u_screenSize;
-            varying vec3 vPos;
-            attribute float size;
-            
-            void main() {
-                vPos = position;        
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-            }
+                uniform float u_time;
+                uniform vec2 u_screenSize;
+                varying vec3 vPos;
+                attribute float size;
+                varying vec2 vUV;
+                
+                void main() {
+                    vPos = position;
+                    vUV = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                }
             `;
 
         // SHADER 2
@@ -175,7 +180,7 @@ export class ThreeShader2Channels {
         // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
 
         this.plane2 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane2.rotation.y = 0.5;
+        this.plane2.rotation.y = 0.0;
         this.plane2.rotation.x = 0.0;
         this.scene2.add(this.plane2);
         this.objects.push(this.plane2);
@@ -190,28 +195,34 @@ export class ThreeShader2Channels {
         };
 
         let vertexShader = `
-            uniform float u_time;
-            uniform vec2 u_screenSize;
-            attribute float size;
-            
-            void main() {
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-            }
+                uniform float u_time;
+                uniform vec2 u_screenSize;
+                attribute float size;
+                // varying vec2 vUV;
+                
+                out vec2 vUV;
+                
+                void main() {
+                    vUV = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                }
             `;
 
 
         // SHADER 3
         let fragmentShader = `
-            uniform vec2 u_screenSize;
-            uniform float u_time;
-            uniform sampler2D u_texture;    // this texture holds rendering from shader 2 (scene2)
-            
-            void main() {
-                vec2 uv = gl_FragCoord.xy / u_screenSize.xy;  
+                uniform vec2 u_screenSize;
+                uniform float u_time;
+                uniform sampler2D u_texture;    // this texture holds rendering from shader 2 (scene2)
+                // varying vec2 vUV;
                 
-                // simply passing texture from 2nd render here
-                gl_FragColor =  texture(u_texture, uv);
-            }
+                in vec2 vUV;
+                
+                void main() {
+                    // vec2 uv = gl_FragCoord.xy / u_screenSize.xy;  
+                    vec2 uv = vUV;
+                    gl_FragColor =  texture(u_texture, uv);
+                }
             `;
 
 
@@ -226,14 +237,14 @@ export class ThreeShader2Channels {
             vertexColors: true
         });
 
-        const geometry = new THREE.PlaneGeometry(7, 7);
+        const geometry = new THREE.PlaneGeometry(3, 3);
 
         // cubeGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
         // cubeGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
         // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
 
         this.plane3 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane3.rotation.y = 0.5;
+        this.plane3.rotation.y = 0.0;
         this.plane3.rotation.x = 0.0;
         this.scene3.add(this.plane3);
         this.objects.push(this.plane3);
@@ -273,7 +284,7 @@ export class ThreeShader2Channels {
             'textures/noise.jpg',
 
             // onLoad callback
-            function ( texture ) {
+            function (texture) {
                 // in this example we create the material when the texture is loaded
                 thisref.noiseTexture = texture;
                 thisref.startScene();
@@ -298,12 +309,10 @@ export class ThreeShader2Channels {
             undefined,
 
             // onError callback
-            function ( err ) {
-                console.error( 'An error happened.' );
+            function (err) {
+                console.error('An error happened.');
             }
         );
-
-
 
 
     }
