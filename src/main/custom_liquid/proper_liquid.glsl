@@ -1,4 +1,4 @@
-vec2 figureCenter = vec2(0.5, 0.5);
+vec2 figureCenter = vec2(0.5, 0.0);
 
 
 const float offsetPx = 1.0;
@@ -12,6 +12,9 @@ float rand(vec2 co) {
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+float getRandAngle(vec2 pxCoords) {
+    return PI / 10.0 * rand(pxCoords) + PI / 3.0;
+}
 
 bool drawBox(vec2 center, vec2 uv, float w, float h) {
     bool xCond = uv.x >= center.x - w / 2.0 && uv.x <= center.x + w / 2.0;
@@ -25,24 +28,18 @@ bool drawCircle(vec2 center, vec2 uv, float radius) {
 }
 
 
-float getRandAngle(vec2 pxCoords) {
-    return PI * rand(pxCoords) + PI / 3.0;
-}
-
 float getRotation(vec2 pxCoords) {
-    float angle = getRandAngle(pxCoords);
+    float angle = getRandAngle(pxCoords);   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
     float outValue = 0.0;
     int rotations = 1;
     while (angle <= 2.0 * PI) {
         vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
 
-//        vec2 pos = (pxCoords + n * vec2(0.1 * sin(10.0 * iTime), 0.1 * cos(10.0 * iTime))) / iResolution.xy;
+        vec2 pos = (pxCoords + n * vec2(-0.2, 3.0)) / iResolution.xy;
+        vec4 color = texture(iChannel0, pos);
 
-        vec2 picker = n.yx * vec2(1.0, -1.0);
-        vec4 color = texture(iChannel0, picker);
-
-        outValue += 1.0 * dot(color.yx, picker.yx);
-        angle += getRandAngle(pxCoords);
+        outValue += 1.0 * dot(color.xy, n.xy);
+        angle += getRandAngle(pxCoords + n * vec2(10.0, -30.0));
         rotations += 1;
     }
     return outValue / float(rotations + 1);
@@ -82,7 +79,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Rotations
-    float r_angle = getRandAngle(fragCoord.xy * iTime);   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
+    float r_angle = getRandAngle(uv);
 
     float angle = r_angle;
     vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
@@ -91,24 +88,39 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     while (angle <= 2.0 * PI) {
         rotation += getRotation(fragCoord.xy + n);
         angle += getRandAngle(fragCoord.xy + n);
-        n += 2.0 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+
+        float factor = 1.0;
+        // TODO: factor should change from 1.0 to 3.0 with time ?
+
+        n += factor * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
         rotations += 1;
     }
     n = n / float(rotations);
 
 
-    vec2 pos = (fragCoord.xy + n * vec2(0.1 * sin(10.0 * iTime), 0.1 * cos(10.0 * iTime))) / iResolution.xy;
-    vec4 texel = texture(iChannel0, pos);
+    float finalAngle = getRandAngle(fragCoord.xy + n);
+
+
+    vec2 offset = vec2(-0.1, -1.0);
+
+    // vec2 pos = (fragCoord.xy + n * vec2(cos(PI * finalAngle), sin(PI * finalAngle))) / iResolution.xy;
+
+    vec2 pos = (fragCoord.xy + n * offset) / iResolution.xy;
+
+    vec4 texel = texture(iChannel0, fract(pos));
     vec4 finalColor = texel;
+
+
+
     fragColor = finalColor;
 
     // Initial figure
     if (iFrame < 2) {
         if (drawCircle(figureCenter, uv, 0.15)) {
-            fragColor = itc(vec3(255, -128, -128));
+            fragColor = itc(vec3(255, 0, 0));
         }
         else {
-            fragColor = itc(vec3(0, 0, 100));
+            fragColor = vec4(0.0, 0.1, 0.3, 1.0);
         }
     }
 

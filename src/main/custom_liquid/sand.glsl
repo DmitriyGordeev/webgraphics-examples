@@ -12,6 +12,9 @@ float rand(vec2 co) {
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+float getRandAngle(vec2 pxCoords) {
+    return PI * rand(pxCoords) + PI / 3.0;
+}
 
 bool drawBox(vec2 center, vec2 uv, float w, float h) {
     bool xCond = uv.x >= center.x - w / 2.0 && uv.x <= center.x + w / 2.0;
@@ -26,7 +29,7 @@ bool drawCircle(vec2 center, vec2 uv, float radius) {
 
 
 float getRotation(vec2 pxCoords) {
-    float angle = PI / 6.0 * rand(pxCoords) + PI / 12.0;   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
+    float angle = getRandAngle(pxCoords);   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
     float outValue = 0.0;
     int rotations = 1;
     while (angle <= 2.0 * PI) {
@@ -36,7 +39,7 @@ float getRotation(vec2 pxCoords) {
         vec4 color = texture(iChannel0, pos);
 
         outValue += dot(color.xy, n.xy);
-        angle += PI / 6.0 * rand(pxCoords) + PI / 12.0;
+        angle += getRandAngle(pxCoords + n);
         rotations += 1;
     }
     return outValue / float(rotations + 1);
@@ -76,7 +79,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 
     // Rotations
-    float r_angle = PI / 6.0 * rand(uv) + PI / 12.0;   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
+    float r_angle = getRandAngle(uv);
 
     float angle = r_angle;
     vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
@@ -84,7 +87,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float rotation = 1.0;
     while (angle <= 2.0 * PI) {
         rotation += getRotation(fragCoord.xy + n);
-        angle += PI / 6.0 * rand(fragCoord.xy) + PI / 12.0;
+        angle += getRandAngle(fragCoord.xy + n);
         n += 2.0 * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
         rotations += 1;
     }
