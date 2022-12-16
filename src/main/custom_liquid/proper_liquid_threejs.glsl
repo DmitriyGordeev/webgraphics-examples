@@ -1,3 +1,11 @@
+uniform vec2 u_screenSize;
+uniform float u_time;
+uniform sampler2D u_texture;    // this texture holds rendering from the previous frame
+uniform sampler2D u_noise;      // this is noise texture reference
+varying vec3 vPos;
+varying vec2 vUV;
+
+
 vec2 figureCenter = vec2(0.5, 0.0);
 const float rPx = 10.0;
 const float PI = 3.1415926535;
@@ -32,8 +40,8 @@ float getRotation(vec2 pxCoords) {
     while (angle <= 2.0 * PI) {
         n = 2.0 * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
 
-        vec2 pos = (pxCoords + n * vec2(-0.2, 3.0)) / iResolution.xy;
-        vec4 color = texture(iChannel0, pos);
+        vec2 pos = (pxCoords + n * vec2(-0.2, 3.0)) / u_screenSize.xy;
+        vec4 color = texture(u_texture, pos);
 
         // use this if liquid is light color
         // outValue += 1.0 * dot(color.xy, n.xy);
@@ -47,9 +55,9 @@ float getRotation(vec2 pxCoords) {
     return outValue / float(rotations + 1);
 }
 
-void mainImage(out vec4 fragColor, in vec2 fragCoord)
+void main()
 {
-    vec2 uv = fragCoord.xy / iResolution.xy;
+    vec2 uv = gl_FragCoord.xy / u_screenSize.xy;
 
     // Rotations
     float r_angle = getRandAngle(uv);
@@ -59,8 +67,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     int rotations = 1;
     float rotation = 1.0;
     while (angle <= 2.0 * PI) {
-        rotation += getRotation(fragCoord.xy + n);
-        angle += getRandAngle(fragCoord.xy + n);
+        rotation += getRotation(gl_FragCoord.xy + n);
+        angle += getRandAngle(gl_FragCoord.xy + n);
 
         float factor = 0.5;
         // TODO: factor should change from 1.0 to 3.0 with time ?
@@ -69,25 +77,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         rotations += 1;
     }
     n = n / float(rotations);
-
-    float finalAngle = getRandAngle(fragCoord.xy + n);
-
+    float finalAngle = getRandAngle(gl_FragCoord.xy + n);
     vec2 offset = vec2(-0.1, -1.0);
 
-    // vec2 pos = (fragCoord.xy + n * vec2(cos(PI * finalAngle), sin(PI * finalAngle))) / iResolution.xy;
-
-    vec2 pos = (fragCoord.xy + n * offset) / iResolution.xy;
-    vec4 texel = texture(iChannel0, fract(pos));
+    vec2 pos = (gl_FragCoord.xy + n * offset) / u_screenSize.xy;
+    vec4 texel = texture(u_texture, fract(pos));
     vec4 finalColor = texel;
-    fragColor = finalColor;
+
+    gl_FragColor = finalColor;
 
     // Initial figure
-    if (iFrame < 2) {
+    if (u_time < 2.0) {
         if (drawCircle(figureCenter, uv, 0.1)) {
-            fragColor = vec4(0.15, 0.0, 0.1, 1.0);
+            gl_FragColor = vec4(0.15, 0.0, 0.1, 1.0);
         }
         else {
-            fragColor = vec4(255.0 / 255.0, 225.0 / 255.0, 125.0 / 255.0, 1.0);
+            gl_FragColor = vec4(255.0 / 255.0, 225.0 / 255.0, 125.0 / 255.0, 1.0);
         }
     }
 }

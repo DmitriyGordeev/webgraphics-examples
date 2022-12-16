@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {DragControls} from 'three/addons/controls/DragControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {getFragmentShader} from "./fluid2Dshader";
-import {getDropShader} from "./dropShader";
+import {getLiquidShader} from "./liquidShader";
 
 /**
  * This is example of how to take previous frame as a texture and use it again:
@@ -19,6 +19,14 @@ const planeHeight = 20;
 const rotationY = 0.0;
 
 
+let mouseDown = false;
+let mouseX = 0;
+let mouseY = 0;
+let mouseXDistance = 0;
+let mouseLastDistance = 0;
+let mouseXSpeed = 0;
+
+
 export class ThreeShader2Channels {
     constructor() {
         this.setupFrameCallback();
@@ -26,10 +34,35 @@ export class ThreeShader2Channels {
         this.scale();
         this.clock = new THREE.Clock();
 
-        this.objects = [];
+        this.actors = [];
 
         this.renderTarget1 = new THREE.WebGLRenderTarget(this.cw, this.ch);
         this.renderTarget2 = new THREE.WebGLRenderTarget(this.cw, this.ch);
+
+        /* mouse events  */
+        // TODO: mouse events for mobile will be touch events
+        window.addEventListener('mousedown', (e) => {
+            mouseDown = true;
+            console.log(e);
+            mouseX = e.screenX;
+            mouseY = e.screenY;
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            mouseDown = false;
+            mouseXDistance = 0;
+            mouseXSpeed = 0;
+            mouseLastDistance = 0;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (mouseDown) {
+                mouseXDistance = e.screenX - mouseX;
+                mouseXSpeed = mouseXDistance - mouseLastDistance;
+                mouseLastDistance = mouseXDistance;
+                console.log("mouseXSpeed = " + mouseXSpeed);
+            }
+        });
     }
 
 
@@ -45,17 +78,24 @@ export class ThreeShader2Channels {
     scale() {
         this.cw = window.innerWidth;
         this.ch = window.innerHeight;
+
+        console.log(`this.cw = ${this.cw}, this.ch = ${this.ch}`);
     }
 
 
-    animateScene(objects) {
+    animateScene(actors) {
         window.customRequestAnimationFrame(() => {
-            this.animateScene(objects)
+            this.animateScene(actors)
         });
 
         this.uniforms1.u_time.value = this.clock.getElapsedTime();
         this.uniforms2.u_time.value = this.clock.getElapsedTime();
         this.uniforms3.u_time.value = this.clock.getElapsedTime();
+
+        // Cube animation when use mouse
+        this.actors[0].rotation.y += mouseXSpeed / 100;
+        this.actors[0].position.y += mouseXSpeed / 1000;
+
         this.renderScene();
     }
 
@@ -107,7 +147,7 @@ export class ThreeShader2Channels {
                 }
         `;
 
-        let fragmentShader = getDropShader();
+        let fragmentShader = getLiquidShader();
 
 
         const shaderMaterial = new THREE.ShaderMaterial({
@@ -123,15 +163,11 @@ export class ThreeShader2Channels {
 
         const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
 
-        // cubeGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-        // cubeGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
-
         this.plane1 = new THREE.Mesh(geometry, shaderMaterial);
         this.plane1.rotation.y = 0.0;
         this.plane1.rotation.x = 0.0;
         this.scene1.add(this.plane1);
-        this.objects.push(this.plane1);
+        // this.actors.push(this.plane1);
     }
 
 
@@ -159,7 +195,7 @@ export class ThreeShader2Channels {
             `;
 
         // SHADER 2
-        let fragmentShader = getDropShader();
+        let fragmentShader = getLiquidShader();
 
 
         const shaderMaterial = new THREE.ShaderMaterial({
@@ -175,15 +211,11 @@ export class ThreeShader2Channels {
 
         const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
 
-        // cubeGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-        // cubeGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
-
         this.plane2 = new THREE.Mesh(geometry, shaderMaterial);
         this.plane2.rotation.y = 0.0;
         this.plane2.rotation.x = 0.0;
         this.scene2.add(this.plane2);
-        this.objects.push(this.plane2);
+        // this.actors.push(this.plane2);
     }
 
 
@@ -217,14 +249,10 @@ export class ThreeShader2Channels {
                 in vec2 vUV;
                 
                 void main() {
-                    // vec2 uv = gl_FragCoord.xy / u_screenSize.xy;  
-                    vec2 uv = vUV;
+                    vec2 uv = gl_FragCoord.xy / u_screenSize.xy;    // for clipping shader with plane area
+                    // vec2 uv = vUV;                               // for texturzing the plane
                     
-                    vec4 color = texture(u_texture, uv);
-                    
-                    color.a = 1.0;
-                   
-                    // color = vec4(1.0);
+                    vec4 color = texture(u_texture, uv);          
                     gl_FragColor = color;
                 }
             `;
@@ -241,18 +269,14 @@ export class ThreeShader2Channels {
             // vertexColors: true
         });
 
-        const geometry = new THREE.PlaneGeometry(3, 3);
-
-        // cubeGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-        // cubeGeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        // cubeGeometry.setAttribute( 'size', new THREE.Float32BufferAttribute(sizes, 1 ).setUsage( THREE.DynamicDrawUsage ) );
+        const geometry = new THREE.PlaneGeometry(25, 20);
 
         this.plane3 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane3.position.z = -1.0;
-        this.plane3.rotation.y = Math.PI / 2 - Math.PI / 12;
+        this.plane3.position.z = -4.0;
+        this.plane3.rotation.y = 0.0;
         this.plane3.rotation.x = 0.0;
         this.scene3.add(this.plane3);
-        this.objects.push(this.plane3);
+        // this.actors.push(this.plane3);
     }
 
 
@@ -262,7 +286,7 @@ export class ThreeShader2Channels {
             new THREE.MeshBasicMaterial({color: 0xd5d918}),
             new THREE.MeshBasicMaterial({color: 0xd2dbeb}),
             new THREE.MeshBasicMaterial({color: 0xa3a3c6}),
-            new THREE.MeshBasicMaterial({color: 0xff0000}),
+            new THREE.MeshBasicMaterial({color: 0x330000}),
             new THREE.MeshBasicMaterial({color: 0x856af9})
         ];
 
@@ -274,7 +298,7 @@ export class ThreeShader2Channels {
         this.cube.rotation.y = Math.PI / 3.0;
 
         this.scene3.add(this.cube);
-        this.objects.push(this.cube);
+        this.actors.push(this.cube);
     }
 
 
@@ -298,9 +322,6 @@ export class ThreeShader2Channels {
         this.renderer.setRenderTarget(null);
         this.renderer.render(this.scene3, this.camera);
     }
-
-
-
 
 
     entry() {
