@@ -32,13 +32,19 @@ float getRotation(vec2 pxCoords) {
     float angle = getRandAngle(pxCoords);   // rand angle from PI/12 (15deg) to PI / 4 (45deg);
     float outValue = 0.0;
     int rotations = 1;
+    vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
     while (angle <= 2.0 * PI) {
-        vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+        n = 2.0 * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
 
         vec2 pos = (pxCoords + n * vec2(-0.2, 3.0)) / iResolution.xy;
         vec4 color = texture(iChannel0, pos);
 
-        outValue += 1.0 * dot(color.xy, n.xy);
+        // use this if liquid is light color
+        // outValue += 1.0 * dot(color.xy, n.xy);
+
+        // use this if liquid is dark color
+        outValue += 2.0 * dot(vec2(1.0) - color.xy, n.xy);
+
         angle += getRandAngle(pxCoords + n * vec2(10.0, -30.0));
         rotations += 1;
     }
@@ -89,7 +95,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         rotation += getRotation(fragCoord.xy + n);
         angle += getRandAngle(fragCoord.xy + n);
 
-        float factor = 1.0;
+        float factor = 0.5;
         // TODO: factor should change from 1.0 to 3.0 with time ?
 
         n += factor * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
@@ -116,11 +122,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // Initial figure
     if (iFrame < 2) {
-        if (drawCircle(figureCenter, uv, 0.15)) {
-            fragColor = itc(vec3(255, 0, 0));
+        if (drawCircle(figureCenter, uv, 0.1)) {
+            // fragColor = itc(vec3(0, 255, 0));
+
+            fragColor = vec4(0.15, 0.0, 0.1, 1.0);
         }
         else {
-            fragColor = vec4(0.0, 0.1, 0.3, 1.0);
+            // fragColor = vec4(0.0, 0.1, 0.3, 1.0);
+            fragColor = vec4(255.0 / 255.0, 225.0 / 255.0, 125.0 / 255.0, 1.0);
         }
     }
 
