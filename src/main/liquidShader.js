@@ -4,15 +4,17 @@ export function getLiquidShader() {
         uniform float u_time;
         uniform sampler2D u_texture;    // this texture holds rendering from the previous frame
         uniform sampler2D u_noise;      // this is noise texture reference
+        uniform float u_cubeElevation;
+        
         varying vec3 vPos;
         varying vec2 vUV;
-        
         
         vec2 figureCenter = vec2(0.5, 0.0);
         const float rPx = 10.0;
         const float PI = 3.1415926535;
         const float sqrt2 = sqrt(2.0);
         
+        const vec4 backgroundColor = vec4(255.0 / 255.0, 225.0 / 255.0, 125.0 / 255.0, 1.0);
         
         float rand(vec2 co) {
             return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
@@ -49,7 +51,7 @@ export function getLiquidShader() {
                 // outValue += 1.0 * dot(color.xy, n.xy);
         
                 // use this if liquid is dark color
-                outValue += 1.0 * dot(vec2(1.0) - color.xy, n.xy);
+                outValue += 2.0 * dot(vec2(1.0) - color.xy, n.xy);
         
                 angle += getRandAngle(pxCoords + n * vec2(10.0, -30.0));
                 rotations += 1;
@@ -85,18 +87,18 @@ export function getLiquidShader() {
             vec2 pos = (gl_FragCoord.xy + n * offset) / u_screenSize.xy;
             vec4 texel = texture(u_texture, fract(pos));
             vec4 finalColor = texel;
-            
-            
-        
+      
             gl_FragColor = finalColor;
         
             // Initial figure
-            if (u_time < 2.0) {
+            // if (u_time < 2.0) {
+            if (u_cubeElevation < 0.5) {
                 if (drawCircle(figureCenter, uv, 0.1)) {
-                    gl_FragColor = vec4(0.15, 0.0, 0.1, 1.0);
+                    // gl_FragColor = vec4(0.15, 0.0, 0.1, 1.0);
+                    gl_FragColor = vec4(94, 7, 26, 255) / 255.0;
                 }
                 else {
-                    gl_FragColor = vec4(255.0 / 255.0, 225.0 / 255.0, 125.0 / 255.0, 1.0);
+                    gl_FragColor = backgroundColor;
                 }
             }
         }

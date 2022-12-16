@@ -26,6 +26,7 @@ let mouseXDistance = 0;
 let mouseLastDistance = 0;
 let mouseXSpeed = 0;
 
+let cubeYElevation = 0.0;
 
 export class ThreeShader2Channels {
     constructor() {
@@ -94,7 +95,13 @@ export class ThreeShader2Channels {
 
         // Cube animation when use mouse
         this.actors[0].rotation.y += mouseXSpeed / 100;
-        this.actors[0].position.y += mouseXSpeed / 1000;
+        this.actors[0].position.y += mouseXSpeed / 400;
+
+        cubeYElevation = this.actors[0].position.y;
+        console.log(`cubeYElevation = ${cubeYElevation}`);
+
+        this.uniforms1.u_cubeElevation.value = this.actors[0].position.y;
+        this.uniforms2.u_cubeElevation.value = this.actors[0].position.y;
 
         this.renderScene();
     }
@@ -113,7 +120,6 @@ export class ThreeShader2Channels {
         this.scene2 = new THREE.Scene();
         this.scene3 = new THREE.Scene();
 
-
         this.camera = new THREE.PerspectiveCamera(45, aspect);
         this.camera.position.set(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
@@ -130,7 +136,8 @@ export class ThreeShader2Channels {
             u_time: {type: 'f', value: 0.0},
             u_texture: {type: 't', value: this.renderTarget2.texture},
             u_noise: {type: 't', value: this.noiseTexture},
-            u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
+            u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+            u_cubeElevation: {type: 'f', value: 0.0}
         };
 
         let vertexShader = `
@@ -177,7 +184,8 @@ export class ThreeShader2Channels {
             u_time: {type: 'f', value: 0.0},
             u_texture: {type: 't', value: this.renderTarget1.texture},
             u_noise: {type: 't', value: this.noiseTexture},
-            u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
+            u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+            u_cubeElevation: {type: 'f', value: 0.0}
         };
 
         let vertexShader = `
@@ -354,7 +362,7 @@ export class ThreeShader2Channels {
                     console.log("keyUp");
                 }, true);
 
-                thisref.animateScene([thisref.objects]);
+                thisref.animateScene([thisref.actors]);
                 thisref.renderScene();
             },
 
