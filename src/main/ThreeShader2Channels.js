@@ -282,8 +282,9 @@ export class ThreeShader2Channels {
             // vertexColors: true
         });
 
-        let planeHeight = planeWidth / this.aspect;
-        const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+        let planeWidth3 = 35;
+        let planeHeight = planeWidth3 / this.aspect;
+        const geometry = new THREE.PlaneGeometry(planeWidth3, planeHeight);
 
         this.plane3 = new THREE.Mesh(geometry, shaderMaterial);
         this.plane3.position.z = -10.0;
@@ -307,7 +308,8 @@ export class ThreeShader2Channels {
         let cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
         this.cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
 
-        this.cube.position.x = 1.0;
+        this.cube.position.x = 0.0;
+        this.cube.position.y = -3.0;
         this.cube.position.z = -3.0;
         this.cube.rotation.y = Math.PI / 3.0;
 
