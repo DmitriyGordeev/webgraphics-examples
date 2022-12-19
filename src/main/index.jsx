@@ -11,7 +11,7 @@ import './index.css'
 const root = document.getElementById('app');
 ReactDOM.render(
     <Provider store={Store}>
-        <div style={{width: "100%", height: "100%"}}>
+        <div>
             <App />
         </div>
     </Provider>,

@@ -34,7 +34,7 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <canvas id={"c"}/>
+                <canvas id={"c"} />
             </div>
         );
     }

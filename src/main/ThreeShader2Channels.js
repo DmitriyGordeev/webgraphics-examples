@@ -14,8 +14,7 @@ import {getLiquidShader} from "./liquidShader";
 
 
 
-const planeWidth = 20;
-const planeHeight = 20;
+const planeWidth = 30;
 const rotationY = 0.0;
 
 
@@ -80,6 +79,9 @@ export class ThreeShader2Channels {
         this.cw = window.innerWidth;
         this.ch = window.innerHeight;
 
+        // this.cw = 1920;
+        // this.ch = 1080;
+
         console.log(`this.cw = ${this.cw}, this.ch = ${this.ch}`);
     }
 
@@ -110,17 +112,19 @@ export class ThreeShader2Channels {
     startScene() {
 
         let canvas = this.canvas;
-        this.renderer = new THREE.WebGLRenderer({canvas});
+        this.renderer = new THREE.WebGLRenderer({canvas, alpha: true});
         this.renderer.setClearColor("#000000");
+        this.renderer.setPixelRatio(1.0);
+        console.log(`window.devicePixelRatio = ${window.devicePixelRatio}`);
         this.renderer.setSize(this.cw, this.ch);
 
-        let aspect = this.canvas.width / this.canvas.height;
+        this.aspect = this.canvas.width / this.canvas.height;
 
         this.scene1 = new THREE.Scene();
         this.scene2 = new THREE.Scene();
         this.scene3 = new THREE.Scene();
 
-        this.camera = new THREE.PerspectiveCamera(45, aspect);
+        this.camera = new THREE.PerspectiveCamera(45, this.aspect);
         this.camera.position.set(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
 
@@ -136,7 +140,7 @@ export class ThreeShader2Channels {
             u_time: {type: 'f', value: 0.0},
             u_texture: {type: 't', value: this.renderTarget2.texture},
             u_noise: {type: 't', value: this.noiseTexture},
-            u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+            u_screenSize: {type: 'v2', value: new THREE.Vector2(this.cw, this.ch)},
             u_cubeElevation: {type: 'f', value: 0.0}
         };
 
@@ -156,18 +160,18 @@ export class ThreeShader2Channels {
 
         let fragmentShader = getLiquidShader();
 
-
         const shaderMaterial = new THREE.ShaderMaterial({
             uniforms: this.uniforms1,
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
 
-            blending: THREE.AdditiveBlending,
-            depthTest: false,
-            transparent: true,
-            vertexColors: true
+            // blending: THREE.AdditiveBlending,
+            // depthTest: false,
+            // transparent: true,
+            // vertexColors: true
         });
 
+        let planeHeight = planeWidth / this.aspect;
         const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
 
         this.plane1 = new THREE.Mesh(geometry, shaderMaterial);
@@ -184,7 +188,7 @@ export class ThreeShader2Channels {
             u_time: {type: 'f', value: 0.0},
             u_texture: {type: 't', value: this.renderTarget1.texture},
             u_noise: {type: 't', value: this.noiseTexture},
-            u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+            u_screenSize: {type: 'v2', value: new THREE.Vector2(this.cw, this.ch)},
             u_cubeElevation: {type: 'f', value: 0.0}
         };
 
@@ -211,12 +215,13 @@ export class ThreeShader2Channels {
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
 
-            blending: THREE.AdditiveBlending,
-            depthTest: false,
-            transparent: true,
-            vertexColors: true
+            // blending: THREE.AdditiveBlending,
+            // depthTest: false,
+            // transparent: true,
+            // vertexColors: true
         });
 
+        let planeHeight = planeWidth / this.aspect;
         const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
 
         this.plane2 = new THREE.Mesh(geometry, shaderMaterial);
@@ -231,7 +236,7 @@ export class ThreeShader2Channels {
         this.uniforms3 = {
             u_time: {type: 'f', value: 0.0},
             u_texture: {type: 't', value: this.renderTarget2.texture},
-            u_screenSize: {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
+            u_screenSize: {type: 'v2', value: new THREE.Vector2(this.cw, this.ch)}
         };
 
         let vertexShader = `
@@ -260,7 +265,7 @@ export class ThreeShader2Channels {
                     vec2 uv = gl_FragCoord.xy / u_screenSize.xy;    // for clipping shader with plane area
                     // vec2 uv = vUV;                               // for texturzing the plane
                     
-                    vec4 color = texture(u_texture, uv);          
+                    vec4 color = texture(u_texture, uv);
                     gl_FragColor = color;
                 }
             `;
@@ -277,10 +282,11 @@ export class ThreeShader2Channels {
             // vertexColors: true
         });
 
-        const geometry = new THREE.PlaneGeometry(25, 20);
+        let planeHeight = planeWidth / this.aspect;
+        const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
 
         this.plane3 = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane3.position.z = -4.0;
+        this.plane3.position.z = -10.0;
         this.plane3.rotation.y = 0.0;
         this.plane3.rotation.x = 0.0;
         this.scene3.add(this.plane3);
