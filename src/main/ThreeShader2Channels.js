@@ -122,7 +122,8 @@ export class ThreeShader2Channels {
         this.scene3 = new THREE.Scene();
 
         this.camera = new THREE.PerspectiveCamera(45, this.aspect);
-        this.camera.position.set(0, 0, 10);
+
+        this.camera.position.set(0, -0.5, 10);
         this.camera.lookAt(0, 0, 0);
 
         this.scene1.add(this.camera);
@@ -414,7 +415,7 @@ export class ThreeShader2Channels {
             return new Promise((resolve) => {
                     loader.load('cap.gltf', function (gltf) {
                         let cap = gltf.scene;
-                        cap.position.y = -0.5;
+                        cap.position.y = -0.6;
                         cap.position.z = 7.0;
 
                         cap.scale.x = 1.0;

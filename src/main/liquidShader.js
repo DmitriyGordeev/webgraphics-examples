@@ -93,7 +93,8 @@ export function getLiquidShader() {
             // Initial figure
             // if (u_time < 2.0) {
             if (u_cubeElevation < -0.25) {
-                if (drawCircle(figureCenter, uv, 0.07)) {
+                // if (drawCircle(figureCenter, uv, 0.07)) {
+                if (uv.x >= 0.45 && uv.x <= 0.55 && uv.y >= 0.0 && uv.y <= 0.2) {
                     // gl_FragColor = vec4(94, 7, 26, 255) / 255.0;
                     gl_FragColor = vec4(94, 0.0, 26, 255) / 255.0;
                 }
