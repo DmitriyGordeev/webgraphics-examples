@@ -74,7 +74,7 @@ export function getLiquidShader() {
                 rotation += getRotation(gl_FragCoord.xy + n);
                 angle += getRandAngle(gl_FragCoord.xy + n);
 
-                float factor = 0.5;
+                float factor = 0.8;
                 // TODO: factor should change from 1.0 to 3.0 with time ?
 
                 n += factor * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));

@@ -25,7 +25,9 @@ let mouseXDistance = 0;
 let mouseLastDistance = 0;
 let mouseXSpeed = 0;
 
-let cubeYElevation = 0.0;
+
+const BottleState = {CLOSE: 0, OPEN: 1, PRESENTED: 2};
+
 
 export class ThreeShader2Channels {
     constructor() {
@@ -35,6 +37,7 @@ export class ThreeShader2Channels {
         this.clock = new THREE.Clock();
 
         this.actors = [];
+        this.bottleState = BottleState.CLOSE;
 
         this.renderTarget1 = new THREE.WebGLRenderTarget(this.cw, this.ch);
         this.renderTarget2 = new THREE.WebGLRenderTarget(this.cw, this.ch);
@@ -88,19 +91,77 @@ export class ThreeShader2Channels {
             this.animateScene(this.actors)
         });
 
+        console.log(`this.bottleState = ${this.bottleState}`);
+
         this.uniforms1.u_time.value = this.clock.getElapsedTime();
         this.uniforms2.u_time.value = this.clock.getElapsedTime();
         this.uniforms3.u_time.value = this.clock.getElapsedTime();
 
         // Object animation when use mouse
-        this.actors[1].rotation.y += mouseXSpeed / 100;
-        this.actors[1].position.y += mouseXSpeed / 400;
+        let cap = this.actors[1];
+        cap.rotation.y += mouseXSpeed / 100;
+        cap.position.y += mouseXSpeed / 400;
 
-        cubeYElevation = this.actors[1].position.y;
-        console.log(`cubeYElevation = ${cubeYElevation}`);
+        let capElevation = 0.0;     // any number to trigger the liquid shader
+        if (this.bottleState !== BottleState.PRESENTED) {
+            capElevation = cap.position.y;
+        }
 
-        this.uniforms1.u_cubeElevation.value = this.actors[1].position.y;
-        this.uniforms2.u_cubeElevation.value = this.actors[1].position.y;
+
+        // bottle rotation
+        let bottle = this.actors[0];
+        let shaderAnimStartPos = -0.25;
+        if (capElevation < shaderAnimStartPos) {
+            bottle.rotation.x -= mouseXSpeed / 700;
+            bottle.position.y -= mouseXSpeed / 400;
+        } else if (this.bottleState === BottleState.CLOSE) {
+            this.bottleState = BottleState.OPEN;
+        }
+
+        if (this.bottleState === BottleState.OPEN) {
+            bottle.rotation.x = 0.0;
+            bottle.position.y -= 0.01;
+            if (bottle.position.y <= -10) {
+                bottle.position.y = -10.0;
+            }
+            cap.position.y += 0.02;
+            cap.position.x += 0.01;
+            cap.rotation.z += 0.05;
+
+            let thisref = this;
+            setTimeout(() => {
+                thisref.bottleState = BottleState.PRESENTED;
+            }, 2000);
+
+        } else if (this.bottleState === BottleState.PRESENTED) {
+
+            bottle.position.x = -1.5;
+            bottle.position.y = -1.0;
+            bottle.position.z = 0.0;
+
+            bottle.scale.x = 0.8;
+            bottle.scale.y = 0.8;
+            bottle.scale.z = 0.8;
+
+
+            cap.position.x = -1.5;
+            cap.position.y = 2.5;
+            cap.position.z = 0.0;
+
+            cap.rotation.x = 0.0;
+            cap.rotation.y = 0.0;
+            cap.rotation.z = 0.0;
+
+            cap.scale.x = 0.8;
+            cap.scale.y = 0.8;
+            cap.scale.z = 0.8;
+        }
+
+        // this.uniforms1.u_cubeElevation.value = this.actors[1].position.y;
+        // this.uniforms2.u_cubeElevation.value = this.actors[1].position.y;
+
+        this.uniforms1.u_cubeElevation.value = capElevation;
+        this.uniforms2.u_cubeElevation.value = capElevation;
 
         this.renderScene();
     }
@@ -123,7 +184,7 @@ export class ThreeShader2Channels {
 
         this.camera = new THREE.PerspectiveCamera(45, this.aspect);
 
-        this.camera.position.set(0, -0.5, 10);
+        this.camera.position.set(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
 
         this.scene1.add(this.camera);
@@ -131,12 +192,12 @@ export class ThreeShader2Channels {
         this.scene3.add(this.camera);
 
         // Add point light to the scene3
-        const light = new THREE.PointLight( 0xffffff, 5, 20 );
-        light.position.set( 0, 10, 8 );
-        this.scene3.add( light );
-
-        // const light = new THREE.AmbientLight( 0xffffff ); // soft white light
+        // const light = new THREE.PointLight( 0xffffff, 5, 20 );
+        // light.position.set( 0, 10, 8 );
         // this.scene3.add( light );
+
+        const light = new THREE.AmbientLight(0xffffff); // soft white light
+        this.scene3.add(light);
     }
 
 
@@ -391,7 +452,6 @@ export class ThreeShader2Channels {
     // }
 
 
-
     entry() {
         let thisref = this;
         const loader = new GLTFLoader().setPath('models/');
@@ -413,16 +473,13 @@ export class ThreeShader2Channels {
         // loading cap -> then -> setup scene
         promise.then(() => {
             return new Promise((resolve) => {
-                    loader.load('cap.gltf', function (gltf) {
-                        let cap = gltf.scene;
-                        cap.position.y = -0.6;
-                        cap.position.z = 7.0;
+                loader.load('cap.gltf', function (gltf) {
+                    let cap = gltf.scene;
+                    cap.position.y = -0.6;
+                    cap.position.z = 7.0;
 
-                        cap.scale.x = 1.0;
-                        cap.scale.y = 1.0;
-                        cap.scale.z = 1.0;
-                        thisref.actors.push(cap);
-                        resolve();
+                    thisref.actors.push(cap);
+                    resolve();
                 });
             });
         }).then(() => {
@@ -444,8 +501,6 @@ export class ThreeShader2Channels {
             thisref.animateScene(thisref.actors);
             thisref.renderScene();
         });
-
-
 
 
     }
