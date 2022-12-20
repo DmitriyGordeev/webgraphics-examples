@@ -128,9 +128,19 @@ export class ThreeShader2Channels {
         this.camera.position.set(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
 
+
         this.scene1.add(this.camera);
         this.scene2.add(this.camera);
         this.scene3.add(this.camera);
+
+
+        // Add point light to the scene3
+        const light = new THREE.PointLight( 0xffffff, 5, 20 );
+        light.position.set( 0, 10, 8 );
+        this.scene3.add( light );
+
+        // const light = new THREE.AmbientLight( 0xffffff ); // soft white light
+        // this.scene3.add( light );
     }
 
 
@@ -313,7 +323,7 @@ export class ThreeShader2Channels {
         this.cube.position.z = -3.0;
         this.cube.rotation.y = Math.PI / 3.0;
 
-        this.scene3.add(this.cube);
+        // this.scene3.add(this.cube);
         this.actors.push(this.cube);
     }
 
@@ -340,51 +350,142 @@ export class ThreeShader2Channels {
     }
 
 
+    // entry() {
+    //
+    //     const loader = new THREE.TextureLoader();
+    //     let thisref = this;
+    //
+    //     // load a resource
+    //     loader.load(
+    //         // resource URL
+    //         'textures/noise.jpg',
+    //
+    //         // onLoad callback
+    //         function (texture) {
+    //             // in this example we create the material when the texture is loaded
+    //             thisref.noiseTexture = texture;
+    //             thisref.startScene();
+    //
+    //             thisref.createPlane1();
+    //             thisref.createPlane2();
+    //             thisref.createPlane3();
+    //
+    //             thisref.createCube();
+    //
+    //             window.addEventListener('keydown', () => {
+    //                 console.log("keyDown");
+    //             }, true);
+    //
+    //             window.addEventListener('keyup', () => {
+    //                 console.log("keyUp");
+    //             }, true);
+    //
+    //             thisref.animateScene([thisref.actors]);
+    //             thisref.renderScene();
+    //         },
+    //
+    //         // onProgress callback currently not supported
+    //         undefined,
+    //
+    //         // onError callback
+    //         function (err) {
+    //             console.error('An error happened.');
+    //         }
+    //     );
+    // }
+
+
+
     entry() {
-
-        const loader = new THREE.TextureLoader();
         let thisref = this;
+        const loader = new GLTFLoader().setPath('models/');
 
-        // load a resource
-        loader.load(
-            // resource URL
-            'textures/noise.jpg',
 
-            // onLoad callback
-            function (texture) {
-                // in this example we create the material when the texture is loaded
-                thisref.noiseTexture = texture;
-                thisref.startScene();
+        // Loading bottle.gltf model
+        let promise = new Promise((resolve, reject) => {
+            loader.load('bottle.gltf', function (gltf) {
+                let bottle = gltf.scene;
+                bottle.position.y = -5.0;
+                bottle.position.z = 7.0;
+                thisref.actors.push(bottle);
 
-                thisref.createPlane1();
-                thisref.createPlane2();
-                thisref.createPlane3();
+                console.log("Starting resolve()");
+                resolve();
+            });
+        });
 
-                thisref.createCube();
+        // loading cap -> then -> setup scene
+        promise.then(() => {
+            return new Promise((resolve) => {
+                    loader.load('cap.gltf', function (gltf) {
+                        let cap = gltf.scene;
+                        cap.position.y = -0.5;
+                        cap.position.z = 7.0;
 
-                window.addEventListener('keydown', () => {
-                    console.log("keyDown");
-                }, true);
+                        cap.scale.x = 0.8;
+                        cap.scale.y = 0.8;
+                        cap.scale.z = 0.8;
+                        thisref.actors.push(cap);
+                        resolve();
+                });
+            });
+        }).then(() => {
 
-                window.addEventListener('keyup', () => {
-                    console.log("keyUp");
-                }, true);
+            thisref.startScene();
 
-                thisref.animateScene([thisref.actors]);
-                thisref.renderScene();
-            },
+            thisref.createPlane1();
+            thisref.createPlane2();
+            thisref.createPlane3();
 
-            // onProgress callback currently not supported
-            undefined,
+            thisref.createCube();
 
-            // onError callback
-            function (err) {
-                console.error('An error happened.');
+            // add all the actors to scene3
+            for (let i = 0; i < thisref.actors.length; i++) {
+                thisref.scene3.add(thisref.actors[i]);
             }
-        );
+
+            thisref.animateScene(thisref.actors);
+            thisref.renderScene();
+        });
+
+
 
 
     }
+
+
+    // entry() {
+    //     let thisref = this;
+    //     const loader = new GLTFLoader().setPath('models/');
+    //
+    //     loader.load('bottle.gltf', function (gltf) {
+    //         let customModel = gltf.scene;
+    //
+    //         thisref.startScene();
+    //
+    //         thisref.createPlane1();
+    //         thisref.createPlane2();
+    //         thisref.createPlane3();
+    //
+    //         thisref.createCube();
+    //
+    //         thisref.scene3.add(customModel);
+    //
+    //
+    //         // for bottle
+    //         customModel.position.y = -5.0;
+    //         customModel.position.z = 7.0;
+    //
+    //         // for cap
+    //         // customModel.position.y = -0.5;
+    //         // customModel.position.z = 7.0;
+    //
+    //         thisref.actors.push(customModel);
+    //
+    //         thisref.animateScene(thisref.actors);
+    //         thisref.renderScene();
+    //     });
+    // }
 
 
 }
