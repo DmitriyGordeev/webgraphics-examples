@@ -79,31 +79,28 @@ export class ThreeShader2Channels {
         this.cw = window.innerWidth;
         this.ch = window.innerHeight;
 
-        // this.cw = 1920;
-        // this.ch = 1080;
-
         console.log(`this.cw = ${this.cw}, this.ch = ${this.ch}`);
     }
 
 
-    animateScene(actors) {
+    animateScene() {
         window.customRequestAnimationFrame(() => {
-            this.animateScene(actors)
+            this.animateScene(this.actors)
         });
 
         this.uniforms1.u_time.value = this.clock.getElapsedTime();
         this.uniforms2.u_time.value = this.clock.getElapsedTime();
         this.uniforms3.u_time.value = this.clock.getElapsedTime();
 
-        // Cube animation when use mouse
-        this.actors[0].rotation.y += mouseXSpeed / 100;
-        this.actors[0].position.y += mouseXSpeed / 400;
+        // Object animation when use mouse
+        this.actors[1].rotation.y += mouseXSpeed / 100;
+        this.actors[1].position.y += mouseXSpeed / 400;
 
-        cubeYElevation = this.actors[0].position.y;
+        cubeYElevation = this.actors[1].position.y;
         console.log(`cubeYElevation = ${cubeYElevation}`);
 
-        this.uniforms1.u_cubeElevation.value = this.actors[0].position.y;
-        this.uniforms2.u_cubeElevation.value = this.actors[0].position.y;
+        this.uniforms1.u_cubeElevation.value = this.actors[1].position.y;
+        this.uniforms2.u_cubeElevation.value = this.actors[1].position.y;
 
         this.renderScene();
     }
@@ -128,11 +125,9 @@ export class ThreeShader2Channels {
         this.camera.position.set(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
 
-
         this.scene1.add(this.camera);
         this.scene2.add(this.camera);
         this.scene3.add(this.camera);
-
 
         // Add point light to the scene3
         const light = new THREE.PointLight( 0xffffff, 5, 20 );
@@ -422,9 +417,9 @@ export class ThreeShader2Channels {
                         cap.position.y = -0.5;
                         cap.position.z = 7.0;
 
-                        cap.scale.x = 0.8;
-                        cap.scale.y = 0.8;
-                        cap.scale.z = 0.8;
+                        cap.scale.x = 1.0;
+                        cap.scale.y = 1.0;
+                        cap.scale.z = 1.0;
                         thisref.actors.push(cap);
                         resolve();
                 });
@@ -437,9 +432,10 @@ export class ThreeShader2Channels {
             thisref.createPlane2();
             thisref.createPlane3();
 
-            thisref.createCube();
+            // thisref.createCube();
 
             // add all the actors to scene3
+            console.log(`actors.length = ${thisref.actors.length}`);
             for (let i = 0; i < thisref.actors.length; i++) {
                 thisref.scene3.add(thisref.actors[i]);
             }
