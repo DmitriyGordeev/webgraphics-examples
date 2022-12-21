@@ -28,7 +28,10 @@ let mouseXSpeed = 0;
 
 const BottleState = {CLOSE: 0, OPEN: 1, PRESENTED: 2};
 
-let AnimState = {restranslated: false};
+let AnimProps = {
+    restranslated: false,
+    timelagOpenPresentedMs: 1000
+};
 
 export class ThreeShader2Channels {
     constructor() {
@@ -128,9 +131,9 @@ export class ThreeShader2Channels {
             cap.position.y += 0.02;
             cap.rotation.z += 0.05;
 
-            if (!AnimState.restranslated) {
+            if (!AnimProps.restranslated) {
                 let thisref = this;
-                AnimState.restranslated = true;     // this flag needs to invoke setTimeout only once
+                AnimProps.restranslated = true;     // this flag needs to invoke setTimeout only once
                 setTimeout(() => {
                     thisref.bottleState = BottleState.PRESENTED;
                     let newScale = 0.8;
@@ -157,19 +160,16 @@ export class ThreeShader2Channels {
                     cap.scale.y = newScale;
                     cap.scale.z = newScale;
 
-                }, 1000);
+                }, AnimProps.timelagOpenPresentedMs);
             }
-
-
 
         } else if (this.bottleState === BottleState.PRESENTED) {
             // Moving bottle and cap untile desired position is reached
-
             if (bottle.position.y < -1.0)
-                bottle.position.y += 0.03;
+                bottle.position.y += 0.02;
 
             if (cap.position.y < 2.5)
-                cap.position.y += 0.03;
+                cap.position.y += 0.02;
         }
 
         this.uniforms1.u_cubeElevation.value = capElevation;
