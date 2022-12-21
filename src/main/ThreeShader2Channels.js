@@ -28,6 +28,7 @@ let mouseXSpeed = 0;
 
 const BottleState = {CLOSE: 0, OPEN: 1, PRESENTED: 2};
 
+let AnimState = {restranslated: false};
 
 export class ThreeShader2Channels {
     constructor() {
@@ -107,7 +108,6 @@ export class ThreeShader2Channels {
             capElevation = cap.position.y;
         }
 
-
         // bottle rotation
         let bottle = this.actors[0];
         let shaderAnimStartPos = -0.25;
@@ -124,41 +124,53 @@ export class ThreeShader2Channels {
             if (bottle.position.y <= -10) {
                 bottle.position.y = -10.0;
             }
-            cap.position.y += 0.02;
             cap.position.x += 0.01;
+            cap.position.y += 0.02;
             cap.rotation.z += 0.05;
 
-            let thisref = this;
-            setTimeout(() => {
-                thisref.bottleState = BottleState.PRESENTED;
-            }, 2000);
+            if (!AnimState.restranslated) {
+                let thisref = this;
+                AnimState.restranslated = true;     // this flag needs to invoke setTimeout only once
+                setTimeout(() => {
+                    thisref.bottleState = BottleState.PRESENTED;
+                    let newScale = 0.8;
+
+                    bottle.position.x = -3.0;
+                    // bottle.position.y = -1.0;
+                    bottle.position.y = -4.0;
+                    bottle.position.z = 0.0;
+
+                    bottle.scale.x = newScale;
+                    bottle.scale.y = newScale;
+                    bottle.scale.z = newScale;
+
+                    cap.position.x = -3.0;
+                    // cap.position.y = 2.5;
+                    cap.position.y = -0.5;
+                    cap.position.z = 0.0;
+
+                    cap.rotation.x = 0.0;
+                    cap.rotation.y = 0.0;
+                    cap.rotation.z = 0.0;
+
+                    cap.scale.x = newScale;
+                    cap.scale.y = newScale;
+                    cap.scale.z = newScale;
+
+                }, 1000);
+            }
+
+
 
         } else if (this.bottleState === BottleState.PRESENTED) {
+            // Moving bottle and cap untile desired position is reached
 
-            bottle.position.x = -1.5;
-            bottle.position.y = -1.0;
-            bottle.position.z = 0.0;
+            if (bottle.position.y < -1.0)
+                bottle.position.y += 0.03;
 
-            bottle.scale.x = 0.8;
-            bottle.scale.y = 0.8;
-            bottle.scale.z = 0.8;
-
-
-            cap.position.x = -1.5;
-            cap.position.y = 2.5;
-            cap.position.z = 0.0;
-
-            cap.rotation.x = 0.0;
-            cap.rotation.y = 0.0;
-            cap.rotation.z = 0.0;
-
-            cap.scale.x = 0.8;
-            cap.scale.y = 0.8;
-            cap.scale.z = 0.8;
+            if (cap.position.y < 2.5)
+                cap.position.y += 0.03;
         }
-
-        // this.uniforms1.u_cubeElevation.value = this.actors[1].position.y;
-        // this.uniforms2.u_cubeElevation.value = this.actors[1].position.y;
 
         this.uniforms1.u_cubeElevation.value = capElevation;
         this.uniforms2.u_cubeElevation.value = capElevation;
@@ -182,7 +194,7 @@ export class ThreeShader2Channels {
         this.scene2 = new THREE.Scene();
         this.scene3 = new THREE.Scene();
 
-        this.camera = new THREE.PerspectiveCamera(45, this.aspect);
+        this.camera = new THREE.PerspectiveCamera(40, this.aspect);
 
         this.camera.position.set(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
