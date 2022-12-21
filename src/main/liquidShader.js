@@ -42,18 +42,18 @@ export function getLiquidShader() {
             int rotations = 1;
             vec2 n = vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
             while (angle <= 2.0 * PI) {
-                n = 1.5 * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
+                n = 2.6 * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
 
-                vec2 pos = (pxCoords + n * vec2(-0.2, 2.0)) / u_screenSize.xy;
+                vec2 pos = (pxCoords + n * vec2(-0.2, 4.0)) / u_screenSize.xy;
                 vec4 color = texture(u_texture, pos);
 
                 // use this if liquid is light color
                 // outValue += 1.0 * dot(color.xy, n.xy);
 
                 // use this if liquid is dark color
-                outValue += 0.75 * dot(vec2(1.0) - color.xy, n.xy);
+                outValue += 1.2 * dot(vec2(1.0) - color.xy, n.xy);
 
-                angle += getRandAngle(pxCoords + n * vec2(20.0, -30.0));
+                angle += getRandAngle(pxCoords + n);
                 rotations += 1;
             }
             return outValue / float(rotations + 1);
@@ -74,7 +74,7 @@ export function getLiquidShader() {
                 rotation += getRotation(gl_FragCoord.xy + n);
                 angle += getRandAngle(gl_FragCoord.xy + n);
 
-                float factor = 1.2;
+                float factor = 1.0;
                 // TODO: factor should change from 1.0 to 3.0 with time ?
 
                 n += factor * rotation * vec2(floor(rPx * cos(angle)), floor(rPx * sin(angle)));
@@ -96,7 +96,9 @@ export function getLiquidShader() {
                 // if (drawCircle(figureCenter, uv, 0.07)) {
                 if (uv.x >= 0.45 && uv.x <= 0.55 && uv.y >= 0.0 && uv.y <= 0.05) {
                     // gl_FragColor = vec4(94, 7, 26, 255) / 255.0;
-                    gl_FragColor = vec4(94, 0.0, 26, 255) / 255.0;
+                    // gl_FragColor = vec4(94, 0.0, 26, 255) / 255.0;
+                    
+                    gl_FragColor = vec4(191, 87, 71, 255) / 255.0;
                 }
                 else {
                     gl_FragColor = backgroundColor;

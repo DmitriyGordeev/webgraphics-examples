@@ -143,6 +143,8 @@ export class ThreeShader2Channels {
                     bottle.position.y = -4.0;
                     bottle.position.z = 0.0;
 
+                    bottle.rotation.y = Math.PI / 9.0;
+
                     bottle.scale.x = newScale;
                     bottle.scale.y = newScale;
                     bottle.scale.z = newScale;
