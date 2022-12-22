@@ -135,7 +135,7 @@ export class ThreeShader2Channels {
                 AnimProps.restranslated = true;     // this flag needs to invoke setTimeout only once
                 setTimeout(() => {
                     thisref.bottleState = BottleState.PRESENTED;
-                    let newScale = 0.8;
+                    let newScale = 0.85;
 
                     bottle.position.x = -3.0;
                     // bottle.position.y = -1.0;
@@ -150,7 +150,7 @@ export class ThreeShader2Channels {
 
                     cap.position.x = -3.0;
                     // cap.position.y = 2.5;
-                    cap.position.y = bottle.position.y + 3.5;
+                    cap.position.y = bottle.position.y + 3.7;
                     cap.position.z = 0.0;
 
                     cap.rotation.x = 0.0;
@@ -169,7 +169,7 @@ export class ThreeShader2Channels {
             if (bottle.position.y < -1.0)
                 bottle.position.y += 0.035;
 
-            if (cap.position.y < 2.5)
+            if (cap.position.y < -1.0 + 3.7)
                 cap.position.y += 0.035;
         }
 
