@@ -30,7 +30,7 @@ const BottleState = {CLOSE: 0, OPEN: 1, PRESENTED: 2};
 
 let AnimProps = {
     restranslated: false,
-    timelagOpenPresentedMs: 1000
+    timelagOpenPresentedMs: 1500
 };
 
 export class ThreeShader2Channels {
@@ -104,7 +104,7 @@ export class ThreeShader2Channels {
         // Object animation when use mouse
         let cap = this.actors[1];
         cap.rotation.y += mouseXSpeed / 100;
-        cap.position.y += mouseXSpeed / 400;
+        cap.position.y += mouseXSpeed / 5000;
 
         let capElevation = 0.0;     // any number to trigger the liquid shader
         if (this.bottleState !== BottleState.PRESENTED) {
@@ -113,17 +113,16 @@ export class ThreeShader2Channels {
 
         // bottle rotation
         let bottle = this.actors[0];
-        let shaderAnimStartPos = -0.25;
+        let shaderAnimStartPos = -0.56;
         if (capElevation < shaderAnimStartPos) {
-            bottle.rotation.x -= mouseXSpeed / 700;
-            bottle.position.y -= mouseXSpeed / 400;
+            // bottle.rotation.x -= mouseXSpeed / 700;
+            // bottle.position.y -= mouseXSpeed / 400;
         } else if (this.bottleState === BottleState.CLOSE) {
             this.bottleState = BottleState.OPEN;
         }
 
         if (this.bottleState === BottleState.OPEN) {
-            bottle.rotation.x = 0.0;
-            bottle.position.y -= 0.01;
+            bottle.position.y -= 0.03;
             if (bottle.position.y <= -10) {
                 bottle.position.y = -10.0;
             }
@@ -140,7 +139,7 @@ export class ThreeShader2Channels {
 
                     bottle.position.x = -3.0;
                     // bottle.position.y = -1.0;
-                    bottle.position.y = -4.0;
+                    bottle.position.y = -8.0;
                     bottle.position.z = 0.0;
 
                     bottle.rotation.y = Math.PI / 9.0;
@@ -151,7 +150,7 @@ export class ThreeShader2Channels {
 
                     cap.position.x = -3.0;
                     // cap.position.y = 2.5;
-                    cap.position.y = -0.5;
+                    cap.position.y = bottle.position.y + 3.5;
                     cap.position.z = 0.0;
 
                     cap.rotation.x = 0.0;
@@ -168,14 +167,16 @@ export class ThreeShader2Channels {
         } else if (this.bottleState === BottleState.PRESENTED) {
             // Moving bottle and cap untile desired position is reached
             if (bottle.position.y < -1.0)
-                bottle.position.y += 0.02;
+                bottle.position.y += 0.035;
 
             if (cap.position.y < 2.5)
-                cap.position.y += 0.02;
+                cap.position.y += 0.035;
         }
 
         this.uniforms1.u_cubeElevation.value = capElevation;
         this.uniforms2.u_cubeElevation.value = capElevation;
+
+        console.log(`capElevation = ${capElevation}`);
 
         this.renderScene();
     }
@@ -198,7 +199,17 @@ export class ThreeShader2Channels {
 
         this.camera = new THREE.PerspectiveCamera(40, this.aspect);
 
-        this.camera.position.set(0, 0, 10);
+        // let viewSize = 8;
+        // this.camera = new THREE.OrthographicCamera(
+        //     (-this.aspect * viewSize) / 2,
+        //     (this.aspect * viewSize) / 2,
+        //     viewSize / 2,
+        //     -viewSize / 2,
+        //     -1000,
+        //     1000,
+        // );
+
+        this.camera.position.set(0, 0, 11);
         this.camera.lookAt(0, 0, 0);
 
         this.scene1.add(this.camera);

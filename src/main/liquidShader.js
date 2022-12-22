@@ -51,7 +51,7 @@ export function getLiquidShader() {
                 // outValue += 1.0 * dot(color.xy, n.xy);
 
                 // use this if liquid is dark color
-                outValue += 1.2 * dot(vec2(1.0) - color.xy, n.xy);
+                outValue += 1.1 * dot(vec2(1.0) - color.xy, n.xy);
 
                 angle += getRandAngle(pxCoords + n);
                 rotations += 1;
@@ -92,9 +92,9 @@ export function getLiquidShader() {
 
             // Initial figure
             // if (u_time < 2.0) {
-            if (u_cubeElevation < -0.25) {
+            if (u_cubeElevation < -0.56) {
                 // if (drawCircle(figureCenter, uv, 0.07)) {
-                if (uv.x >= 0.45 && uv.x <= 0.55 && uv.y >= 0.0 && uv.y <= 0.05) {
+                if (uv.x >= 0.46 && uv.x <= 0.54 && uv.y >= 0.0 && uv.y <= 0.05) {
                     // gl_FragColor = vec4(94, 7, 26, 255) / 255.0;
                     // gl_FragColor = vec4(94, 0.0, 26, 255) / 255.0;
                     
