@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {DragControls} from 'three/addons/controls/DragControls.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
@@ -25,6 +26,8 @@ export class ThreeExample {
         this.mouse = new THREE.Vector2();
         this.raycaster = new THREE.Raycaster();
         this.clock = new THREE.Clock();
+
+        this.orbitControlSet = false;
 
         /* mouse events  */
         // TODO: mouse events for mobile will be touch events
@@ -84,6 +87,14 @@ export class ThreeExample {
         objects[0].rotation.y += mouseXSpeed / 100;
         objects[0].position.y += mouseXSpeed / 1000;
 
+        if (this.clock.getElapsedTime() > 10.0 && !this.orbitControlSet) {
+            this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+            this.controls.target = this.cube.position;
+            // this.controls.update();
+
+            this.orbitControlSet = true;
+        }
+
         this.renderScene();
     }
 
@@ -98,7 +109,7 @@ export class ThreeExample {
         let aspect = this.canvas.width / this.canvas.height;
 
         this.camera = new THREE.PerspectiveCamera(45, aspect);
-        this.camera.position.set(0, 0, 10);
+        this.camera.position.set(0, 0, 2.0);
         this.camera.lookAt(0, 0, 0);
         this.scene.add(this.camera);
 
@@ -109,7 +120,7 @@ export class ThreeExample {
         // light.position.set( 0, 10, 0 );
         // this.scene.add( light );
 
-        cube.position.set(0, 0, -7.0);
+        cube.position.set(0, 0, -10.0);
         this.scene.add(cube);
     }
 
@@ -207,27 +218,36 @@ export class ThreeExample {
         // this.createCustomGeometry();
         this.startScene(this.cube);
 
+
         // this.scene.add(this.customMesh);
         this.loadCustomModel();
 
-        this.controls = new DragControls([this.cube], this.camera, this.renderer.domElement);
-        this.controls.addEventListener('drag', () => {
-            this.renderScene();
-        });
+
+        // // ---------- Orbit control example ----------------
+        // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        // this.controls.target = this.cube.position;
+        // this.controls.update();
+
+        // -----------------------------------------
+
+
+        // this.controls = new DragControls([this.cube], this.camera, this.renderer.domElement);
+        // this.controls.addEventListener('drag', () => {
+        //     this.renderScene();
+        // });
 
         let thisref = this;
-        document.addEventListener('click', () => {
-            const draggableObjects = thisref.controls.getObjects();
-            console.log("draggableObjects = " + draggableObjects);
-
-            thisref.raycaster.setFromCamera( thisref.mouse, thisref.camera );
-            const intersections = thisref.raycaster.intersectObjects([thisref.cube], true);
-            console.dir("intersections = " + intersections);
-            if (intersections.length > 0) {
-                console.dir(intersections[0]);
-            }
-
-        });
+        // document.addEventListener('click', () => {
+        //     const draggableObjects = thisref.controls.getObjects();
+        //     console.log("draggableObjects = " + draggableObjects);
+        //
+        //     thisref.raycaster.setFromCamera( thisref.mouse, thisref.camera );
+        //     const intersections = thisref.raycaster.intersectObjects([thisref.cube], true);
+        //     console.dir("intersections = " + intersections);
+        //     if (intersections.length > 0) {
+        //         console.dir(intersections[0]);
+        //     }
+        // });
 
         window.addEventListener('keydown', () => {
             console.log("keyDown");

@@ -3,6 +3,7 @@ import {DragControls} from 'three/addons/controls/DragControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {getFragmentShader} from "./fluid2Dshader";
 import {getLiquidShader} from "./liquidShader";
+import {OrbitControls} from "three/addons/controls/OrbitControls";
 
 /**
  * This is example of how to take previous frame as a texture and use it again:
@@ -15,18 +16,20 @@ import {getLiquidShader} from "./liquidShader";
 
 
 const planeWidth = 30;
-const rotationY = 0.0;
 
 
 let mouseDown = false;
 let mouseX = 0;
 let mouseY = 0;
-let mouseXDistance = 0;
-let mouseLastDistance = 0;
-let mouseXSpeed = 0;
+let mouseDistanceX = 0;
+let mouseDistanceY = 0;
+let mouseLastDistanceX = 0;
+let mouseLastDistanceY = 0;
+let mouseSpeedX = 0;
+let mouseSpeedY = 0;
 
 
-const BottleState = {CLOSE: 0, OPEN: 1, PRESENTED: 2};
+const BottleState = {CLOSE: 0, OPEN: 1, PRESENTED: 2, READY: 3};
 
 let AnimProps = {
     restranslated: false,
@@ -57,17 +60,23 @@ export class ThreeShader2Channels {
 
         window.addEventListener('mouseup', (e) => {
             mouseDown = false;
-            mouseXDistance = 0;
-            mouseXSpeed = 0;
-            mouseLastDistance = 0;
+            mouseDistanceX = 0;
+            mouseSpeedX = 0;
+            mouseLastDistanceX = 0;
+
+            mouseDistanceY = 0;
+            mouseSpeedY = 0;
+            mouseLastDistanceY = 0;
         });
 
         window.addEventListener('mousemove', (e) => {
             if (mouseDown) {
-                mouseXDistance = e.screenX - mouseX;
-                mouseXSpeed = mouseXDistance - mouseLastDistance;
-                mouseLastDistance = mouseXDistance;
-                console.log("mouseXSpeed = " + mouseXSpeed);
+                mouseDistanceX = e.screenX - mouseX;
+                mouseDistanceY = e.screenY - mouseY;
+                mouseSpeedX = mouseDistanceX - mouseLastDistanceX;
+                mouseSpeedY = mouseDistanceY - mouseLastDistanceY;
+                mouseLastDistanceX = mouseDistanceX;
+                mouseLastDistanceY = mouseDistanceY;
             }
         });
     }
@@ -95,28 +104,30 @@ export class ThreeShader2Channels {
             this.animateScene(this.actors)
         });
 
-        console.log(`this.bottleState = ${this.bottleState}`);
-
         this.uniforms1.u_time.value = this.clock.getElapsedTime();
         this.uniforms2.u_time.value = this.clock.getElapsedTime();
         this.uniforms3.u_time.value = this.clock.getElapsedTime();
 
         // Object animation when use mouse
         let cap = this.actors[1];
-        cap.rotation.y += mouseXSpeed / 100;
-        cap.position.y += mouseXSpeed / 5000;
 
-        let capElevation = 0.0;     // any number to trigger the liquid shader
-        if (this.bottleState !== BottleState.PRESENTED) {
+        let capElevation = 4.4;     // any number to trigger the liquid shader
+        if (this.bottleState !== BottleState.PRESENTED && this.bottleState !== BottleState.READY) {
+            cap.rotation.y += mouseSpeedX / 100;
+            cap.position.y += mouseSpeedX / 5000;
+
             capElevation = cap.position.y;
+            console.log(`cap.position.y = ${cap.position.y}`);
         }
+
+        console.log(`capElevation = ${capElevation}`);
 
         // bottle rotation
         let bottle = this.actors[0];
-        let shaderAnimStartPos = -0.56;
+        let shaderAnimStartPos = 4.4;
         if (capElevation < shaderAnimStartPos) {
-            // bottle.rotation.x -= mouseXSpeed / 700;
-            // bottle.position.y -= mouseXSpeed / 400;
+            // bottle.rotation.x -= mouseSpeedX / 700;
+            // bottle.position.y -= mouseSpeedX / 400;
         } else if (this.bottleState === BottleState.CLOSE) {
             this.bottleState = BottleState.OPEN;
         }
@@ -135,48 +146,67 @@ export class ThreeShader2Channels {
                 AnimProps.restranslated = true;     // this flag needs to invoke setTimeout only once
                 setTimeout(() => {
                     thisref.bottleState = BottleState.PRESENTED;
-                    let newScale = 0.85;
 
-                    bottle.position.x = -3.0;
-                    // bottle.position.y = -1.0;
-                    bottle.position.y = -8.0;
-                    bottle.position.z = 0.0;
-
-                    bottle.rotation.y = Math.PI / 9.0;
-
-                    bottle.scale.x = newScale;
-                    bottle.scale.y = newScale;
-                    bottle.scale.z = newScale;
-
-                    cap.position.x = -3.0;
-                    // cap.position.y = 2.5;
-                    cap.position.y = bottle.position.y + 3.7;
-                    cap.position.z = 0.0;
-
-                    cap.rotation.x = 0.0;
-                    cap.rotation.y = 0.0;
+                    bottle.position.set(0, 0, 0);
+                    cap.position.set(0, 0, 0);
                     cap.rotation.z = 0.0;
 
-                    cap.scale.x = newScale;
-                    cap.scale.y = newScale;
-                    cap.scale.z = newScale;
+                    thisref.bottleCapGroup.scale.set(0.85, 0.85, 0.85);
+                    thisref.bottleCapGroup.position.set(-3, -8, 0);
+
+
+                    // let newScale = 0.85;
+                    //
+                    // bottle.position.x = -3.0;
+                    // // bottle.position.y = -1.0;
+                    // bottle.position.y = -8.0;
+                    // bottle.position.z = 0.0;
+                    //
+                    // bottle.rotation.y = Math.PI / 9.0;
+                    //
+                    // bottle.scale.x = newScale;
+                    // bottle.scale.y = newScale;
+                    // bottle.scale.z = newScale;
+                    //
+                    // cap.position.x = -3.0;
+                    // // cap.position.y = 2.5;
+                    // cap.position.y = bottle.position.y + 3.7;
+                    // cap.position.z = 0.0;
+                    //
+                    // cap.rotation.x = 0.0;
+                    // cap.rotation.y = 0.0;
+                    // cap.rotation.z = 0.0;
+                    //
+                    // cap.scale.x = newScale;
+                    // cap.scale.y = newScale;
+                    // cap.scale.z = newScale;
 
                 }, AnimProps.timelagOpenPresentedMs);
             }
 
         } else if (this.bottleState === BottleState.PRESENTED) {
-            // Moving bottle and cap untile desired position is reached
-            if (bottle.position.y < -1.0)
-                bottle.position.y += 0.035;
 
-            if (cap.position.y < -1.0 + 3.7)
-                cap.position.y += 0.035;
+            console.log(`this.wrapper.position.y = ${this.bottleCapGroup.position.y}`);
+            if (this.bottleCapGroup.position.y < 4) {
+                this.bottleCapGroup.position.y += 0.035;
+            }
+            else {
+                // Once it is set we can allow to rotate object group
+                this.bottleState = BottleState.READY;
+            }
         }
+
+
+        // If state is READY, we allow to rotate the object group
+        if (this.bottleState === BottleState.READY) {
+            this.bottleCapGroup.rotation.x += mouseSpeedY * 0.01;
+            this.bottleCapGroup.rotation.y += mouseSpeedX * 0.01;
+        }
+
+
 
         this.uniforms1.u_cubeElevation.value = capElevation;
         this.uniforms2.u_cubeElevation.value = capElevation;
-
-        console.log(`capElevation = ${capElevation}`);
 
         this.renderScene();
     }
@@ -199,6 +229,8 @@ export class ThreeShader2Channels {
 
         this.camera = new THREE.PerspectiveCamera(40, this.aspect);
 
+
+        // // Orthographic camera
         // let viewSize = 8;
         // this.camera = new THREE.OrthographicCamera(
         //     (-this.aspect * viewSize) / 2,
@@ -481,16 +513,18 @@ export class ThreeShader2Channels {
         let thisref = this;
         const loader = new GLTFLoader().setPath('models/');
 
+         this.bottleCapGroup = new THREE.Object3D();
 
         // Loading bottle.gltf model
         let promise = new Promise((resolve, reject) => {
             loader.load('bottle.gltf', function (gltf) {
                 let bottle = gltf.scene;
-                bottle.position.y = -5.0;
-                bottle.position.z = 7.0;
-                thisref.actors.push(bottle);
+                thisref.bottleCapGroup.add(bottle);
 
-                console.log("Starting resolve()");
+                // bottle.position.y = -5.0;
+                // bottle.position.z = -7.0;
+
+                thisref.actors.push(bottle);
                 resolve();
             });
         });
@@ -500,8 +534,10 @@ export class ThreeShader2Channels {
             return new Promise((resolve) => {
                 loader.load('cap.gltf', function (gltf) {
                     let cap = gltf.scene;
-                    cap.position.y = -0.6;
-                    cap.position.z = 7.0;
+                    thisref.bottleCapGroup.add(cap);
+
+                    cap.position.y = 4.36;
+                    // cap.position.z = 7.0;
 
                     thisref.actors.push(cap);
                     resolve();
@@ -515,54 +551,28 @@ export class ThreeShader2Channels {
             thisref.createPlane2();
             thisref.createPlane3();
 
-            // thisref.createCube();
-
             // add all the actors to scene3
-            console.log(`actors.length = ${thisref.actors.length}`);
-            for (let i = 0; i < thisref.actors.length; i++) {
-                thisref.scene3.add(thisref.actors[i]);
-            }
+            // console.log(`actors.length = ${thisref.actors.length}`);
+            // for (let i = 0; i < thisref.actors.length; i++) {
+            //     thisref.scene3.add(thisref.actors[i]);
+            // }
+
+            // create a 3D object wrapper (nesting bottle and cap together to apply single transform)
+            // thisref.bottleCapGroup = new THREE.Object3D();
+            // thisref.bottleCapGroup.add(thisref.actors[0]);
+            // thisref.bottleCapGroup.add(thisref.actors[1]);
+            // thisref.scene3.add(thisref.bottleCapGroup);
+
+            thisref.bottleCapGroup.position.set(0, -5, 7);
+            thisref.scene3.add(thisref.bottleCapGroup);
 
             thisref.animateScene(thisref.actors);
             thisref.renderScene();
         });
-
-
     }
 
 
-    // entry() {
-    //     let thisref = this;
-    //     const loader = new GLTFLoader().setPath('models/');
-    //
-    //     loader.load('bottle.gltf', function (gltf) {
-    //         let customModel = gltf.scene;
-    //
-    //         thisref.startScene();
-    //
-    //         thisref.createPlane1();
-    //         thisref.createPlane2();
-    //         thisref.createPlane3();
-    //
-    //         thisref.createCube();
-    //
-    //         thisref.scene3.add(customModel);
-    //
-    //
-    //         // for bottle
-    //         customModel.position.y = -5.0;
-    //         customModel.position.z = 7.0;
-    //
-    //         // for cap
-    //         // customModel.position.y = -0.5;
-    //         // customModel.position.z = 7.0;
-    //
-    //         thisref.actors.push(customModel);
-    //
-    //         thisref.animateScene(thisref.actors);
-    //         thisref.renderScene();
-    //     });
-    // }
+
 
 
 }
