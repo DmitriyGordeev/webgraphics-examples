@@ -148,7 +148,7 @@ export class ThreeShader2Channels {
                     thisref.bottleState = BottleState.PRESENTED;
 
                     bottle.position.set(0, 0, 0);
-                    cap.position.set(0, 0, 0);
+                    cap.position.set(0, 4.36, 0);
                     cap.rotation.z = 0.0;
 
                     thisref.bottleCapGroup.scale.set(0.85, 0.85, 0.85);
@@ -187,7 +187,7 @@ export class ThreeShader2Channels {
         } else if (this.bottleState === BottleState.PRESENTED) {
 
             console.log(`this.wrapper.position.y = ${this.bottleCapGroup.position.y}`);
-            if (this.bottleCapGroup.position.y < 4) {
+            if (this.bottleCapGroup.position.y < -1.0) {
                 this.bottleCapGroup.position.y += 0.035;
             }
             else {
