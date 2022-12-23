@@ -112,12 +112,17 @@ export class ThreeShader2Channels {
         let cap = this.actors[1];
 
         let capElevation = 4.4;     // any number to trigger the liquid shader
-        if (this.bottleState !== BottleState.PRESENTED && this.bottleState !== BottleState.READY) {
-            cap.rotation.y += mouseSpeedX / 100;
+        // if (this.bottleState !== BottleState.PRESENTED && this.bottleState !== BottleState.READY) {
+        if (this.bottleState === BottleState.CLOSE) {
+
             cap.position.y += mouseSpeedX / 5000;
+            if (cap.position.y <= 4.3) {
+                cap.position.y = 4.3;
+            }
+            else
+                cap.rotation.y += mouseSpeedX / 100;
 
             capElevation = cap.position.y;
-            console.log(`cap.position.y = ${cap.position.y}`);
         }
 
         console.log(`capElevation = ${capElevation}`);
@@ -128,6 +133,7 @@ export class ThreeShader2Channels {
         if (capElevation < shaderAnimStartPos) {
             // bottle.rotation.x -= mouseSpeedX / 700;
             // bottle.position.y -= mouseSpeedX / 400;
+
         } else if (this.bottleState === BottleState.CLOSE) {
             this.bottleState = BottleState.OPEN;
         }
@@ -153,33 +159,6 @@ export class ThreeShader2Channels {
 
                     thisref.bottleCapGroup.scale.set(0.85, 0.85, 0.85);
                     thisref.bottleCapGroup.position.set(-3, -8, 0);
-
-
-                    // let newScale = 0.85;
-                    //
-                    // bottle.position.x = -3.0;
-                    // // bottle.position.y = -1.0;
-                    // bottle.position.y = -8.0;
-                    // bottle.position.z = 0.0;
-                    //
-                    // bottle.rotation.y = Math.PI / 9.0;
-                    //
-                    // bottle.scale.x = newScale;
-                    // bottle.scale.y = newScale;
-                    // bottle.scale.z = newScale;
-                    //
-                    // cap.position.x = -3.0;
-                    // // cap.position.y = 2.5;
-                    // cap.position.y = bottle.position.y + 3.7;
-                    // cap.position.z = 0.0;
-                    //
-                    // cap.rotation.x = 0.0;
-                    // cap.rotation.y = 0.0;
-                    // cap.rotation.z = 0.0;
-                    //
-                    // cap.scale.x = newScale;
-                    // cap.scale.y = newScale;
-                    // cap.scale.z = newScale;
 
                 }, AnimProps.timelagOpenPresentedMs);
             }
