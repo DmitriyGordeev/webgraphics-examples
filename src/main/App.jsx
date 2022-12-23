@@ -116,7 +116,7 @@ class App extends React.Component {
                             ...this.state,
                             contactDialogVisible: !this.state.contactDialogVisible
                         })
-                    }}>Contact</li>
+                    }} style={{opacity: this.state.aboutDialogVisible ? 0.0 : 1.0}}>Contact</li>
                     <li onClick={() => {
                         this.setState({
                             ...this.state,
@@ -146,7 +146,19 @@ class App extends React.Component {
 
                 {/* About dialog */}
                 <div className={"about-dialog"}
-                     style={{opacity: this.state.aboutDialogVisible ? 1.0 : 0.0}}>
+                    style={{left: this.state.aboutDialogVisible ? '60%' : '100%'}}>
+
+                    <p className={"about-content"}>
+                        <p>Our company is focusing on delivering the best quality drinks,
+                            packed with flavour but consisting of natural ingredients only,
+                            carefully grown and collected from our own gardens.</p>
+
+                        <br/>
+                        <p>You can write us for further information using email below</p>
+
+                        <br/>
+                        <p className={"email"}>drinks@company.com</p>
+                    </p>
                 </div>
 
             </div>
