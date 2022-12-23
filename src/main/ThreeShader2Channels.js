@@ -112,7 +112,6 @@ export class ThreeShader2Channels {
         let cap = this.actors[1];
 
         let capElevation = 4.4;     // any number to trigger the liquid shader
-        // if (this.bottleState !== BottleState.PRESENTED && this.bottleState !== BottleState.READY) {
         if (this.bottleState === BottleState.CLOSE) {
 
             cap.position.y += mouseSpeedX / 5000;
@@ -167,7 +166,7 @@ export class ThreeShader2Channels {
 
             console.log(`this.wrapper.position.y = ${this.bottleCapGroup.position.y}`);
             if (this.bottleCapGroup.position.y < -1.0) {
-                this.bottleCapGroup.position.y += 0.035;
+                this.bottleCapGroup.position.y += 0.06;
             }
             else {
                 // Once it is set we can allow to rotate object group

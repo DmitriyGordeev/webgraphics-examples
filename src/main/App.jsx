@@ -15,7 +15,8 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            tooltipHidden: false
+            tooltipHidden: false,
+            rotateTooltipHidden: true
         }
 
         this.tooltipTimer = null;
@@ -26,8 +27,6 @@ class App extends React.Component {
     componentDidMount() {
         this.anim = new ThreeShader2Channels();
         this.anim.entry();
-
-        // console.log(`[]this.anim.bottleState = ${this.anim.bottleState}`);
 
         // this.anim = new ThreeShadersExample();
         // this.anim.entry();
@@ -41,12 +40,34 @@ class App extends React.Component {
         addEventListener('mousedown', (event) => {
             this.mouseDownHandler(event, this)
         });
+
+        this.rotateTooltipTimer();
     }
+
+
+    /* start interval to check anim.bottleState every given period
+    if this.anim.bottleState === 3 -> rotateTooltipHidden = false
+    we show rotation tooltip on the screen */
+    rotateTooltipTimer() {
+        setInterval(() => {
+            if (this.anim != null) {
+
+                if (this.anim.bottleState === 3 && this.state.rotateTooltipHidden) {
+                    this.setState(prevState => {
+                        return {...prevState, rotateTooltipHidden: false}
+                    })
+                }
+
+            }
+        }, 300)
+    }
+
 
     componentWillUnmount() {
         // Make sure to remove the DOM listener when the component is unmounted.
         removeEventListener('mousedown', this.mouseDownHandler);
     }
+
 
     mouseDownHandler(event, componentRef) {
         componentRef.setState(prevState => {
@@ -69,11 +90,12 @@ class App extends React.Component {
 
     }
 
-    render() {
 
+    render() {
 
         // If bottle moved to another state we set tooltip to hidden
         if (this.anim != null) {
+            console.log(`bottleState = ${this.anim.bottleState}`);
             if (this.anim.bottleState > 0 && !this.state.tooltipHidden) {
                 this.setState(prevState => {
                     return {...prevState, tooltipHidden: true}
@@ -93,7 +115,8 @@ class App extends React.Component {
                     <div className={'animated-ball'}/>
                 </div>
 
-
+                <p className={"rotate-tooltip"}
+                   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>Rotate with mouse</p>
             </div>
         );
     }

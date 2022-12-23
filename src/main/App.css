@@ -4,7 +4,6 @@
     font-family: 'PT Sans', sans-serif;
 }
 
-
 canvas {
     padding: 0;
     margin: 0;
@@ -22,6 +21,9 @@ canvas {
 
 .tooltip {
     transition-duration: 0.2s;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }
 
 .animated-ball {
@@ -51,4 +53,12 @@ canvas {
         margin-left: 50px;
         opacity: 0.3;
     }
+}
+
+.rotate-tooltip {
+    position: absolute;
+    font-size: 10px;
+    bottom: 20px;
+    left: calc(28% + 15px);
+    font-weight: 800;
 }
