@@ -158,6 +158,7 @@ export class ThreeShader2Channels {
 
                     thisref.bottleCapGroup.scale.set(0.85, 0.85, 0.85);
                     thisref.bottleCapGroup.position.set(-3, -8, 0);
+                    thisref.bottleCapGroup.rotation.y = Math.PI / 12.0;
 
                 }, AnimProps.timelagOpenPresentedMs);
             }
@@ -193,6 +194,7 @@ export class ThreeShader2Channels {
     startScene() {
 
         let canvas = this.canvas;
+        // this.renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true });
         this.renderer = new THREE.WebGLRenderer({canvas, alpha: true});
         this.renderer.setClearColor("#000000");
         this.renderer.setPixelRatio(1.0);
