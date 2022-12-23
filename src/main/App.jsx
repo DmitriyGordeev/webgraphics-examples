@@ -16,7 +16,9 @@ class App extends React.Component {
 
         this.state = {
             tooltipHidden: false,
-            rotateTooltipHidden: true
+            rotateTooltipHidden: true,
+            contactDialogVisible: false,
+            aboutDialogVisible: false
         }
 
         this.tooltipTimer = null;
@@ -109,8 +111,18 @@ class App extends React.Component {
                 <canvas id={"c"}/>
 
                 <ul className={"top-menu"}>
-                    <li>Contact</li>
-                    <li>About</li>
+                    <li onClick={() => {
+                        this.setState({
+                            ...this.state,
+                            contactDialogVisible: !this.state.contactDialogVisible
+                        })
+                    }}>Contact</li>
+                    <li onClick={() => {
+                        this.setState({
+                            ...this.state,
+                            aboutDialogVisible: !this.state.aboutDialogVisible
+                        })
+                    }}>About</li>
                 </ul>
 
                 <p style={{opacity: 1.0 - this.state.rotateTooltipHidden}}
@@ -126,6 +138,17 @@ class App extends React.Component {
 
                 <p className={"rotate-tooltip"}
                    style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>Rotate with mouse</p>
+
+                {/* Contact dialog */}
+                <div className={"contact-dialog"}
+                     style={{opacity: this.state.contactDialogVisible ? 1.0 : 0.0}}>
+                </div>
+
+                {/* About dialog */}
+                <div className={"about-dialog"}
+                     style={{opacity: this.state.aboutDialogVisible ? 1.0 : 0.0}}>
+                </div>
+
             </div>
         );
     }

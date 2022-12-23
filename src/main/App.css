@@ -106,3 +106,16 @@ canvas {
     padding-bottom: 4px;
     border-bottom: 5px solid black;
 }
+
+
+
+.contact-dialog {
+    width: 400px;
+    height: 180px;
+    background: black;
+    position: absolute;
+    right: 100px;
+    top: 60px;
+    border-radius: 30px;
+    transition-duration: 0.6s;
+}
