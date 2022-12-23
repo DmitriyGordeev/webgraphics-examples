@@ -1,0 +1,49 @@
+.contact-dialog {
+    width: 400px;
+    /*height: 180px;*/
+    height: fit-content;
+    background: black;
+    position: absolute;
+    right: 100px;
+    top: 60px;
+    border-radius: 30px;
+    transition-duration: 0.6s;
+}
+
+input#email {
+    border:0;
+    border-bottom: 2px solid #ffe17d;
+    outline:0;
+    /*background: transparent;*/
+    background: black;
+    width: 80%;
+    margin: 20px auto 0;
+    display: block;
+    padding: 10px;
+    box-sizing: border-box;
+    color: #ffe17d;
+    font-weight: 600;
+    /*border-bottom: 2px solid #92DCE5;*/
+}
+
+input#submit {
+    background: #ffe17d;
+    color: black;
+    font-weight: 600;
+    border: none;
+    font-size: 14px;
+    border-radius: 10px;
+    padding: 5px 24px;
+    display: block;
+    margin: 20px auto 20px;
+    transition: 250ms ease;
+    cursor: pointer;
+}
+
+input#submit:hover {
+    background: #DF9F65;
+}
+
+input#submit:active {
+    background: #A91112;
+}

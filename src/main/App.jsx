@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import './App.css';
-
+import './contact.css';
+import './about.css';
 
 import {CustomAnim2D} from "./CustomAnim2D";
 import {PureWebGl} from "./PureWebGl";
@@ -142,6 +143,12 @@ class App extends React.Component {
                 {/* Contact dialog */}
                 <div className={"contact-dialog"}
                      style={{opacity: this.state.contactDialogVisible ? 1.0 : 0.0}}>
+                    <input type="email" id="email" placeholder={"email"}
+                               size="30" required />
+
+                    <input id={"submit"}
+                           type={"submit"}
+                           value={"Send"} onClick={() => {}}/>
                 </div>
 
                 {/* About dialog */}
@@ -152,10 +159,8 @@ class App extends React.Component {
                         <p>Our company is focusing on delivering the best quality drinks,
                             packed with flavour but consisting of natural ingredients only,
                             carefully grown and collected from our own gardens.</p>
-
                         <br/>
                         <p>You can write us for further information using email below</p>
-
                         <br/>
                         <p className={"email"}>drinks@company.com</p>
                     </p>
