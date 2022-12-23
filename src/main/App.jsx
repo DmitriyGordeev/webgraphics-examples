@@ -18,6 +18,8 @@ class App extends React.Component {
             tooltipHidden: false
         }
 
+        this.tooltipTimer = null;
+
         this.anim = null;
     }
 
@@ -51,20 +53,44 @@ class App extends React.Component {
             return {...prevState, tooltipHidden: true};
         });
 
-        // setTimeout(() => {}, 1500);
+        // Clear previously set timer
+        if (componentRef.tooltipTimer != null) {
+            clearTimeout(componentRef.tooltipTimer);
+        }
+
+        // Set new timer
+        if (componentRef.anim.bottleState === 0) {
+            componentRef.tooltipTimer = setTimeout(() => {
+                componentRef.setState(prevState => {
+                    return {...prevState, tooltipHidden: false};
+                });
+            }, 3000);
+        }
+
     }
 
     render() {
 
+
+        // If bottle moved to another state we set tooltip to hidden
+        if (this.anim != null) {
+            if (this.anim.bottleState > 0 && !this.state.tooltipHidden) {
+                this.setState(prevState => {
+                    return {...prevState, tooltipHidden: true}
+                })
+            }
+        }
+
+
         return (
             <div>
-                <canvas id={"c"} />
+                <canvas id={"c"}/>
 
-                <div className={"tooltip-container"}>
-                    <p style={{opacity: 1.0 - this.state.tooltipHidden}}
-                       className={"tooltip"}>Drag the cap to the right</p>
+                <div className={"tooltip-container"}
+                     style={{opacity: 1.0 - this.state.tooltipHidden}}>
 
-                    <div className={this.state.tooltipHidden ? 'hidden-ball' : 'animated-ball'} />
+                    <p className={"tooltip"}>Drag the cap to the right</p>
+                    <div className={'animated-ball'}/>
                 </div>
 
 
@@ -77,6 +103,5 @@ export default connect(
     state => ({
         storeData: state
     }),
-    dispatch => ({
-    })
+    dispatch => ({})
 )(App);

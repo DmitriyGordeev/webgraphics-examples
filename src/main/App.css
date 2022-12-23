@@ -10,11 +10,17 @@ canvas {
     margin: 0;
 }
 
-.tooltip {
+.tooltip-container {
+    border: 3px solid black;
     position: absolute;
-    /*background: red;*/
-    bottom: 200px;
+    bottom: 180px;
     left: 55%;
+    transition-duration: 0.2s;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.tooltip {
     transition-duration: 0.2s;
 }
 
@@ -22,12 +28,13 @@ canvas {
     --size: 20px;
     width: var(--size);
     height: var(--size);
-    background: red;
+    background: #A91112;
     border-radius: var(--size);
-    position: absolute;
+    margin-top: 4px;
 
-    left: 55%;
-    bottom: 170px;
+    /*position: absolute;*/
+    /*left: 55%;*/
+    /*bottom: 170px;*/
 
     animation-duration: 1.3s;
     animation-name: dragBall;
@@ -37,15 +44,11 @@ canvas {
 
 @keyframes dragBall {
     from {
-        left: 55%;
+        margin-left: 0;
     }
 
     to {
-        left: calc(55% + 60px);
+        margin-left: 50px;
         opacity: 0.3;
     }
-}
-
-.hidden-ball {
-    opacity: 0.0;
 }
