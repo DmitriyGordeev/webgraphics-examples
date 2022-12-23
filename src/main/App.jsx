@@ -108,9 +108,18 @@ class App extends React.Component {
             <div>
                 <canvas id={"c"}/>
 
+                <ul className={"top-menu"}>
+                    <li>Contact</li>
+                    <li>About</li>
+                </ul>
+
+                <p style={{opacity: 1.0 - this.state.rotateTooltipHidden}}
+                   className={"main-text"}>
+                    Text placeholder
+                </p>
+
                 <div className={"tooltip-container"}
                      style={{opacity: 1.0 - this.state.tooltipHidden}}>
-
                     <p className={"tooltip"}>Drag the cap to the right</p>
                     <div className={'animated-ball'}/>
                 </div>
