@@ -132,7 +132,13 @@ class App extends React.Component {
                     Full of taste, packed with energy and perfect to take along either to office or gym.
                     <br/>
                     <br/>
-                    <span>Ingredients: orange juice, lemon juice, lime juice, water</span>
+                    <span className={"ingredients"}>
+                        Ingredients:&nbsp;
+                        <span style={{color: "#FFB59F"}}>orange</span> juice,&nbsp;
+                        <span style={{color: "#FFD280"}}>lemon</span> juice,&nbsp;
+                        <span style={{color: "#1D8761"}}>lime</span> juice,&nbsp;
+                        <span style={{color: "#00D8FA"}}>water</span>
+                    </span>
                 </div>
 
                 <div className={"tooltip-container"}

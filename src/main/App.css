@@ -84,17 +84,21 @@ canvas {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
+    /*white-space: pre;*/
 }
 
 .header {
     margin-bottom: 20px;
 }
 
-.main-text > span {
+.main-text span.ingredients {
+    background: black;
     font-size: 14px;
     border: 2px solid black;
     padding: 5px 8px;
     border-radius: 12px;
+    color: #FFF9E8;
+    white-space: pre;
 }
 
 .top-menu {
