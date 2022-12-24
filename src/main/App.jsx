@@ -136,7 +136,7 @@ class App extends React.Component {
                         Ingredients:&nbsp;
                         <span style={{color: "#FFB59F"}}>orange</span> juice,&nbsp;
                         <span style={{color: "#FFD280"}}>lemon</span> juice,&nbsp;
-                        <span style={{color: "#1D8761"}}>lime</span> juice,&nbsp;
+                        <span style={{color: "#00C3AA"}}>lime</span> juice,&nbsp;
                         <span style={{color: "#00D8FA"}}>water</span>
                     </span>
                 </div>
