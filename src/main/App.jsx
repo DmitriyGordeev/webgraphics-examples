@@ -126,10 +126,14 @@ class App extends React.Component {
                     }}>About</li>
                 </ul>
 
-                <p style={{opacity: 1.0 - this.state.rotateTooltipHidden}}
+                <div style={{opacity: 1.0 - this.state.rotateTooltipHidden}}
                    className={"main-text"}>
-                    Text placeholder
-                </p>
+                    <h2 className={"header"}>Try our new citrus drink</h2>
+                    Full of taste, packed with energy and perfect to take along either to office or gym.
+                    <br/>
+                    <br/>
+                    <span>Ingredients: orange juice, lemon juice, lime juice, water</span>
+                </div>
 
                 <div className={"tooltip-container"}
                      style={{opacity: 1.0 - this.state.tooltipHidden}}>
@@ -156,8 +160,8 @@ class App extends React.Component {
                     style={{left: this.state.aboutDialogVisible ? '60%' : '100%'}}>
 
                     <p className={"about-content"}>
-                        <p>Our company is focusing on delivering the best quality drinks,
-                            packed with flavour but consisting of natural ingredients only,
+                        <p>Our company is producing and delivering the best quality drinks,
+                            packed with flavour but consisting of natural ingredients,
                             carefully grown and collected from our own gardens.</p>
                         <br/>
                         <p>You can write us for further information using email below</p>
