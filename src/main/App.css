@@ -4,6 +4,7 @@
     /*font-family: 'PT Sans', sans-serif;*/
     font-family: 'Poiret One', cursive;
     font-weight: 800;
+    color: #3B2B00;
 }
 
 
@@ -13,7 +14,7 @@ canvas {
 }
 
 .tooltip-container {
-    border: 3px solid black;
+    border: 3px solid #3B2B00;
     position: absolute;
     bottom: 180px;
     left: 57%;
@@ -92,9 +93,9 @@ canvas {
 }
 
 .main-text span.ingredients {
-    background: black;
+    background: #3B2B00;
     font-size: 14px;
-    border: 2px solid black;
+    border: 2px solid #3B2B00;
     padding: 5px 8px;
     border-radius: 12px;
     color: #FFF9E8;
@@ -114,7 +115,7 @@ canvas {
     display: inline-block;
     margin-left: 60px;
     
-    border-bottom: 3px solid black;
+    border-bottom: 3px solid #3B2B00;
     padding-bottom: 2px;
     cursor: pointer;
     transition-duration: 0.3s;
@@ -126,5 +127,5 @@ canvas {
 
 .top-menu li:hover {
     padding-bottom: 4px;
-    border-bottom: 5px solid black;
+    border-bottom: 5px solid #3B2B00;
 }

@@ -194,8 +194,8 @@ export class ThreeShader2Channels {
     startScene() {
 
         let canvas = this.canvas;
-        // this.renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true });
-        this.renderer = new THREE.WebGLRenderer({canvas, alpha: true});
+        this.renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true });
+        // this.renderer = new THREE.WebGLRenderer({canvas, alpha: true});
         this.renderer.setClearColor("#000000");
         this.renderer.setPixelRatio(1.0);
         console.log(`window.devicePixelRatio = ${window.devicePixelRatio}`);
@@ -208,7 +208,6 @@ export class ThreeShader2Channels {
         this.scene3 = new THREE.Scene();
 
         this.camera = new THREE.PerspectiveCamera(40, this.aspect);
-
 
         // // Orthographic camera
         // let viewSize = 8;
