@@ -106,7 +106,7 @@ export class ThreeShader2Channels {
 
         this.uniforms1.u_time.value = this.clock.getElapsedTime();
         this.uniforms2.u_time.value = this.clock.getElapsedTime();
-        this.uniforms3.u_time.value = this.clock.getElapsedTime();
+        this.uniforms.u_time.value = this.clock.getElapsedTime();
 
         // Object animation when use mouse
         let cap = this.actors[1];
@@ -375,7 +375,7 @@ export class ThreeShader2Channels {
 
 
         const shaderMaterial = new THREE.ShaderMaterial({
-            uniforms: this.uniforms3,
+            uniforms: this.uniforms,
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
 
@@ -435,7 +435,7 @@ export class ThreeShader2Channels {
 
         // and assign it's output to the first and third scenes
         this.uniforms1.u_texture.value = this.renderTarget2.texture;
-        this.uniforms3.u_texture.value = this.renderTarget2.texture;
+        this.uniforms.u_texture.value = this.renderTarget2.texture;
 
         // Finally render 3ed scene
         this.renderer.setRenderTarget(null);
