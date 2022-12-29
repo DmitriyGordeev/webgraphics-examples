@@ -123,6 +123,10 @@ export class FBOExample {
 
 
     createFBO() {
+        /**
+         * OES_texture_float extension has huge problem of browser support ?
+         * Double check
+         */
 
         console.log(this.renderer.getContext().getSupportedExtensions());
 
@@ -132,6 +136,8 @@ export class FBOExample {
             gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS) === 0) {
             alert('createFBO(): Cannot create FBO');
         }
+
+        console.log(gl.checkFramebufferStatus);
 
         // set initial positions of `w*h` particles
         let w = 256;
