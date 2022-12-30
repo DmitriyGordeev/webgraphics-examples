@@ -130,9 +130,14 @@ export class GPGPUExample {
         // fill texture with some data
         const theArray = gpuTexture.image.data;
         for ( let k = 0, kl = theArray.length; k < kl; k += 4 ) {
-            const x = Math.random() * BOUNDS - BOUNDS_HALF;
-            const y = Math.random() * BOUNDS - BOUNDS_HALF;
-            const z = Math.random() * BOUNDS - BOUNDS_HALF;
+            // const x = Math.random() * BOUNDS - BOUNDS_HALF;
+            // const y = Math.random() * BOUNDS - BOUNDS_HALF;
+            // const z = Math.random() * BOUNDS - BOUNDS_HALF;
+
+            const x = Math.random();
+            const y = Math.random();
+            const z = Math.random();
+
             theArray[ k + 0 ] = x;
             theArray[ k + 1 ] = y;
             theArray[ k + 2 ] = z;
@@ -141,18 +146,12 @@ export class GPGPUExample {
 
 
         let fragmentShader = `
-            uniform vec2 u_screenSize;
+            uniform float u_width;
             uniform float u_time;
             
             void main() {
-                vec2 uv = gl_FragCoord.xy / 32.0;
+                vec2 uv = gl_FragCoord.xy / u_width;
                 vec4 tex = texture(u_texture, uv);
-                  
-                if (uv.x > 0.5) {
-                    tex.r = 1.0;
-                    tex.g = 1.0;
-                    tex.b = 1.0;
-                }
                 
                 gl_FragColor = tex;
             }
@@ -168,7 +167,14 @@ export class GPGPUExample {
             [ this.positionVariable ] );
 
         this.positionUniforms = this.positionVariable.material.uniforms;
-        this.positionUniforms[ 'u_time' ] = { value: 0.0 };
+        this.positionUniforms['u_time'] = { value: 0.0 };
+        this.positionUniforms['u_width'] = { value: 32.0 };
+
+        // TODO: for some reason this method of passing uniforms doesn't work
+        // this.positionUniforms = {
+        //     u_time: {value: 0.0, type: 'f'},
+        //     u_width: {value: 32.0, type: 'f'}
+        // };
 
         this.positionVariable.wrapS = THREE.RepeatWrapping;
         this.positionVariable.wrapT = THREE.RepeatWrapping;
@@ -183,11 +189,12 @@ export class GPGPUExample {
 
 
     renderScene() {
-        this.uniforms.u_time.value = this.clock.getElapsedTime();
         this.positionUniforms.u_time.value = this.clock.getElapsedTime();
+        this.positionUniforms.u_width.value = 32.0;
 
         this.gpuCompute.compute();
 
+        this.uniforms.u_time.value = this.clock.getElapsedTime();
         this.uniforms.u_texture.value = this.gpuCompute.getCurrentRenderTarget( this.positionVariable ).texture;
 
         // render the scene users see as normal
