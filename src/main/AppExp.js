@@ -7,7 +7,7 @@ import {PureWebGl} from "./PureWebGl";
 import {ThreeExample} from './ThreeExample';
 import {ThreeShadersExample} from './ThreeShadersExample';
 import {ThreeShader2Channels} from './ThreeShader2Channels';
-import {FBOExample} from './FBOExample';
+import {GPGPUExample} from './GPGPUExample';
 
 class AppExp extends React.Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class AppExp extends React.Component {
     }
 
     componentDidMount() {
-        this.anim = new FBOExample();
+        this.anim = new GPGPUExample();
         this.anim.entry();
 
         // this.anim = new ThreeShader2Channels();
