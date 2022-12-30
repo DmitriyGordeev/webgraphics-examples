@@ -149,9 +149,16 @@ export class GPGPUExample {
             uniform float u_width;
             uniform float u_time;
             
+            const float PI = 3.141592;
+            const float freq = 2.0;
+            
             void main() {
                 vec2 uv = gl_FragCoord.xy / u_width;
                 vec4 tex = texture(u_texture, uv);
+                
+                tex.r += 0.01 * sin(freq * u_time);
+                tex.g += 0.01 * cos(freq * u_time);
+                tex.b += 0.01 * sin(freq * u_time + PI / 3.0);
                 
                 gl_FragColor = tex;
             }
@@ -190,7 +197,7 @@ export class GPGPUExample {
 
     renderScene() {
         this.positionUniforms.u_time.value = this.clock.getElapsedTime();
-        this.positionUniforms.u_width.value = 32.0;
+        // this.positionUniforms.u_width.value = 32.0;
 
         this.gpuCompute.compute();
 
