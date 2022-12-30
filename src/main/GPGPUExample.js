@@ -108,7 +108,7 @@ export class GPGPUExample {
         const geometry = new THREE.PlaneGeometry(planeWidth3, planeHeight);
 
         this.plane = new THREE.Mesh(geometry, shaderMaterial);
-        this.plane.position.z = -10.0;
+        this.plane.position.z = -2.5;
         this.plane.rotation.y = 0.0;
         this.plane.rotation.x = 0.0;
         this.scene.add(this.plane);
@@ -143,11 +143,17 @@ export class GPGPUExample {
         let fragmentShader = `
             uniform vec2 u_screenSize;
             uniform float u_time;
-            // uniform sampler2D u_texture;
             
             void main() {
-                vec2 uv = gl_FragCoord.xy / u_screenSize;
+                vec2 uv = gl_FragCoord.xy / 32.0;
                 vec4 tex = texture(u_texture, uv);
+                  
+                if (uv.x > 0.5) {
+                    tex.r = 1.0;
+                    tex.g = 1.0;
+                    tex.b = 1.0;
+                }
+                
                 gl_FragColor = tex;
             }
         `;
