@@ -129,14 +129,17 @@ export class GPGPUExample {
 
         // fill texture with some data
         const theArray = gpuTexture.image.data;
+        const masked = false;
         for ( let k = 0, kl = theArray.length; k < kl; k += 4 ) {
-            // const x = Math.random() * BOUNDS - BOUNDS_HALF;
-            // const y = Math.random() * BOUNDS - BOUNDS_HALF;
-            // const z = Math.random() * BOUNDS - BOUNDS_HALF;
+            let x = 0;
+            let y = 0;
+            let z = 0;
 
-            const x = Math.random();
-            const y = Math.random();
-            const z = Math.random();
+            if (k === 512) {
+                x = Math.random();
+                y = 0.0; // Math.random();
+                z = 0.0; // Math.random();
+            }
 
             theArray[ k + 0 ] = x;
             theArray[ k + 1 ] = y;
@@ -156,26 +159,31 @@ export class GPGPUExample {
                 vec2 uv = gl_FragCoord.xy / u_width;
                 vec4 tex = texture(u_texture, uv);
                 
-                // tex.r += 0.01 * sin(freq * u_time);
-                // tex.g += 0.01 * cos(freq * u_time);
-                // tex.b += 0.01 * sin(freq * u_time + PI / 3.0);
                 
-                vec2 point1 = ( gl_FragCoord.xy + vec2(0.0, 1.0) ) / u_width;
-                tex.r += sin(u_time * texture(u_texture, point1).r);
+                // vec2 point1 = ( gl_FragCoord.xy + u_time * vec2(0.0, 1.0) ) / u_width;
+                // tex.r += sin(u_time * texture(u_texture, point1).r);
+                //
+                // vec2 point2 = ( gl_FragCoord.xy + u_time * vec2(1.0, 0.0) ) / u_width;
+                // tex.b += sin(u_time * texture(u_texture, point2).b);
+                //
+                // vec2 point3 = ( gl_FragCoord.xy + u_time * vec2(0.0, -1.0) ) / u_width;
+                // tex.g += sin(u_time * texture(u_texture, point3).b);
+                //
+                // vec2 point4 = ( gl_FragCoord.xy + u_time * vec2(-1.0, 0.0) ) / u_width;
+                // tex.r += sin(u_time * texture(u_texture, point4).r);
                 
-                vec2 point2 = ( gl_FragCoord.xy + u_time * vec2(1.0, 0.0) ) / u_width;
-                tex.b += sin(u_time * texture(u_texture, point2).b);
                 
-                vec2 point3 = ( gl_FragCoord.xy + u_time * vec2(0.0, -1.0) ) / u_width;
-                tex.g += sin(u_time * texture(u_texture, point3).b);
+                if (fract(u_time) < 0.01) {
+                    vec2 point3 = ( gl_FragCoord.xy + vec2(0.0, -1.0) ) / u_width;
+                    tex = texture(u_texture, point3);
+                }
                 
-                vec2 point4 = ( gl_FragCoord.xy + u_time * vec2(-1.0, 0.0) ) / u_width;
-                tex.r += sin(u_time * texture(u_texture, point4).r);
-                
-              
                 gl_FragColor = tex;
-             
-  
+                
+                if (u_time < 1.0) {
+                    gl_FragColor = texture(u_texture, uv);
+                }
+                
             }
         `;
 
