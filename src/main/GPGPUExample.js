@@ -156,11 +156,26 @@ export class GPGPUExample {
                 vec2 uv = gl_FragCoord.xy / u_width;
                 vec4 tex = texture(u_texture, uv);
                 
-                tex.r += 0.01 * sin(freq * u_time);
-                tex.g += 0.01 * cos(freq * u_time);
-                tex.b += 0.01 * sin(freq * u_time + PI / 3.0);
+                // tex.r += 0.01 * sin(freq * u_time);
+                // tex.g += 0.01 * cos(freq * u_time);
+                // tex.b += 0.01 * sin(freq * u_time + PI / 3.0);
                 
+                vec2 point1 = ( gl_FragCoord.xy + vec2(0.0, 1.0) ) / u_width;
+                tex.r += sin(u_time * texture(u_texture, point1).r);
+                
+                vec2 point2 = ( gl_FragCoord.xy + u_time * vec2(1.0, 0.0) ) / u_width;
+                tex.b += sin(u_time * texture(u_texture, point2).b);
+                
+                vec2 point3 = ( gl_FragCoord.xy + u_time * vec2(0.0, -1.0) ) / u_width;
+                tex.g += sin(u_time * texture(u_texture, point3).b);
+                
+                vec2 point4 = ( gl_FragCoord.xy + u_time * vec2(-1.0, 0.0) ) / u_width;
+                tex.r += sin(u_time * texture(u_texture, point4).r);
+                
+              
                 gl_FragColor = tex;
+             
+  
             }
         `;
 
