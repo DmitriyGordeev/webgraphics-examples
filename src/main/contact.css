@@ -22,14 +22,14 @@ input#email {
     padding: 10px;
     box-sizing: border-box;
     color: #ffe17d;
-    font-weight: 600;
+    font-weight: 800;
     /*border-bottom: 2px solid #92DCE5;*/
 }
 
 input#submit {
     background: #ffe17d;
     color: black;
-    font-weight: 600;
+    font-weight: 800;
     border: none;
     font-size: 14px;
     border-radius: 10px;
