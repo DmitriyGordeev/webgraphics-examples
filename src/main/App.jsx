@@ -189,6 +189,11 @@ class App extends React.Component {
                     </div>
                 </div>
 
+                <p className={"demo-tooltip"}
+                   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>
+                    This page was made for demonstration purposes. Not a real product
+                </p>
+
             </div>
         );
     }
