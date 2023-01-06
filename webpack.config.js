@@ -48,14 +48,23 @@ const config = {
                 ]
             },
 
+            // {
+            //     test: /\.(jpe?g|png|gif|svg)$/i,
+            //     loader: 'file-loader',
+            //     exclude: /node_modules/,
+            //     options: {
+            //         name: '/images/[name].[ext]'
+            //     }
+            // },
+
             {
-                test: /\.(jpe?g|png|gif|svg)$/i,
+                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/i,
                 loader: 'file-loader',
                 exclude: /node_modules/,
                 options: {
-                    name: '/resources/images/[name].[ext]'
+                    name: '/fonts/[name].[ext]'
                 }
-            }
+            },
         ],
     }
 };
