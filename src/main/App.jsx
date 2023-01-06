@@ -93,6 +93,15 @@ class App extends React.Component {
 
     }
 
+    mainDivClickHandler() {
+        if ( this.state.contactDialogVisible || this.state.aboutDialogVisible ) {
+            this.setState({
+                ...this.state,
+                contactDialogVisible: false,
+                aboutDialogVisible: false
+            });
+        }
+    }
 
     render() {
 
@@ -108,7 +117,7 @@ class App extends React.Component {
 
 
         return (
-            <div>
+            <div onClick={() => {this.mainDivClickHandler()}}>
                 <canvas id={"c"}/>
 
                 <ul className={"top-menu"}>
@@ -150,8 +159,10 @@ class App extends React.Component {
                 <p className={"rotate-tooltip"}
                    style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>Rotate with mouse</p>
 
-                {/* Contact dialog */}
+
+                {/* --------- Contact dialog --------- */}
                 <div className={"contact-dialog"}
+                     onClick={(e) => {e.stopPropagation()}}
                      style={{opacity: this.state.contactDialogVisible ? 1.0 : 0.0}}>
                     <input type="email" id="email" placeholder={"email"}
                                size="30" required />
@@ -161,11 +172,13 @@ class App extends React.Component {
                            value={"Send"} onClick={() => {}}/>
                 </div>
 
-                {/* About dialog */}
-                <div className={"about-dialog"}
-                    style={{left: this.state.aboutDialogVisible ? '60%' : '100%'}}>
 
-                    <p className={"about-content"}>
+                {/* --------- About dialog --------- */}
+                <div className={"about-dialog"}
+                     onClick={(e) => {e.stopPropagation()}}
+                     style={{left: this.state.aboutDialogVisible ? '60%' : '100%'}}>
+
+                    <div className={"about-content"}>
                         <p>Our company is producing and delivering the best quality drinks,
                             packed with flavour but consisting of natural ingredients,
                             carefully grown and collected from our own gardens.</p>
@@ -173,7 +186,7 @@ class App extends React.Component {
                         <p>You can write us for further information using email below</p>
                         <br/>
                         <p className={"email"}>drinks@company.com</p>
-                    </p>
+                    </div>
                 </div>
 
             </div>
