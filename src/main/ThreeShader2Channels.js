@@ -110,7 +110,9 @@ export class ThreeShader2Channels {
         this.uniforms3.u_time.value = this.clock.getElapsedTime();
 
         // closing in the camera while rotating the cap
-        this.camera.position.z -= mouseSpeedX / 500;
+        if (this.bottleState !== BottleState.READY) {
+            this.camera.position.z -= mouseSpeedX / 500;
+        }
 
         // Object animation when use mouse
         let cap = this.actors[1];
