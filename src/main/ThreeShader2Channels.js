@@ -43,6 +43,7 @@ export class ThreeShader2Channels {
         this.canvas = document.getElementById('c');
         this.scale();
         this.clock = new THREE.Clock();
+        this.componentRef = null;
 
         this.actors = [];
         this.bottleState = BottleState.CLOSE;
@@ -82,6 +83,10 @@ export class ThreeShader2Channels {
         });
     }
 
+
+    setComponentRef(component) {
+        this.componentRef = component;
+    }
 
     setupFrameCallback() {
         window.customRequestAnimationFrame = function () {
@@ -536,23 +541,14 @@ export class ThreeShader2Channels {
             thisref.createPlane2();
             thisref.createPlane3();
 
-            // add all the actors to scene3
-            // console.log(`actors.length = ${thisref.actors.length}`);
-            // for (let i = 0; i < thisref.actors.length; i++) {
-            //     thisref.scene3.add(thisref.actors[i]);
-            // }
-
-            // create a 3D object wrapper (nesting bottle and cap together to apply single transform)
-            // thisref.bottleCapGroup = new THREE.Object3D();
-            // thisref.bottleCapGroup.add(thisref.actors[0]);
-            // thisref.bottleCapGroup.add(thisref.actors[1]);
-            // thisref.scene3.add(thisref.bottleCapGroup);
-
             thisref.bottleCapGroup.position.set(0, -5, 7);
             thisref.scene3.add(thisref.bottleCapGroup);
 
             thisref.animateScene(thisref.actors);
             thisref.renderScene();
+
+            // notify App component that we are ready to remove the loading screen
+            thisref.componentRef.onCanvasReady();
         });
     }
 

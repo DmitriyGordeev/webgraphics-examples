@@ -1,0 +1,27 @@
+.loading-screen {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: #FFD280;
+    /*background: #ffe17d;*/
+    /*background: red;*/
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.loading-screen-animated {
+    transform: translate(0, -100%);
+    transition: 600ms ease-in-out;
+}
+
+.loading-screen p {
+    /*background: green;*/
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    bottom: 200px;
+    font-weight: 800;
+}
+
+

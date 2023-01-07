@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import './App.css';
 import './contact.css';
 import './about.css';
+import './loading.css';
 
 import {CustomAnim2D} from "./CustomAnim2D";
 import {PureWebGl} from "./PureWebGl";
@@ -19,16 +20,17 @@ class App extends React.Component {
             tooltipHidden: false,
             rotateTooltipHidden: true,
             contactDialogVisible: false,
-            aboutDialogVisible: false
+            aboutDialogVisible: false,
+            loadingScreenVisible: true
         }
 
         this.tooltipTimer = null;
-
         this.anim = null;
     }
 
     componentDidMount() {
         this.anim = new ThreeShader2Channels();
+        this.anim.setComponentRef(this);
         this.anim.entry();
 
         // this.anim = new ThreeShadersExample();
@@ -103,6 +105,15 @@ class App extends React.Component {
         }
     }
 
+    // fires when THREEJS loaded everything into canvas
+    onCanvasReady() {
+        console.log("onCanvasReady");
+        this.setState({
+            ...this.state,
+            loadingScreenVisible: false
+        })
+    }
+
     render() {
 
         // If bottle moved to another state we set tooltip to hidden
@@ -113,6 +124,12 @@ class App extends React.Component {
                     return {...prevState, tooltipHidden: true}
                 })
             }
+        }
+
+
+        let loadingScreenClass = "loading-screen ";
+        if (!this.state.loadingScreenVisible) {
+            loadingScreenClass += "loading-screen loading-screen-animated";
         }
 
 
@@ -193,6 +210,11 @@ class App extends React.Component {
                    style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>
                     This page was made for demonstration purposes. Not a real product
                 </p>
+
+
+                <div className={loadingScreenClass}>
+                    <p>Loading...</p>
+                </div>
 
             </div>
         );
