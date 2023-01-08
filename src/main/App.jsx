@@ -171,11 +171,11 @@ class App extends React.Component {
                 {/*    </span>*/}
                 {/*</div>*/}
 
-                {/*<div className={"tooltip-container"}*/}
-                {/*     style={{opacity: 1.0 - this.state.tooltipHidden}}>*/}
-                {/*    <p className={"tooltip"}>Drag the cap to the right</p>*/}
-                {/*    <div className={'animated-ball'}/>*/}
-                {/*</div>*/}
+                <div className={"tooltip-container"}
+                     style={{opacity: 1.0 - this.state.tooltipHidden}}>
+                    <p className={"tooltip"}>Drag the cap to the right</p>
+                    <div className={'animated-ball'}/>
+                </div>
 
                 {/*<p className={"rotate-tooltip"}*/}
                 {/*   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>Rotate with mouse</p>*/}

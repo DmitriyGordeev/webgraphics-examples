@@ -31,7 +31,6 @@
 /* Mobile rules */
 @media screen and (max-width: 480px) {
     .top-menu {
-        /*background: green;*/
         position: absolute;
         top: 15px;
         right: 30px;
@@ -45,18 +44,17 @@
 }
 
 
-@media screen and (max-width: 900px) {
+@media screen and (min-width: 481px) and (max-width: 900px) {
     .top-menu {
-        /*background: green;*/
         position: absolute;
         top: 20px;
-        right: 40px;
+        right: 50px;
         padding: 0;
         z-index: 10;
     }
 
     .top-menu li {
         margin-left: 40px;
-        font-size: 20px;
+        font-size: 23px;
      }
 }
