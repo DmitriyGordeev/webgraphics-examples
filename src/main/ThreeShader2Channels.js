@@ -41,6 +41,7 @@ export class ThreeShader2Channels {
     constructor() {
         this.setupFrameCallback();
         this.canvas = document.getElementById('c');
+        this.isMobile = false;
         this.scale();
         this.clock = new THREE.Clock();
         this.componentRef = null;
@@ -138,6 +139,8 @@ export class ThreeShader2Channels {
         this.cw = window.innerWidth;
         this.ch = window.innerHeight;
         console.log(`this.cw = ${this.cw}, this.ch = ${this.ch}`);
+        if (this.ch > this.cw)
+            this.isMobile = true;
     }
 
 
@@ -200,9 +203,18 @@ export class ThreeShader2Channels {
                     cap.position.set(0, 4.36, 0);
                     cap.rotation.z = 0.0;
 
+                    // in case it's a mobile device we don't move the bottle too much left,
+                    // instead leave it at the center
+                    let xOffset = 0.0;
+                    let yRotation = 0.0;
+                    if (!thisref.isMobile) {
+                        xOffset = -3.0;
+                        yRotation = Math.PI / 12.0;
+                    }
+
                     thisref.bottleCapGroup.scale.set(0.85, 0.85, 0.85);
-                    thisref.bottleCapGroup.position.set(-3, -8, 0);
-                    thisref.bottleCapGroup.rotation.y = Math.PI / 12.0;
+                    thisref.bottleCapGroup.position.set(xOffset, -8, 0);
+                    thisref.bottleCapGroup.rotation.y = yRotation;
 
                 }, AnimProps.timelagOpenPresentedMs);
             }
@@ -237,7 +249,6 @@ export class ThreeShader2Channels {
 
         let canvas = this.canvas;
         this.renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: false});
-        // this.renderer = new THREE.WebGLRenderer({canvas, alpha: true});
         this.renderer.setClearColor("#000000");
         this.renderer.setPixelRatio(1.0);
         console.log(`window.devicePixelRatio = ${window.devicePixelRatio}`);
@@ -255,28 +266,12 @@ export class ThreeShader2Channels {
 
         this.camera = new THREE.PerspectiveCamera(40, this.aspect);
 
-        // // Orthographic camera
-        // let viewSize = 8;
-        // this.camera = new THREE.OrthographicCamera(
-        //     (-this.aspect * viewSize) / 2,
-        //     (this.aspect * viewSize) / 2,
-        //     viewSize / 2,
-        //     -viewSize / 2,
-        //     -1000,
-        //     1000,
-        // );
-
         this.camera.position.set(0, 0, 11);
         this.camera.lookAt(0, 0, 0);
 
         this.scene1.add(this.camera);
         this.scene2.add(this.camera);
         this.scene3.add(this.camera);
-
-        // Add point light to the scene3
-        // const light = new THREE.PointLight( 0xffffff, 5, 20 );
-        // light.position.set( 0, 10, 8 );
-        // this.scene3.add( light );
 
         const light = new THREE.AmbientLight(0xffffff); // soft white light
         this.scene3.add(light);
