@@ -159,4 +159,22 @@
         left: 49%;
         padding: 10px;
     }
+
+    .main-text {
+        left: 20%;
+        top: 20%;
+        padding: 10px;
+        font-size: 23px;
+    }
+
+    .main-text span.ingredients {
+        position: fixed;
+        width: fit-content;
+        left: 0;
+        right: 0;
+        bottom: 30px;
+        margin: 0 auto;
+        display: block;
+        font-size: 12px;
+    }
 }
