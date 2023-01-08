@@ -205,10 +205,11 @@ export class ThreeShader2Channels {
 
                     // in case it's a mobile device we don't move the bottle too much left,
                     // instead leave it at the center
-                    let xOffset = 1.0;
+                    let xOffset = 0.5;
                     let yOffset = -5;
                     let scale = 0.7;
                     let yRotation = 0.0;
+
                     if (!thisref.isMobile) {
                         xOffset = -3.0;
                         yOffset = -8;

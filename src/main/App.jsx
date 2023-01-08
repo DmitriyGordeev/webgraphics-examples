@@ -170,7 +170,7 @@ class App extends React.Component {
                 <div style={{opacity: 1.0 - this.state.rotateTooltipHidden}}
                    className={"main-text"}>
                     <h2 className={"header"}>Try our new citrus drink</h2>
-                    Full of taste, packed with energy and perfect to take along either to office or gym.
+                    Full of taste, packed with energy and perfect to take along to office or gym.
                     <br/>
                     <br/>
                     <span className={"ingredients"}>
