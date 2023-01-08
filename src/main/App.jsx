@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import './App.css';
+import './topmenu.css';
 import './contact.css';
 import './about.css';
 import './loading.css';
@@ -140,20 +141,20 @@ class App extends React.Component {
             <div onClick={() => {this.mainDivClickHandler()}}>
                 <canvas id={"c"}/>
 
-                {/*<ul className={"top-menu"}>*/}
-                {/*    <li onClick={() => {*/}
-                {/*        this.setState({*/}
-                {/*            ...this.state,*/}
-                {/*            contactDialogVisible: !this.state.contactDialogVisible*/}
-                {/*        })*/}
-                {/*    }} style={{opacity: this.state.aboutDialogVisible ? 0.0 : 1.0}}>Contact</li>*/}
-                {/*    <li onClick={() => {*/}
-                {/*        this.setState({*/}
-                {/*            ...this.state,*/}
-                {/*            aboutDialogVisible: !this.state.aboutDialogVisible*/}
-                {/*        })*/}
-                {/*    }}>About</li>*/}
-                {/*</ul>*/}
+                <ul className={"top-menu"}>
+                    <li onClick={() => {
+                        this.setState({
+                            ...this.state,
+                            contactDialogVisible: !this.state.contactDialogVisible
+                        })
+                    }} style={{opacity: this.state.aboutDialogVisible ? 0.0 : 1.0}}>Contact</li>
+                    <li onClick={() => {
+                        this.setState({
+                            ...this.state,
+                            aboutDialogVisible: !this.state.aboutDialogVisible
+                        })
+                    }}>About</li>
+                </ul>
 
                 {/*<div style={{opacity: 1.0 - this.state.rotateTooltipHidden}}*/}
                 {/*   className={"main-text"}>*/}
