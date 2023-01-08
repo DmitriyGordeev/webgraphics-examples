@@ -137,6 +137,17 @@ class App extends React.Component {
         }
 
 
+        let aboutOpenLeft = '60%';
+        if (window.screen.width <= 480) {
+            // phone
+            aboutOpenLeft = '15%';
+        }
+        else if (window.screen.width > 480 && window.screen.width <= 900) {
+            // pad
+            aboutOpenLeft = '35%';
+        }
+
+
         return (
             <div onClick={() => {this.mainDivClickHandler()}}>
                 <canvas id={"c"}/>
@@ -156,20 +167,20 @@ class App extends React.Component {
                     }}>About</li>
                 </ul>
 
-                {/*<div style={{opacity: 1.0 - this.state.rotateTooltipHidden}}*/}
-                {/*   className={"main-text"}>*/}
-                {/*    <h2 className={"header"}>Try our new citrus drink</h2>*/}
-                {/*    Full of taste, packed with energy and perfect to take along either to office or gym.*/}
-                {/*    <br/>*/}
-                {/*    <br/>*/}
-                {/*    <span className={"ingredients"}>*/}
-                {/*        Ingredients:&nbsp;*/}
-                {/*        <span style={{color: "#BF5747"}}>orange</span> juice,&nbsp;*/}
-                {/*        <span style={{color: "#FFD280"}}>lemon</span> juice,&nbsp;*/}
-                {/*        <span style={{color: "#00C3AA"}}>lime</span> juice,&nbsp;*/}
-                {/*        <span style={{color: "#6ca8ff"}}>water</span>*/}
-                {/*    </span>*/}
-                {/*</div>*/}
+                <div style={{opacity: 1.0 - this.state.rotateTooltipHidden}}
+                   className={"main-text"}>
+                    <h2 className={"header"}>Try our new citrus drink</h2>
+                    Full of taste, packed with energy and perfect to take along either to office or gym.
+                    <br/>
+                    <br/>
+                    <span className={"ingredients"}>
+                        Ingredients:&nbsp;
+                        <span style={{color: "#BF5747"}}>orange</span> juice,&nbsp;
+                        <span style={{color: "#FFD280"}}>lemon</span> juice,&nbsp;
+                        <span style={{color: "#00C3AA"}}>lime</span> juice,&nbsp;
+                        <span style={{color: "#6ca8ff"}}>water</span>
+                    </span>
+                </div>
 
                 <div className={"tooltip-container"}
                      style={{opacity: 1.0 - this.state.tooltipHidden}}>
@@ -194,21 +205,21 @@ class App extends React.Component {
                 </div>
 
 
-                {/*/!* --------- About dialog --------- *!/*/}
-                {/*<div className={"about-dialog"}*/}
-                {/*     onClick={(e) => {e.stopPropagation()}}*/}
-                {/*     style={{left: this.state.aboutDialogVisible ? '60%' : '100%'}}>*/}
+                {/* --------- About dialog --------- */}
+                <div className={"about-dialog"}
+                     onClick={(e) => {e.stopPropagation()}}
+                     style={{left: this.state.aboutDialogVisible ? aboutOpenLeft : '100%'}}>
 
-                {/*    <div className={"about-content"}>*/}
-                {/*        <p>Our company is producing and delivering the best quality drinks,*/}
-                {/*            packed with flavour but consisting of natural ingredients,*/}
-                {/*            carefully grown and collected from our own gardens.</p>*/}
-                {/*        <br/>*/}
-                {/*        <p>You can write us for further information using email below</p>*/}
-                {/*        <br/>*/}
-                {/*        <p className={"email"}>drinks@company.com</p>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
+                    <div className={"about-content"}>
+                        <p>Our company is producing and delivering the best quality drinks,
+                            packed with flavour but consisting of natural ingredients,
+                            carefully grown and collected from our own gardens.</p>
+                        <br/>
+                        <p>You can write us for further information using email below</p>
+                        <br/>
+                        <p className={"email"}>drinks@company.com</p>
+                    </div>
+                </div>
 
                 {/*<p className={"demo-tooltip"}*/}
                 {/*   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>*/}

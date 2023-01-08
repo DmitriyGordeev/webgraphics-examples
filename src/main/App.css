@@ -86,7 +86,7 @@
     width: fit-content;
     max-width: 30%;
     line-height: 1.6em;
-    position: absolute;
+    position: fixed;
     left: 46%;
     top: 40%;
     padding: 10px;
@@ -131,6 +131,26 @@
         left: 49%;
         padding: 10px;
     }
+
+    .main-text {
+        left: 16%;
+        top: 10%;
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .main-text span.ingredients {
+        position: fixed;
+        width: fit-content;
+        left: 0;
+        right: 0;
+        bottom: 30px;
+        margin: 0 auto;
+        display: block;
+        font-size: 12px;
+    }
+
+
 }
 
 @media screen and (min-width: 481px) and (max-width: 900px) {

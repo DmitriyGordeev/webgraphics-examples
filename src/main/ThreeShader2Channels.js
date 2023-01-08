@@ -205,15 +205,19 @@ export class ThreeShader2Channels {
 
                     // in case it's a mobile device we don't move the bottle too much left,
                     // instead leave it at the center
-                    let xOffset = 0.0;
+                    let xOffset = 1.0;
+                    let yOffset = -5;
+                    let scale = 0.7;
                     let yRotation = 0.0;
                     if (!thisref.isMobile) {
                         xOffset = -3.0;
+                        yOffset = -8;
+                        scale = 0.85;
                         yRotation = Math.PI / 12.0;
                     }
 
-                    thisref.bottleCapGroup.scale.set(0.85, 0.85, 0.85);
-                    thisref.bottleCapGroup.position.set(xOffset, -8, 0);
+                    thisref.bottleCapGroup.scale.set(scale, scale, scale);
+                    thisref.bottleCapGroup.position.set(xOffset, yOffset, 0);
                     thisref.bottleCapGroup.rotation.y = yRotation;
 
                 }, AnimProps.timelagOpenPresentedMs);
