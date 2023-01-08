@@ -229,9 +229,9 @@ class App extends React.Component {
                 {/*</p>*/}
 
 
-                {/*<div className={loadingScreenClass}>*/}
-                {/*    <p>Loading...</p>*/}
-                {/*</div>*/}
+                <div className={loadingScreenClass}>
+                    <p>Loading...</p>
+                </div>
 
             </div>
         );

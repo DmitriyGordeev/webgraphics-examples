@@ -8,11 +8,17 @@
     top: 0;
     left: 0;
     z-index: 10;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom: 3px solid #3B2B00;
+    border-left: 3px solid #3B2B00;
+    border-right: 3px solid #3B2B00;
 }
 
 .loading-screen-animated {
     transform: translate(0, -100%);
     transition: 600ms ease-in-out;
+    /*transition: 20000ms ease-in-out;*/
 }
 
 .loading-screen p {
@@ -22,6 +28,22 @@
     text-align: center;
     bottom: 200px;
     font-weight: 800;
+    font-size: 20px;
 }
 
+
+/*!* ---------------------------------------------------------- *!*/
+/*!* Mobile rules *!*/
+@media screen and (max-width: 480px) {
+    .loading-screen p {
+        padding-left: 8px;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 900px) {
+    .loading-screen p {
+        padding-left: 15px;
+        font-size: 30px;
+    }
+}
 
