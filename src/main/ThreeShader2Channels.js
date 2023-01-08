@@ -153,13 +153,18 @@ export class ThreeShader2Channels {
         this.uniforms2.u_time.value = this.clock.getElapsedTime();
         this.uniforms3.u_time.value = this.clock.getElapsedTime();
 
-        // closing in the camera while rotating the cap
-        if (this.bottleState !== BottleState.READY) {
-            this.camera.position.z -= mouseSpeedX / 500;
-        }
-
         // Object animation when use mouse
         let cap = this.actors[1];
+
+        // closing in the camera while rotating the cap
+        if (this.bottleState !== BottleState.READY) {
+            console.log(`this.camera.position.z = ${this.camera.position.z}`);
+            this.camera.position.z -= mouseSpeedX / 500;
+
+            // limit camera's z.pos so it won't go too far on zooming out
+            if (this.camera.position.z >= 11.5)
+                this.camera.position.z = 11.5;
+        }
 
         let capElevation = 4.4;     // any number to trigger the liquid shader
         if (this.bottleState === BottleState.CLOSE) {
