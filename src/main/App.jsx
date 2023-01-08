@@ -46,6 +46,8 @@ class App extends React.Component {
             this.mouseDownHandler(event, this)
         });
 
+        // todo: add the same touch event ?
+
         this.rotateTooltipTimer();
     }
 
@@ -74,6 +76,7 @@ class App extends React.Component {
     }
 
 
+    // when fires starts timer when tooltip should appear again
     mouseDownHandler(event, componentRef) {
         componentRef.setState(prevState => {
             return {...prevState, tooltipHidden: true};
@@ -137,84 +140,84 @@ class App extends React.Component {
             <div onClick={() => {this.mainDivClickHandler()}}>
                 <canvas id={"c"}/>
 
-                <ul className={"top-menu"}>
-                    <li onClick={() => {
-                        this.setState({
-                            ...this.state,
-                            contactDialogVisible: !this.state.contactDialogVisible
-                        })
-                    }} style={{opacity: this.state.aboutDialogVisible ? 0.0 : 1.0}}>Contact</li>
-                    <li onClick={() => {
-                        this.setState({
-                            ...this.state,
-                            aboutDialogVisible: !this.state.aboutDialogVisible
-                        })
-                    }}>About</li>
-                </ul>
+                {/*<ul className={"top-menu"}>*/}
+                {/*    <li onClick={() => {*/}
+                {/*        this.setState({*/}
+                {/*            ...this.state,*/}
+                {/*            contactDialogVisible: !this.state.contactDialogVisible*/}
+                {/*        })*/}
+                {/*    }} style={{opacity: this.state.aboutDialogVisible ? 0.0 : 1.0}}>Contact</li>*/}
+                {/*    <li onClick={() => {*/}
+                {/*        this.setState({*/}
+                {/*            ...this.state,*/}
+                {/*            aboutDialogVisible: !this.state.aboutDialogVisible*/}
+                {/*        })*/}
+                {/*    }}>About</li>*/}
+                {/*</ul>*/}
 
-                <div style={{opacity: 1.0 - this.state.rotateTooltipHidden}}
-                   className={"main-text"}>
-                    <h2 className={"header"}>Try our new citrus drink</h2>
-                    Full of taste, packed with energy and perfect to take along either to office or gym.
-                    <br/>
-                    <br/>
-                    <span className={"ingredients"}>
-                        Ingredients:&nbsp;
-                        <span style={{color: "#BF5747"}}>orange</span> juice,&nbsp;
-                        <span style={{color: "#FFD280"}}>lemon</span> juice,&nbsp;
-                        <span style={{color: "#00C3AA"}}>lime</span> juice,&nbsp;
-                        <span style={{color: "#6ca8ff"}}>water</span>
-                    </span>
-                </div>
+                {/*<div style={{opacity: 1.0 - this.state.rotateTooltipHidden}}*/}
+                {/*   className={"main-text"}>*/}
+                {/*    <h2 className={"header"}>Try our new citrus drink</h2>*/}
+                {/*    Full of taste, packed with energy and perfect to take along either to office or gym.*/}
+                {/*    <br/>*/}
+                {/*    <br/>*/}
+                {/*    <span className={"ingredients"}>*/}
+                {/*        Ingredients:&nbsp;*/}
+                {/*        <span style={{color: "#BF5747"}}>orange</span> juice,&nbsp;*/}
+                {/*        <span style={{color: "#FFD280"}}>lemon</span> juice,&nbsp;*/}
+                {/*        <span style={{color: "#00C3AA"}}>lime</span> juice,&nbsp;*/}
+                {/*        <span style={{color: "#6ca8ff"}}>water</span>*/}
+                {/*    </span>*/}
+                {/*</div>*/}
 
-                <div className={"tooltip-container"}
-                     style={{opacity: 1.0 - this.state.tooltipHidden}}>
-                    <p className={"tooltip"}>Drag the cap to the right</p>
-                    <div className={'animated-ball'}/>
-                </div>
+                {/*<div className={"tooltip-container"}*/}
+                {/*     style={{opacity: 1.0 - this.state.tooltipHidden}}>*/}
+                {/*    <p className={"tooltip"}>Drag the cap to the right</p>*/}
+                {/*    <div className={'animated-ball'}/>*/}
+                {/*</div>*/}
 
-                <p className={"rotate-tooltip"}
-                   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>Rotate with mouse</p>
-
-
-                {/* --------- Contact dialog --------- */}
-                <div className={"contact-dialog"}
-                     onClick={(e) => {e.stopPropagation()}}
-                     style={{opacity: this.state.contactDialogVisible ? 1.0 : 0.0}}>
-                    <input type="email" id="email" placeholder={"email"}
-                               size="30" required />
-
-                    <input id={"submit"}
-                           type={"submit"}
-                           value={"Send"} onClick={() => {}}/>
-                </div>
+                {/*<p className={"rotate-tooltip"}*/}
+                {/*   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>Rotate with mouse</p>*/}
 
 
-                {/* --------- About dialog --------- */}
-                <div className={"about-dialog"}
-                     onClick={(e) => {e.stopPropagation()}}
-                     style={{left: this.state.aboutDialogVisible ? '60%' : '100%'}}>
+                {/*/!* --------- Contact dialog --------- *!/*/}
+                {/*<div className={"contact-dialog"}*/}
+                {/*     onClick={(e) => {e.stopPropagation()}}*/}
+                {/*     style={{opacity: this.state.contactDialogVisible ? 1.0 : 0.0}}>*/}
+                {/*    <input type="email" id="email" placeholder={"email"}*/}
+                {/*               size="30" required />*/}
 
-                    <div className={"about-content"}>
-                        <p>Our company is producing and delivering the best quality drinks,
-                            packed with flavour but consisting of natural ingredients,
-                            carefully grown and collected from our own gardens.</p>
-                        <br/>
-                        <p>You can write us for further information using email below</p>
-                        <br/>
-                        <p className={"email"}>drinks@company.com</p>
-                    </div>
-                </div>
-
-                <p className={"demo-tooltip"}
-                   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>
-                    This page was made for demonstration purposes. Not a real product
-                </p>
+                {/*    <input id={"submit"}*/}
+                {/*           type={"submit"}*/}
+                {/*           value={"Send"} onClick={() => {}}/>*/}
+                {/*</div>*/}
 
 
-                <div className={loadingScreenClass}>
-                    <p>Loading...</p>
-                </div>
+                {/*/!* --------- About dialog --------- *!/*/}
+                {/*<div className={"about-dialog"}*/}
+                {/*     onClick={(e) => {e.stopPropagation()}}*/}
+                {/*     style={{left: this.state.aboutDialogVisible ? '60%' : '100%'}}>*/}
+
+                {/*    <div className={"about-content"}>*/}
+                {/*        <p>Our company is producing and delivering the best quality drinks,*/}
+                {/*            packed with flavour but consisting of natural ingredients,*/}
+                {/*            carefully grown and collected from our own gardens.</p>*/}
+                {/*        <br/>*/}
+                {/*        <p>You can write us for further information using email below</p>*/}
+                {/*        <br/>*/}
+                {/*        <p className={"email"}>drinks@company.com</p>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+
+                {/*<p className={"demo-tooltip"}*/}
+                {/*   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>*/}
+                {/*    This page was made for demonstration purposes. Not a real product*/}
+                {/*</p>*/}
+
+
+                {/*<div className={loadingScreenClass}>*/}
+                {/*    <p>Loading...</p>*/}
+                {/*</div>*/}
 
             </div>
         );

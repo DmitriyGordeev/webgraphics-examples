@@ -65,7 +65,6 @@ export class ThreeShader2Channels {
             mouseDistanceX = 0;
             mouseSpeedX = 0;
             mouseLastDistanceX = 0;
-
             mouseDistanceY = 0;
             mouseSpeedY = 0;
             mouseLastDistanceY = 0;
@@ -101,19 +100,19 @@ export class ThreeShader2Channels {
                 mouseLastDistanceX = mouseDistanceX;
                 mouseLastDistanceY = mouseDistanceY;
 
-                console.log("[touchmove] mouseLastDistanceX = " + mouseLastDistanceX);
-                console.log("[touchmove] mouseLastDistanceY = " + mouseLastDistanceY);
+                // console.log("[touchmove] mouseLastDistanceX = " + mouseLastDistanceX);
+                // console.log("[touchmove] mouseLastDistanceY = " + mouseLastDistanceY);
             }
 
         });
 
         window.addEventListener('touchend', () => {
             // reset values for the next touch event
+            // todo: make a separate function and use in mouse event and here
             mouseDown = false;
             mouseDistanceX = 0;
             mouseSpeedX = 0;
             mouseLastDistanceX = 0;
-
             mouseDistanceY = 0;
             mouseSpeedY = 0;
             mouseLastDistanceY = 0;
@@ -138,7 +137,6 @@ export class ThreeShader2Channels {
     scale() {
         this.cw = window.innerWidth;
         this.ch = window.innerHeight;
-
         console.log(`this.cw = ${this.cw}, this.ch = ${this.ch}`);
     }
 
@@ -166,14 +164,11 @@ export class ThreeShader2Channels {
             cap.position.y += mouseSpeedX / 5000;
             if (cap.position.y <= 4.3) {
                 cap.position.y = 4.3;
-            }
-            else
+            } else
                 cap.rotation.y += mouseSpeedX / 100;
 
             capElevation = cap.position.y;
         }
-
-        console.log(`capElevation = ${capElevation}`);
 
         // bottle rotation
         let bottle = this.actors[0];
@@ -217,8 +212,7 @@ export class ThreeShader2Channels {
             console.log(`this.wrapper.position.y = ${this.bottleCapGroup.position.y}`);
             if (this.bottleCapGroup.position.y < -1.0) {
                 this.bottleCapGroup.position.y += 0.06;
-            }
-            else {
+            } else {
                 // Once it is set we can allow to rotate object group
                 this.bottleState = BottleState.READY;
             }
@@ -232,7 +226,6 @@ export class ThreeShader2Channels {
         }
 
 
-
         this.uniforms1.u_cubeElevation.value = capElevation;
         this.uniforms2.u_cubeElevation.value = capElevation;
 
@@ -243,12 +236,16 @@ export class ThreeShader2Channels {
     startScene() {
 
         let canvas = this.canvas;
-        this.renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true });
+        this.renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: false});
         // this.renderer = new THREE.WebGLRenderer({canvas, alpha: true});
         this.renderer.setClearColor("#000000");
         this.renderer.setPixelRatio(1.0);
         console.log(`window.devicePixelRatio = ${window.devicePixelRatio}`);
-        this.renderer.setSize(this.cw, this.ch);
+        // this.renderer.setSize(this.cw, this.ch);
+
+        this.renderer.setSize(
+            window.innerWidth,
+            window.innerHeight);
 
         this.aspect = this.canvas.width / this.canvas.height;
 
@@ -283,6 +280,8 @@ export class ThreeShader2Channels {
 
         const light = new THREE.AmbientLight(0xffffff); // soft white light
         this.scene3.add(light);
+
+        this.camera.updateProjectionMatrix();
     }
 
 
@@ -496,7 +495,7 @@ export class ThreeShader2Channels {
         let thisref = this;
         const loader = new GLTFLoader().setPath('models/');
 
-         this.bottleCapGroup = new THREE.Object3D();
+        this.bottleCapGroup = new THREE.Object3D();
 
         // Loading bottle.gltf model
         let promise = new Promise((resolve, reject) => {
@@ -544,9 +543,6 @@ export class ThreeShader2Channels {
             thisref.componentRef.onCanvasReady();
         });
     }
-
-
-
 
 
 }
