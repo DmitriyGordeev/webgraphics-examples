@@ -181,17 +181,17 @@ class App extends React.Component {
                 {/*   style={{opacity: 1.0 - this.state.rotateTooltipHidden}}>Rotate with mouse</p>*/}
 
 
-                {/*/!* --------- Contact dialog --------- *!/*/}
-                {/*<div className={"contact-dialog"}*/}
-                {/*     onClick={(e) => {e.stopPropagation()}}*/}
-                {/*     style={{opacity: this.state.contactDialogVisible ? 1.0 : 0.0}}>*/}
-                {/*    <input type="email" id="email" placeholder={"email"}*/}
-                {/*               size="30" required />*/}
+                {/* --------- Contact dialog --------- */}
+                <div className={"contact-dialog"}
+                     onClick={(e) => {e.stopPropagation()}}
+                     style={{opacity: this.state.contactDialogVisible ? 1.0 : 0.0}}>
+                    <input type="email" id="email" placeholder={"email"}
+                               size="30" required />
 
-                {/*    <input id={"submit"}*/}
-                {/*           type={"submit"}*/}
-                {/*           value={"Send"} onClick={() => {}}/>*/}
-                {/*</div>*/}
+                    <input id={"submit"}
+                           type={"submit"}
+                           value={"Send"} onClick={() => {}}/>
+                </div>
 
 
                 {/*/!* --------- About dialog --------- *!/*/}
