@@ -81,6 +81,44 @@ export class ThreeShader2Channels {
                 mouseLastDistanceY = mouseDistanceY;
             }
         });
+
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches.length == 1) {
+                console.log("[touchstart] " + e.touches[0].clientX);
+                mouseDown = true;
+                mouseX = e.touches[0].clientX;
+                mouseY = e.touches[0].clientY;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length == 1) {
+                console.log("[touchmove] touch.clientX: " + e.touches[0].clientX);
+                mouseDistanceX = e.touches[0].clientX - mouseX;
+                mouseDistanceY = e.touches[0].clientY - mouseY;
+                mouseSpeedX = mouseDistanceX - mouseLastDistanceX;
+                mouseSpeedY = mouseDistanceY - mouseLastDistanceY;
+                mouseLastDistanceX = mouseDistanceX;
+                mouseLastDistanceY = mouseDistanceY;
+
+                console.log("[touchmove] mouseLastDistanceX = " + mouseLastDistanceX);
+                console.log("[touchmove] mouseLastDistanceY = " + mouseLastDistanceY);
+            }
+
+        });
+
+        window.addEventListener('touchend', () => {
+            // reset values for the next touch event
+            mouseDown = false;
+            mouseDistanceX = 0;
+            mouseSpeedX = 0;
+            mouseLastDistanceX = 0;
+
+            mouseDistanceY = 0;
+            mouseSpeedY = 0;
+            mouseLastDistanceY = 0;
+        });
+
     }
 
 
@@ -452,51 +490,6 @@ export class ThreeShader2Channels {
         this.renderer.setRenderTarget(null);
         this.renderer.render(this.scene3, this.camera);
     }
-
-
-    // entry() {
-    //
-    //     const loader = new THREE.TextureLoader();
-    //     let thisref = this;
-    //
-    //     // load a resource
-    //     loader.load(
-    //         // resource URL
-    //         'textures/noise.jpg',
-    //
-    //         // onLoad callback
-    //         function (texture) {
-    //             // in this example we create the material when the texture is loaded
-    //             thisref.noiseTexture = texture;
-    //             thisref.startScene();
-    //
-    //             thisref.createPlane1();
-    //             thisref.createPlane2();
-    //             thisref.createPlane3();
-    //
-    //             thisref.createCube();
-    //
-    //             window.addEventListener('keydown', () => {
-    //                 console.log("keyDown");
-    //             }, true);
-    //
-    //             window.addEventListener('keyup', () => {
-    //                 console.log("keyUp");
-    //             }, true);
-    //
-    //             thisref.animateScene([thisref.actors]);
-    //             thisref.renderScene();
-    //         },
-    //
-    //         // onProgress callback currently not supported
-    //         undefined,
-    //
-    //         // onError callback
-    //         function (err) {
-    //             console.error('An error happened.');
-    //         }
-    //     );
-    // }
 
 
     entry() {
