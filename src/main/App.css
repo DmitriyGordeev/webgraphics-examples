@@ -32,7 +32,7 @@
     left: 57%;
     transition-duration: 0.2s;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 16px;
 }
 
 .tooltip {
@@ -127,22 +127,16 @@
 /* Mobile rules */
 @media screen and (max-width: 480px) {
     .tooltip-container {
-        border: 3px solid #3B2B00;
-        position: absolute;
-        bottom: 180px;
-        left: 57%;
-        transition-duration: 0.2s;
+        bottom: 37%;
+        left: 49%;
         padding: 10px;
-        border-radius: 10px;
-    }
-
-    .tooltip {
-        transition-duration: 0.2s;
-        font-size: 14px;
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10 and IE 11 */
-        user-select: none; /* Standard syntax */
     }
 }
 
-@media screen and (max-width: 900px) {}
+@media screen and (min-width: 481px) and (max-width: 900px) {
+    .tooltip-container {
+        bottom: 37%;
+        left: 49%;
+        padding: 10px;
+    }
+}
