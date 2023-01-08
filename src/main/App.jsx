@@ -47,7 +47,9 @@ class App extends React.Component {
             this.mouseDownHandler(event, this)
         });
 
-        // todo: add the same touch event ?
+        addEventListener('touchstart', (event) => {
+            this.mouseDownHandler(event, this)
+        });
 
         this.rotateTooltipTimer();
     }
